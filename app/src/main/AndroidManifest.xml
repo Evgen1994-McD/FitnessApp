@@ -12,16 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitnessApp"
         tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".SplashActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.FitnessApp">
+            android:theme="@style/Theme.Splash"
+            android:noHistory="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.FitnessApp"
+            tools:ignore="IntentFilterExportedReceiver">
+
         </activity>
     </application>
 
