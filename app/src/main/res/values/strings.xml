@@ -2,5 +2,6 @@
     <string name="app_name">FitnessApp</string>
     <string name="slogan">На пути к совершенству!</string>
     <string name="day">День:</string>
+    <string name="exercises">Упражнений</string>
 
 </resources>
