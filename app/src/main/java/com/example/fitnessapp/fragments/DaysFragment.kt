@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.adapter.DayModel
@@ -13,10 +14,12 @@ import com.example.fitnessapp.adapter.DaysAdapter
 import com.example.fitnessapp.adapter.ExerciseModel
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.utils.FragmentManager
+import com.example.fitnessapp.utils.MainViewModel
 import java.util.zip.Inflater
 
 class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
     private lateinit var binding: FragmentDaysBinding
+    private val model: MainViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +61,13 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
         val exerciseArray = exercise.split("|")    // теперь элементы упражнения будут по порядку по позициям. Название, время. Картинка
         templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], exerciseArray[3])) // мы заполнили ExerciseModel.
         }// В итоге когда пройдёт весь список, у нас будут заполнены все упражнения в templist !
+
+    model.mutableListExercise.value = templist // Везде где будет подключен "Обсервер", где подключен ViewModel, будет передаваться список из наших упражнений
+
     }
+
+
+
     companion object {
 
         @JvmStatic
