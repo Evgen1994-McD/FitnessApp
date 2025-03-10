@@ -21,4 +21,11 @@ class MainActivity : AppCompatActivity() {
 
         FragmentManager.setFragment(DaysFragment.newInstance(), this)
     }
+
+    override fun onBackPressed() {   // узнать что сейчас актуально. Это для выхода не из приложения а на главный экран при нажатии кнопки назад на фрагменте.
+
+        if (FragmentManager.currentFragment is DaysFragment)super.onBackPressed()
+else FragmentManager.setFragment(DaysFragment.newInstance(), this)  // Теперь если основной фрагмент - экран закроется. Если не основной, то приложение не закроется, а откроется основное активити. Один фрагмент заменяет другой фрагмент если необходимо.
+
+    }
 }

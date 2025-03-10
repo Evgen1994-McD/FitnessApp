@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.adapter.DayModel
 import com.example.fitnessapp.adapter.DaysAdapter
+import com.example.fitnessapp.adapter.ExerciseModel
 import com.example.fitnessapp.databinding.FragmentDaysBinding
+import com.example.fitnessapp.utils.FragmentManager
 import java.util.zip.Inflater
 
-class DaysFragment : Fragment() {
+class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
     private lateinit var binding: FragmentDaysBinding
 
     override fun onCreateView(
@@ -33,7 +35,7 @@ class DaysFragment : Fragment() {
 
 
     private fun initRcView() = with(binding){
-        val adapter = DaysAdapter()
+        val adapter = DaysAdapter(this@DaysFragment)
         rcviewdays.layoutManager = LinearLayoutManager(activity as AppCompatActivity)
         rcviewdays.adapter = adapter
         adapter.submitList(fillDaysArray())
@@ -48,11 +50,26 @@ class DaysFragment : Fragment() {
     return tArray
     }
 
+    private fun fillExerciseList(day: DayModel) {
+        val templist = ArrayList<ExerciseModel>()
+        day.exercises.split(",").forEach {//Мы вызвали опять массив с упражнениями, разбили его по запятой. Далее - с помощью фор ич получаем конкретное число которое далее используем для получения упражнения
+           val exerciseList = resources.getStringArray(R.array.exercise)  // Внутри цикла forEach получаем упражнения из массива, которое далее тоже разделим на 3 части
+           val exercise = exerciseList[it.toInt()] // здесь уже переводим It который получили выше в ИНТ и получаем элемент из массива с упражнениями. Далее мы тоже разделим его по палочке и получим элементы упражнения
+        val exerciseArray = exercise.split("|")    // теперь элементы упражнения будут по порядку по позициям. Название, время. Картинка
+        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], exerciseArray[3])) // мы заполнили ExerciseModel.
+        }// В итоге когда пройдёт весь список, у нас будут заполнены все упражнения в templist !
+    }
     companion object {
 
         @JvmStatic
         fun newInstance() = DaysFragment()
 
 
+    }
+
+    override fun onClick(day: DayModel) {  // функция интерфейса  //Фунцкия  перехода на фрагмент с упражнениями
+        fillExerciseList(day)
+        FragmentManager.setFragment(ExListFragment.newInstance(),
+            activity as AppCompatActivity)
     }
 }
