@@ -62,6 +62,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.fragment:fragment-ktx:1.8.6") // Зависимость для фрагментов
+    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")  // Библиотека для GIF - но она довольно старая, можно найти новее! (2022 год)
 
 
 }

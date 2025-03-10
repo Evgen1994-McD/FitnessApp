@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="exercise"><!-- Тут мы создали массив упражнений и будем получать доступ по позиции в массиве.-->
-        <item>Relax|x30|relaxyoga.jpg</item>  <!--0 элемент, 1 упражнение - релакс отдых 30 сек -->
-        <item>Left Plank|x10|leftplank.jpg</item>  <!--1ex -->
+        <item>Relax|x30|relaxyoga.gif</item>  <!--0 элемент, 1 упражнение - релакс отдых 30 сек -->
+        <item>Left Plank|x10|leftplank.gif</item>  <!--1ex -->
         <item>Lunges|x10|lunges.gif</item><!--2ex-->
         <item>Push-aps|x10|otszhimania.gif</item><!-- 3-->
-        <item>Plank|x10|plank.jpg</item><!-- 4-->
+        <item>Plank|x10|plank.gif</item><!-- 4-->
         <item>Push-aps with chair|x10|pushaps_with_chair.gif</item><!--5 -->
         <item>Run on the spot|x10|run_on_the_spot.gif</item><!--6 -->
         <item>Twisting up|x10|skruchivaniyaup.gif</item><!-- 7-->

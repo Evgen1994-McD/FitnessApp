@@ -59,7 +59,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
            val exerciseList = resources.getStringArray(R.array.exercise)  // Внутри цикла forEach получаем упражнения из массива, которое далее тоже разделим на 3 части
            val exercise = exerciseList[it.toInt()] // здесь уже переводим It который получили выше в ИНТ и получаем элемент из массива с упражнениями. Далее мы тоже разделим его по палочке и получим элементы упражнения
         val exerciseArray = exercise.split("|")    // теперь элементы упражнения будут по порядку по позициям. Название, время. Картинка
-        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], exerciseArray[3])) // мы заполнили ExerciseModel.
+        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], exerciseArray[2])) // мы заполнили ExerciseModel.
         }// В итоге когда пройдёт весь список, у нас будут заполнены все упражнения в templist !
 
     model.mutableListExercise.value = templist // Везде где будет подключен "Обсервер", где подключен ViewModel, будет передаваться список из наших упражнений

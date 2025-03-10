@@ -10,6 +10,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.DaysListItemBinding
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.databinding.ExerciseListItemBinding
+import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
 class ExerciseAdapter() : ListAdapter<ExerciseModel, ExerciseAdapter.ExerciseHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
@@ -19,15 +20,17 @@ class ExerciseAdapter() : ListAdapter<ExerciseModel, ExerciseAdapter.ExerciseHol
 
         fun setData(exercise : ExerciseModel) = with(binding) {
 
-            tvNameEx.text = exercise.name
-            tvcount.text = exercise.time
+            tvNameEx.text = exercise.name //Название упражнения
+            tvcount.text = exercise.time // время или количество раз
+            imExercise.setImageDrawable(GifDrawable(root.context.assets, exercise.image)) // Покажем ГИФ с помощью специальной библиотеки
 
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
-val view = LayoutInflater.from(parent.context).inflate(R.layout.exercise_list_item, parent, false)
+val view = LayoutInflater.from(parent.context).
+inflate(R.layout.exercise_list_item, parent, false)
 return ExerciseHolder(view)
     }
 

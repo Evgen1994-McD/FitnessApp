@@ -35,7 +35,7 @@ class ExListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        init()
+        init() //функия инит которая ниже
 model.mutableListExercise.observe(viewLifecycleOwner){  // Тут мы получаем список который создали ранее, посредси
 adapter.submitList(it)
 }
@@ -44,6 +44,7 @@ adapter.submitList(it)
 
 private fun init() = with(binding) {  // Инициализируем Адаптер и добавляем RecyclerVIew
     adapter = ExerciseAdapter()
+    rcView.layoutManager = LinearLayoutManager(activity)
     rcView.adapter = adapter // Назначили адаптер
 
 }
