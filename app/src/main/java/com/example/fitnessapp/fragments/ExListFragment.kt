@@ -15,6 +15,7 @@ import com.example.fitnessapp.adapter.DaysAdapter
 import com.example.fitnessapp.adapter.ExerciseAdapter
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.databinding.FragmentDaysBinding
+import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import java.util.zip.Inflater
 
@@ -46,6 +47,9 @@ private fun init() = with(binding) {  // Инициализируем Адапт
     adapter = ExerciseAdapter()
     rcView.layoutManager = LinearLayoutManager(activity)
     rcView.adapter = adapter // Назначили адаптер
+    bStart.setOnClickListener {
+        FragmentManager.setFragment(WaitingFragment.newInstance(), activity as AppCompatActivity)  // открываем фрагмент с помощью кнопки начать
+    }
 
 }
 

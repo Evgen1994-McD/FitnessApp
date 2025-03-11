@@ -4,5 +4,7 @@
     <string name="day">День:</string>
     <string name="exercises">Упражнений</string>
     <string name="waiting_message">Начало упражнений через :</string>
+    <string name="start">Начать</string>
+
 
 </resources>

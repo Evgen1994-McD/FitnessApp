@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.fragment.app.activityViewModels
@@ -18,8 +19,11 @@ import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.databinding.WaitingFragmentBinding
 import com.example.fitnessapp.utils.MainViewModel
+import com.example.fitnessapp.utils.TimeUtils
 import java.util.zip.Inflater
+
 const val COUNT_DOWN_TIME = 11000L
+
 class WaitingFragment : Fragment() {
     private lateinit var binding: WaitingFragmentBinding
     private lateinit var timer: CountDownTimer
@@ -35,18 +39,24 @@ class WaitingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-binding.pBar.max = COUNT_DOWN_TIME.toInt() // Установили максимальное значение прогресс бара
+        binding.pBar.max = COUNT_DOWN_TIME.toInt() // Установили максимальное значение прогресс бара
+        startTimer()
     }
 
     private fun startTimer() = with(binding) {
-        timer = object : CountDownTimer(COUNT_DOWN_TIME, 100){ //мы сделали тут 100 мс для того чтобы прогресс бар шел плавно, вот и всё. Если бы было 1000, то были бы большие скачки.
+        timer = object : CountDownTimer(
+            COUNT_DOWN_TIME,
+            1
+        ) { //мы сделали тут 100 мс для того чтобы прогресс бар шел плавно, вот и всё. Если бы было 1000, то были бы большие скачки.
             override fun onTick(restTime: Long) {
+                tvTimer.text =
+                    TimeUtils.getTime(restTime) // Рассчитали время которое будет показано в таймере
                 pBar.progress = restTime.toInt()
 
             }
 
             override fun onFinish() {
-                TODO("Not yet implemented")
+                Toast.makeText(activity, "Done", Toast.LENGTH_SHORT).show()
             }
 
         }.start()  // обязательно указываем старт для нашего таймера
@@ -58,7 +68,6 @@ binding.pBar.max = COUNT_DOWN_TIME.toInt() // Установили максим�
         super.onDetach()
         timer.cancel()
     }
-
 
 
     companion object {
