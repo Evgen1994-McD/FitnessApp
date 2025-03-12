@@ -83,7 +83,7 @@ exList = it
         if(exerciseCounter < exList?.size!!){
             val ex = exList?.get(exerciseCounter) ?: return
       imNext.setImageDrawable(GifDrawable(root.context.assets, ex.image))
-            tvNextName.text = ex.name
+            setTimeType(ex)
         } else{
             imNext.setImageDrawable(GifDrawable(root.context.assets, "congrats.gif")) // Передаём напрямую гиф с поздравлениями, если упражнений больше нет
         tvNextName.text = getString(R.string.GoodDone)
@@ -91,7 +91,14 @@ exList = it
 
     }
 
-
+    private fun setTimeType(ex: ExerciseModel){
+        if (ex.time.startsWith("x")){
+            binding.tvNextName.text = ex.time
+        } else {
+            val name = ex.name + ": ${TimeUtils.getTime(ex.time.toLong()*1000)}"
+            binding.tvNextName.text = name
+        }
+    }
 
 
     private fun startTimer(exercise: ExerciseModel?) = with(binding) {
