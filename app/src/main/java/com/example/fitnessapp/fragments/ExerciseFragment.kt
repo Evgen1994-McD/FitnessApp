@@ -59,6 +59,7 @@ exList = it
             val ex = exList?.get(exerciseCounter++) ?: return // увеличиваем счётчик упражнений. через оператор элвиса нам или выдает упражнение или ретарн если его нету
             showExercise(ex)
             setExerciseType(ex)
+            showNextExercise(ex)
         } else{
             Toast.makeText(activity, "Done", Toast.LENGTH_LONG).show()
         }
@@ -77,6 +78,21 @@ exList = it
             startTimer(exercise)
         }
     }
+
+    private fun showNextExercise(exercise: ExerciseModel?) = with(binding){ // функция которая запускает упражнение которое будет следом за текущим
+        if(exerciseCounter < exList?.size!!){
+            val ex = exList?.get(exerciseCounter) ?: return
+      imNext.setImageDrawable(GifDrawable(root.context.assets, ex.image))
+            tvNextName.text = ex.name
+        } else{
+            imNext.setImageDrawable(GifDrawable(root.context.assets, "congrats.gif")) // Передаём напрямую гиф с поздравлениями, если упражнений больше нет
+        tvNextName.text = getString(R.string.GoodDone)
+        }
+
+    }
+
+
+
 
     private fun startTimer(exercise: ExerciseModel?) = with(binding) {
 

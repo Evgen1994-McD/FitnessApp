@@ -6,6 +6,7 @@
     <string name="waiting_message">Начало упражнений через :</string>
     <string name="start">Начать</string>
     <string name="Next">Следующее</string>
+    <string name="GoodDone">Поздраляю!!! Ты молодец!</string>
 
 
 </resources>
