@@ -2,11 +2,16 @@
     <string name="app_name">FitnessApp</string>
     <string name="slogan">На пути к совершенству!</string>
     <string name="day">День:</string>
+    <string name="trainingDays">Дни тренировок</string>
     <string name="exercises">Упражнений</string>
     <string name="waiting_message">Начало упражнений через :</string>
     <string name="start">Начать</string>
     <string name="Next">Следующее</string>
     <string name="GoodDone">Поздраляю!!! Ты молодец!</string>
+    <string name="Back">Назад в Меню</string>
+    <string name="Done">Готово</string>
+    <string name="Waiting">Приготовьтесь</string>
+    <string name="listExercise">Список упражнений</string>
 
 
 </resources>

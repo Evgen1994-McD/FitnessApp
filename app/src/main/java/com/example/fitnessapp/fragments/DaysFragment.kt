@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import java.util.zip.Inflater
 class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
     private lateinit var binding: FragmentDaysBinding
     private val model: MainViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
+    private var ab: ActionBar? = null // добавили переменную для ActionBar, будем показывать счетчик упражнений
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +33,8 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ab = (activity as AppCompatActivity).supportActionBar
+        ab?.title = getString(R.string.trainingDays)
 
         super.onViewCreated(view, savedInstanceState)
    initRcView()

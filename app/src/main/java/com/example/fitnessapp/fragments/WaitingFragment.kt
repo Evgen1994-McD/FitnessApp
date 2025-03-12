@@ -2,32 +2,24 @@ package com.example.fitnessapp.fragments
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.vector.addPathNodes
-import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.DayModel
-import com.example.fitnessapp.adapter.DaysAdapter
-import com.example.fitnessapp.adapter.ExerciseAdapter
-import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
-import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.databinding.WaitingFragmentBinding
 import com.example.fitnessapp.utils.FragmentManager
-import com.example.fitnessapp.utils.MainViewModel
 import com.example.fitnessapp.utils.TimeUtils
-import java.util.zip.Inflater
 
 const val COUNT_DOWN_TIME = 11000L
 
 class WaitingFragment : Fragment() {
     private lateinit var binding: WaitingFragmentBinding
     private lateinit var timer: CountDownTimer
+    private var ab: ActionBar? = null // добавили переменную для ActionBar, будем показывать счетчик упражнений
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +32,17 @@ class WaitingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ab = (activity as AppCompatActivity).supportActionBar
+        ab?.title = getString(R.string.Waiting)
         binding.pBar.max = COUNT_DOWN_TIME.toInt() // Установили максимальное значение прогресс бара
         startTimer()
+        binding.bSkip.setOnClickListener {
+            FragmentManager.setFragment(
+                ExerciseFragment.newInstance(),
+                activity as AppCompatActivity //запускаем фрагмент с упражнениями если не хотим ждать таймер
+            )
+            timer.cancel() // останавливаем таймер при нажатии на кнопку
+        }
     }
 
     private fun startTimer() = with(binding) {

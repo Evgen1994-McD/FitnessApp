@@ -2,28 +2,20 @@ package com.example.fitnessapp.fragments
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.vector.addPathNodes
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.DayModel
-import com.example.fitnessapp.adapter.DaysAdapter
-import com.example.fitnessapp.adapter.ExerciseAdapter
 import com.example.fitnessapp.adapter.ExerciseModel
 import com.example.fitnessapp.databinding.ExerciseBinding
-import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
-import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import com.example.fitnessapp.utils.TimeUtils
 import pl.droidsonroids.gif.GifDrawable
-import java.util.zip.Inflater
 
 class ExerciseFragment : Fragment() {
     private lateinit var binding: ExerciseBinding
@@ -31,6 +23,7 @@ class ExerciseFragment : Fragment() {
 private var exerciseCounter = 0
     private var timer : CountDownTimer? = null // переменная для таймера
     private var exList: ArrayList<ExerciseModel>? = null
+    private var ab: ActionBar? = null // добавили переменную для ActionBar, будем показывать счетчик упражнений
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,6 +36,7 @@ private var exerciseCounter = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
+        ab = (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
 model.mutableListExercise.observe(viewLifecycleOwner){  // Тут мы получаем список который создали ранее, посредси
 exList = it
     nextExercise()
@@ -61,7 +55,7 @@ exList = it
             setExerciseType(ex)
             showNextExercise(ex)
         } else{
-            Toast.makeText(activity, "Done", Toast.LENGTH_LONG).show()
+            FragmentManager.setFragment(DaysFinishFragment.newInstance(), activity as AppCompatActivity) // запускаем финишный фрагмент если больше нет упражнений в списке
         }
 
     }
@@ -69,6 +63,8 @@ exList = it
         if (exercise == null) return@with // если нулл, то ретурн
         imMine.setImageDrawable(exercise?.image?.let { GifDrawable(root.context.assets, exercise.image) })
         tvName.text = exercise.name
+        val title = "$exerciseCounter/ ${exList?.size}" // Собираем строку для акшнбара. Берем счетчик упражнений + Лист упражнений ( если он не равен налл!! (?)
+    ab?.title = title // Строка которую мы собрали помещаем в Экшенбар
     }
 
     private fun setExerciseType ( exercise: ExerciseModel?){
