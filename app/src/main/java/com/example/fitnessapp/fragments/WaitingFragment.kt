@@ -18,6 +18,7 @@ import com.example.fitnessapp.adapter.ExerciseAdapter
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.databinding.WaitingFragmentBinding
+import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import com.example.fitnessapp.utils.TimeUtils
 import java.util.zip.Inflater
@@ -56,7 +57,11 @@ class WaitingFragment : Fragment() {
             }
 
             override fun onFinish() {
-                Toast.makeText(activity, "Done", Toast.LENGTH_SHORT).show()
+                FragmentManager.setFragment(
+                    ExerciseFragment.newInstance(),
+                    activity as AppCompatActivity //запускаем фрагмент с упражнениями как закончится таймер
+                )
+
             }
 
         }.start()  // обязательно указываем старт для нашего таймера
