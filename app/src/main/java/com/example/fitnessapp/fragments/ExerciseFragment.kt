@@ -20,7 +20,7 @@ import pl.droidsonroids.gif.GifDrawable
 class ExerciseFragment : Fragment() {
     private lateinit var binding: ExerciseBinding
     private val model: MainViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
-private var exerciseCounter = 0
+private var exerciseCounter = 0 // отсюда будем брать данные для сохранения в sharedpref
     private var timer : CountDownTimer? = null // переменная для таймера
     private var exList: ArrayList<ExerciseModel>? = null
     private var ab: ActionBar? = null // добавили переменную для ActionBar, будем показывать счетчик упражнений
@@ -121,7 +121,10 @@ exList = it
 
     override fun onDetach() {
         super.onDetach()
+        model.savePref(model.currentDay.toString(), exerciseCounter) // если наступает ОнДетач ( то есть свернули приложение например) - то сохраняем текущее значение сколько выполнили упражнений в шаред преф
         timer?.cancel() // таймер выключается при выходе из приложения, иначе будут проблемы
+
+
     }
 
 

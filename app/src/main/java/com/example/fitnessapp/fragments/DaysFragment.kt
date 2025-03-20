@@ -52,7 +52,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
     private fun fillDaysArray() : ArrayList<DayModel>{
         val tArray = ArrayList<DayModel>() // создаём класс для заполнения из массивов с упражнениями. получается массив с упражнениями который состоит из DayModel
     resources.getStringArray(R.array.day_exercise).forEach {
-    tArray.add(DayModel(it, false))
+    tArray.add(DayModel(it, false, 0)) // вот здесь я передал пока что 0 потому что добавленное поле DayModel требует указать все поля в конструкторе
     }
     return tArray
     }
@@ -82,6 +82,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
 
     override fun onClick(day: DayModel) {  // функция интерфейса  //Фунцкия  перехода на фрагмент с упражнениями
         fillExerciseList(day)
+        model.currentDay = day.dayNumber // с помощью этой переменной можем получить доступ к Модел с любого фрагмента и знать что записано
         FragmentManager.setFragment(ExListFragment.newInstance(),
             activity as AppCompatActivity)
     }

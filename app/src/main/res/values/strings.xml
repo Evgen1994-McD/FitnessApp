@@ -12,6 +12,7 @@
     <string name="Done">Готово</string>
     <string name="Waiting">Приготовьтесь</string>
     <string name="listExercise">Список упражнений</string>
+    <string name="PrefForDoing">main</string>
 
 
 </resources>

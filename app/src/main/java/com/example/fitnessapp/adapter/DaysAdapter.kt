@@ -20,7 +20,7 @@ class DaysAdapter(var listener: Listener) : ListAdapter<DayModel, DaysAdapter.Da
             tvName.text = name
             val exCounter = day.exercises.split(",").size.toString() // мы передали сюда day. А там есть строка exercices. Мы сейчас её разделим по символу и получим массив. c
  tvCounter.text = exCounter+ " "+ root.context.getString(R.string.exercises)// передали строку которую перевели в массив, узнали её размер и перевели в стринг. Таким образом мы узнали количетство упражнений в каждом дне
-      itemView.setOnClickListener { listener.onClick(day) }
+      itemView.setOnClickListener { listener.onClick(day.copy(dayNumber = adapterPosition+1)) }
 
         }
 
