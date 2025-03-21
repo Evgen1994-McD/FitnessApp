@@ -42,6 +42,9 @@ class ExListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init() //функия инит которая ниже
         model.mutableListExercise.observe(viewLifecycleOwner) {  // Тут мы получаем список который создали ранее, посредси
+           for( i in 0 until model.getExerciseCount()){ // это мы делаем чтобы отметить чекбоксы. Берем с позиции 0, и отмечаем до позиции выполнненных упражнений в определенном дне
+               it[i] = it[i].copy(isDone = true) // это i = i скопировать статус isDone = true и поставить галочки.
+           }  // то есть берем элемент и если это упражнение выполнено, то перезеписываем переменнную isDone = true. Вот и всё. По умолчанию она как бы False !
             adapter.submitList(it)
         }
     }

@@ -35,7 +35,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ab = (activity as AppCompatActivity).supportActionBar
         ab?.title = getString(R.string.trainingDays)
-
+model.currentDay = 0     // мы обнуляем currentDay для того, чтобы функция fillDaysArray всегда начинала с 0 и перебирала все дни и правильно отображались чек боксы
         super.onViewCreated(view, savedInstanceState)
    initRcView()
     }
@@ -52,7 +52,9 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
     private fun fillDaysArray() : ArrayList<DayModel>{
         val tArray = ArrayList<DayModel>() // создаём класс для заполнения из массивов с упражнениями. получается массив с упражнениями который состоит из DayModel
     resources.getStringArray(R.array.day_exercise).forEach {
-    tArray.add(DayModel(it, false, 0)) // вот здесь я передал пока что 0 потому что добавленное поле DayModel требует указать все поля в конструкторе
+  model.currentDay++
+ val exCounter = it.split(",").size  // мы делаем чек бокс на экране с упражнениями. Он будет заполняться только когда ВСЕ упражнения данного дня - выполнены. Для этого возьмем массив, разделим по запятокй у узнаем размер, чтобы сравнить со счетчиком
+    tArray.add(DayModel(it, model.getExerciseCount() == exCounter, 0)) // вот здесь я передал пока что 0 потому что добавленное поле DayModel требует указать все поля в конструкторе
     }
     return tArray
     }
@@ -63,7 +65,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
            val exerciseList = resources.getStringArray(R.array.exercise)  // Внутри цикла forEach получаем упражнения из массива, которое далее тоже разделим на 3 части
            val exercise = exerciseList[it.toInt()] // здесь уже переводим It который получили выше в ИНТ и получаем элемент из массива с упражнениями. Далее мы тоже разделим его по палочке и получим элементы упражнения
         val exerciseArray = exercise.split("|")    // теперь элементы упражнения будут по порядку по позициям. Название, время. Картинка
-        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], exerciseArray[2])) // мы заполнили ExerciseModel.
+        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], false,exerciseArray[2])) // мы заполнили ExerciseModel.
         }// В итоге когда пройдёт весь список, у нас будут заполнены все упражнения в templist !
 
     model.mutableListExercise.value = templist // Везде где будет подключен "Обсервер", где подключен ViewModel, будет передаваться список из наших упражнений
@@ -82,7 +84,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
 
     override fun onClick(day: DayModel) {  // функция интерфейса  //Фунцкия  перехода на фрагмент с упражнениями
         fillExerciseList(day)
-        model.currentDay = day.dayNumber // с помощью этой переменной можем получить доступ к Модел с любого фрагмента и знать что записано
+        model.currentDay = day.dayNumber // с помощью этой переменной можем получить доступ к Модел с любого фрагмента и знать что записано, а так же записываются всё упражнения в разные дни!!!
         FragmentManager.setFragment(ExListFragment.newInstance(),
             activity as AppCompatActivity)
     }

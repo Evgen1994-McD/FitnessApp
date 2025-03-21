@@ -3,5 +3,6 @@ package com.example.fitnessapp.adapter
 data class ExerciseModel(
     var name : String,
     var time : String,
-    var image : String
+    var isDone: Boolean, // выполнено упражнение или нет ( для чек боксов)
+     var image : String
 )

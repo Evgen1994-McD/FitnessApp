@@ -19,6 +19,8 @@ class ExerciseAdapter() : ListAdapter<ExerciseModel, ExerciseAdapter.ExerciseHol
         private val binding = ExerciseListItemBinding.bind(view)
 
         fun setData(exercise : ExerciseModel) = with(binding) {
+            checkBox2.isChecked = exercise.isDone // Там где будет из isDone = true - то отметим чек бокс. ИЗИ
+
 
             tvNameEx.text = exercise.name //Название упражнения
             tvcount.text = exercise.time // время или количество раз
