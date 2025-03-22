@@ -13,6 +13,12 @@
     <string name="Waiting">Приготовьтесь</string>
     <string name="listExercise">Список упражнений</string>
     <string name="PrefForDoing">main</string>
+    <string name="rest">Осталось : </string>
+    <string name="rest_days"> дней </string>
+    <string name="reset">Сбросить </string>
+    <string name="alert">Внимание! </string>
+    <string name="back">Отмена</string>
+
 
 
 </resources>
