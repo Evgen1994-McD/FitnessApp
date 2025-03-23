@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_bcground_all"
     tools:context=".fragments.DaysFragment">
 
 
@@ -46,12 +47,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:background="@color/black"
+                android:backgroundTint="@color/txt_toolbar_bg_tint"
                 android:fontFamily="sans-serif-black"
                 android:gravity="center"
-                android:text="@string/slogan"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
 
+                android:paddingVertical="2dp"
+                android:text="@string/slogan"
+                android:textColor="@color/txt_toolbar_orange"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,9 +75,13 @@
                 android:id="@+id/tv_rest_days"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#0D0C0C"
+                android:backgroundTint="@color/txt_toolbar_bg_tint"
                 android:fontFamily="sans-serif-smallcaps"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
                 android:text="Осталось 20 дней"
-                android:textColor="@color/design_default_color_on_primary"
+                android:textColor="@color/txt_toolbar_orange"
                 app:layout_constraintBottom_toTopOf="@+id/progressbar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/imageView2" />

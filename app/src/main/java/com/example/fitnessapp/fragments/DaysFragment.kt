@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.Composable
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
@@ -17,9 +18,11 @@ import com.example.fitnessapp.adapter.DayModel
 import com.example.fitnessapp.adapter.DaysAdapter
 import com.example.fitnessapp.adapter.ExerciseModel
 import com.example.fitnessapp.databinding.FragmentDaysBinding
+import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 
+@Suppress("DEPRECATION")
 class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
     private lateinit var adapter : DaysAdapter  // мы вынесли адаптер сюда, чтобы ОБНОВИТЬ шаред префс по факту как только пользователь нажал очистить
     private lateinit var binding: FragmentDaysBinding
@@ -57,8 +60,16 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean { // Deprecated !!!!!
         if (item.itemId == R.id.reset) { // Мы проверили, если мы НАЖАЛИ именно на ВАРИАНТ "СБРОСИТЬ" - то выполняем действия в скобках
-            model.pref?.edit()?.clear()?.apply()  // стираем всю таблицу - всё сбрасываем и делаем заново ( если пользователь решил начать с начала)
-            adapter.submitList(fillDaysArray())  // мы специально ВЫНЕСЛИ адатер в Лейт Инит Вар чтобы использовать сдесь и обновить адаптер если пользователь нажмет СБРОС
+            DialogManager.showDialog(
+                activity as AppCompatActivity,
+                R.string.reset_days_message,
+                object : DialogManager.Listener{
+                    override fun onClick() {
+                        model.pref?.edit()?.clear()?.apply()  // стираем всю таблицу - всё сбрасываем и делаем заново ( если пользователь решил начать с начала)
+                        adapter.submitList(fillDaysArray())  // мы специально ВЫНЕСЛИ адатер в Лейт Инит Вар чтобы использовать сдесь и обновить адаптер если пользователь нажмет СБРОС
+                    }
+
+                })
 
 
         }
@@ -121,9 +132,27 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
     }
 
     override fun onClick(day: DayModel) {  // функция интерфейса  //Фунцкия  перехода на фрагмент с упражнениями
+        if (!day.isDone) {
         fillExerciseList(day)
         model.currentDay = day.dayNumber // с помощью этой переменной можем получить доступ к Модел с любого фрагмента и знать что записано, а так же записываются всё упражнения в разные дни!!!
         FragmentManager.setFragment(ExListFragment.newInstance(),
             activity as AppCompatActivity)
+        }else {
+            DialogManager.showDialog(
+                activity as AppCompatActivity,
+                R.string.reset_day_message,
+                object : DialogManager.Listener{
+                    override fun onClick() {
+                        model.savePref(day.dayNumber.toString(), 0) // стираем всю таблицу - всё сбрасываем и делаем заново ( если пользователь решил начать с начала)
+                        fillExerciseList(day)
+                        model.currentDay = day.dayNumber // с помощью этой переменной можем получить доступ к Модел с любого фрагмента и знать что записано, а так же записываются всё упражнения в разные дни!!!
+                        FragmentManager.setFragment(ExListFragment.newInstance(),
+                            activity as AppCompatActivity)
+                    } // с помощью Диалог менеджера сделал стирание только определенного дня, а не всех сразу. Получается, переиспользование кода выше, только с заменой ресурса
+// мы передаем количество выполненных упражнений в 0, поэтому день обнуляется при нажатии на диалог
+                })
+
+
+        }
     }
 }
