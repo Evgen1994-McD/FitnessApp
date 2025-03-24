@@ -30,18 +30,19 @@
                 android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-smallcaps"
+                android:fontFamily="casual"
                 android:text="TextView"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold|italic" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvCounter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
                 android:text="TextView"
-                android:textColor="@color/design_default_color_error" />
+                android:textColor="@color/progressbar_color" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

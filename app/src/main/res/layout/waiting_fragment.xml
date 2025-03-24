@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00:30"
-        android:textColor="#F44336"
+        android:textColor="@color/progressbar_color"
         android:textSize="60sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,6 +36,7 @@
         android:layout_marginHorizontal="10dp"
         android:background="@color/white"
         android:progressBackgroundTint="#304FFE"
+        android:scaleY="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
@@ -47,6 +48,8 @@
         android:text="@string/Next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pBar" />
+        app:layout_constraintTop_toBottomOf="@+id/pBar"
+        app:layout_constraintVertical_bias="0.98" />
 </androidx.constraintlayout.widget.ConstraintLayout>

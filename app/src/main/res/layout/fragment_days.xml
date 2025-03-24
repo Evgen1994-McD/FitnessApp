@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_bcground_all"
+    android:background="@color/secondary"
     tools:context=".fragments.DaysFragment">
 
 
@@ -14,6 +14,7 @@
         android:layout_height="0dp"
         android:layout_margin="5dp"
         android:layout_marginTop="576dp"
+        android:backgroundTintMode="src_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,9 +49,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black"
                 android:backgroundTint="@color/txt_toolbar_bg_tint"
+                android:backgroundTintMode="add"
                 android:fontFamily="sans-serif-black"
-                android:gravity="center"
 
+                android:gravity="center"
                 android:paddingVertical="2dp"
                 android:text="@string/slogan"
                 android:textColor="@color/progressbar_color"

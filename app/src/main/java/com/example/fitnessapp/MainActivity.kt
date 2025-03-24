@@ -1,6 +1,7 @@
 package com.example.fitnessapp
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         model.pref = getSharedPreferences(getString(R.string.PrefForDoing), MODE_PRIVATE)   // MODE_PRIVATE - чтобы только наше приложение могло получить доступ к таблице с данными. Название таблицы сохранили в ресурсы - String
 
         FragmentManager.setFragment(DaysFragment.newInstance(), this)
+
     }
 
     override fun onBackPressed() {   // узнать что сейчас актуально. Это для выхода не из приложения а на главный экран при нажатии кнопки назад на фрагменте.
