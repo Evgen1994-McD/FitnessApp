@@ -3,6 +3,6 @@
 
     <item android:title="@string/reset"
         android:id="@+id/reset"
-
         />
+
 </menu>

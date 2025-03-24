@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.media3.common.util.UnstableApi
@@ -86,6 +87,8 @@ currentDay = model.currentDay
         val title =
             "$exerciseCounter/ ${exList?.size}" // Собираем строку для акшнбара. Берем счетчик упражнений + Лист упражнений ( если он не равен налл!! (?)
         ab?.title = title // Строка которую мы собрали помещаем в Экшенбар
+        ab?.setBackgroundDrawable(resources.getColor(R.color.white).toDrawable())  // Задаю фон Тулбара
+
     }
 
     private fun setExerciseType(exercise: ExerciseModel?) {

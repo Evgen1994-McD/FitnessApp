@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.graphics.vector.addPathNodes
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
@@ -39,6 +40,8 @@ class ExListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ab = (activity as AppCompatActivity).supportActionBar
         ab?.title = getString(R.string.listExercise)
+        ab?.setBackgroundDrawable(resources.getColor(R.color.white).toDrawable())  // Задаю фон Тулбара
+
         super.onViewCreated(view, savedInstanceState)
         init() //функия инит которая ниже
         model.mutableListExercise.observe(viewLifecycleOwner) {  // Тут мы получаем список который создали ранее, посредси

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/secondary"
+    android:background="@color/white"
     tools:context=".fragments.DaysFragment">
 
 
@@ -14,6 +14,7 @@
         android:layout_height="0dp"
         android:layout_margin="5dp"
         android:layout_marginTop="576dp"
+        android:background="@color/white"
         android:backgroundTintMode="src_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

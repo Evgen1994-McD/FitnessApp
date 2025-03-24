@@ -1,5 +1,6 @@
 package com.example.fitnessapp.fragments
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
+import androidx.core.graphics.drawable.toDrawable
 
 @Suppress("DEPRECATION")
 class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
@@ -47,6 +49,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ab = (activity as AppCompatActivity).supportActionBar
         ab?.title = getString(R.string.trainingDays)
+        ab?.setBackgroundDrawable(resources.getColor(R.color.white).toDrawable())  // Задаю фон Тулбара
 model.currentDay = 0     // мы обнуляем currentDay для того, чтобы функция fillDaysArray всегда начинала с 0 и перебирала все дни и правильно отображались чек боксы
         super.onViewCreated(view, savedInstanceState)
    initRcView()
