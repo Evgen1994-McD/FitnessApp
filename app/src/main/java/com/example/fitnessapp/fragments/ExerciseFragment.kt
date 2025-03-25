@@ -93,9 +93,13 @@ currentDay = model.currentDay
 
     private fun setExerciseType(exercise: ExerciseModel?) {
         if (exercise?.time!!.startsWith("x")) {
+            timer?.cancel() // сбросим таймер если он есть
+            binding.progressBar.visibility = View.INVISIBLE  // если количество повторений считаем, то прогрессбар не нужен, поэтому инвизибл
             binding.tvTime.text = exercise.time
         } else {
-            startTimer(exercise)
+            binding.progressBar.visibility = View.VISIBLE // тут соответвтенно - нужен Прогрессбар
+            binding.progressBar.progress =  exercise?.time!!.toInt() * 1000 // обновим максимум пб До максимума
+            startTimer(exercise) // запустим таймер
         }
     }
 
