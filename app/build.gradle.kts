@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+
+    id("com.google.devtools.ksp")  // для КСП
+    id("com.google.dagger.hilt.android")  // для даггера
 }
 
 android {
@@ -28,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -41,9 +45,26 @@ android {
 }
 
 dependencies {
+    implementation("com.github.prolificinteractive:material-calendarview:${version}") // календарь
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") // вес
 
+//Room
+    val roomVersion = "2.5.0" // Используйте последнюю стабильную версию
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion") // Для KSP
+
+
+    //Dagger Hilt
+    val daggerVersion = "2.46.1"
+    implementation("com.google.dagger:hilt-android:$daggerVersion")
+    ksp("com.google.dagger:hilt-compiler:$daggerVersion") // Для KSP
+
+
+    implementation("androidx.room:room-ktx:$roomVersion") // Для Kotlin Extensions
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs. androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
