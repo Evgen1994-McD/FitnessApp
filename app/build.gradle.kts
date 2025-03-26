@@ -45,8 +45,9 @@ android {
 }
 
 dependencies {
-    implementation("com.github.prolificinteractive:material-calendarview:${version}") // календарь
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") // вес
+
+   implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") //Для отрисовки графиков
+    implementation("com.applandeo:material-calendar-view:1.9.2") // для календаря
 
 //Room
     val roomVersion = "2.5.0" // Используйте последнюю стабильную версию

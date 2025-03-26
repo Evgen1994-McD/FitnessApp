@@ -1,6 +1,5 @@
 package com.example.fitnessapp.fragments
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,13 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.DayModel
+import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.adapter.DaysAdapter
-import com.example.fitnessapp.adapter.ExerciseModel
+import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.FragmentManager

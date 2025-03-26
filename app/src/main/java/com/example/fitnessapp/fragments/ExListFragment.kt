@@ -7,19 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.DayModel
-import com.example.fitnessapp.adapter.DaysAdapter
 import com.example.fitnessapp.adapter.ExerciseAdapter
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
-import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
-import java.util.zip.Inflater
 
 class ExListFragment : Fragment() {
     private lateinit var binding: ExerciseListFragmentBinding

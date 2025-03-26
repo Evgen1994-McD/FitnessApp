@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
-import com.example.fitnessapp.databinding.DaysListItemBinding
-import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.databinding.ExerciseListItemBinding
+import com.example.fitnessapp.db.ExerciseModel
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново

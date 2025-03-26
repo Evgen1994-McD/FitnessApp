@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.media3.common.util.UnstableApi
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.ExerciseModel
+import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel

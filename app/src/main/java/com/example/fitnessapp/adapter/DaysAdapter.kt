@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.DaysListItemBinding
+import com.example.fitnessapp.db.DayModel
 
 class DaysAdapter(var listener: Listener) :
     ListAdapter<DayModel, DaysAdapter.DayHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
