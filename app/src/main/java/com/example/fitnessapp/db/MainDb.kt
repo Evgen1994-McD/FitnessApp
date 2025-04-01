@@ -15,4 +15,5 @@ abstract class MainDb: RoomDatabase()  {   // создаём базу данны
 abstract val daysDao: DaysDao // инициализируем ДАО в БД
 abstract val exerciseDao : ExerciseDao // инициализируем второе дао. Обязательно, т.к. доступ к функциям будем получать отсюда
 abstract val weightDao : WeightDao // Инициализировали Дао с Весом
+abstract val statisticDao : StatisticDao // Инициализировали Дао со статистикой
 }

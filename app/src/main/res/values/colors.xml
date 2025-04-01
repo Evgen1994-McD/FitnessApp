@@ -14,6 +14,7 @@
     <color name="black_light">#211F1F</color>
     <color name="secondary">#4CAF50</color>
     <color name="progressbar_color">#B00020</color>
+    <color name="blue_tint_color">#E7B1E6ED</color>
 
 
 </resources>

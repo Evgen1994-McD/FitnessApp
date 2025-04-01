@@ -11,8 +11,9 @@ import androidx.fragment.app.activityViewModels
 import com.example.fitnessapp.fragments.DaysFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
-
+@AndroidEntryPoint  // Это точка входа для DaggerHilt, указать если нужно получать инстанции для Хилт
 class MainActivity : AppCompatActivity() {
     private val model: MainViewModel by viewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
 
