@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
-import com.example.fitnessapp.fragments.DaysFragment
+import com.example.fitnessapp.training.ui.fragments.DaysFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint

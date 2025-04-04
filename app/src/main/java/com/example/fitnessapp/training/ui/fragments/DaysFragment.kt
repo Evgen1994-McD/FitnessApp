@@ -1,7 +1,6 @@
-package com.example.fitnessapp.fragments
+package com.example.fitnessapp.training.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,17 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.adapter.DaysAdapter
-import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.databinding.FragmentDaysBinding
+import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.fragments.ExListFragment
+import com.example.fitnessapp.training.utils.TrainingUtils
 import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
-import androidx.core.graphics.drawable.toDrawable
 
 @Suppress("DEPRECATION")
 class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
@@ -50,6 +52,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
         ab?.setBackgroundDrawable(resources.getColor(R.color.white).toDrawable())  // Задаю фон Тулбара
 model.currentDay = 0     // мы обнуляем currentDay для того, чтобы функция fillDaysArray всегда начинала с 0 и перебирала все дни и правильно отображались чек боксы
         super.onViewCreated(view, savedInstanceState)
+
    initRcView()
     }
 
@@ -115,7 +118,7 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
            val exerciseList = resources.getStringArray(R.array.exercise)  // Внутри цикла forEach получаем упражнения из массива, которое далее тоже разделим на 3 части
            val exercise = exerciseList[it.toInt()] // здесь уже переводим It который получили выше в ИНТ и получаем элемент из массива с упражнениями. Далее мы тоже разделим его по палочке и получим элементы упражнения
         val exerciseArray = exercise.split("|")    // теперь элементы упражнения будут по порядку по позициям. Название, время. Картинка
-        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], false,exerciseArray[2])) // мы заполнили ExerciseModel.
+        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], false, exerciseArray[2])) // мы заполнили ExerciseModel.
         }// В итоге когда пройдёт весь список, у нас будут заполнены все упражнения в templist !
 
     model.mutableListExercise.value = templist // Везде где будет подключен "Обсервер", где подключен ViewModel, будет передаваться список из наших упражнений
@@ -127,7 +130,11 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
     companion object {
 
         @JvmStatic
-        fun newInstance() = DaysFragment()
+        fun newInstance(difficulty: String) = DaysFragment().apply {
+            arguments = Bundle().apply {
+                putString(TrainingUtils.toString(), difficulty)
+            }
+        } // мы настроили newInstance - передаём туда сложность
 
 
     }
@@ -136,8 +143,10 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
         if (!day.isDone) {
         fillExerciseList(day)
         model.currentDay = day.dayNumber // с помощью этой переменной можем получить доступ к Модел с любого фрагмента и знать что записано, а так же записываются всё упражнения в разные дни!!!
-        FragmentManager.setFragment(ExListFragment.newInstance(),
-            activity as AppCompatActivity)
+        FragmentManager.setFragment(
+            ExListFragment.Companion.newInstance(),
+            activity as AppCompatActivity
+        )
         }else {
             DialogManager.showDialog(
                 activity as AppCompatActivity,
@@ -147,8 +156,10 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
                         model.savePref(day.dayNumber.toString(), 0) // стираем всю таблицу - всё сбрасываем и делаем заново ( если пользователь решил начать с начала)
                         fillExerciseList(day)
                         model.currentDay = day.dayNumber // с помощью этой переменной можем получить доступ к Модел с любого фрагмента и знать что записано, а так же записываются всё упражнения в разные дни!!!
-                        FragmentManager.setFragment(ExListFragment.newInstance(),
-                            activity as AppCompatActivity)
+                        FragmentManager.setFragment(
+                            ExListFragment.Companion.newInstance(),
+                            activity as AppCompatActivity
+                        )
                     } // с помощью Диалог менеджера сделал стирание только определенного дня, а не всех сразу. Получается, переиспользование кода выше, только с заменой ресурса
 // мы передаем количество выполненных упражнений в 0, поэтому день обнуляется при нажатии на диалог
                 })

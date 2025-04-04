@@ -11,6 +11,7 @@ import com.example.fitnessapp.utils.FragmentManager
 import pl.droidsonroids.gif.GifDrawable
 import androidx.appcompat.app.ActionBar
 import com.example.fitnessapp.R
+import com.example.fitnessapp.training.ui.fragments.DaysFragment
 
 
 class DaysFinishFragment : Fragment() {
