@@ -16,11 +16,12 @@ import com.example.fitnessapp.training.ui.fragments.DaysFragment
 
 class DaysFinishFragment : Fragment() {
     private lateinit var binding: FinishBinding
-    private var ab: ActionBar? = null // добавили переменную для ActionBar, будем показывать счетчик упражнений
+    private var ab: ActionBar? =
+        null // добавили переменную для ActionBar, будем показывать счетчик упражнений
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FinishBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
@@ -31,17 +32,21 @@ class DaysFinishFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         ab = (activity as AppCompatActivity).supportActionBar
         ab?.title = getString(R.string.Done)
-       binding.imFinish.setImageDrawable(GifDrawable((activity as AppCompatActivity).assets, "congrats.gif")) // передали ассетс через активити аз апкомпакт активити
-    binding.bBack.setOnClickListener {
-        FragmentManager.setFragment(DaysFragment.newInstance(), activity as AppCompatActivity) // перебросим на активити сразу при нажатии на кнопку
-    }
+        binding.imFinish.setImageDrawable(
+            GifDrawable(
+                (activity as AppCompatActivity).assets,
+                "congrats.gif"
+            )
+        ) // передали ассетс через активити аз апкомпакт активити
+        binding.bBack.setOnClickListener {
+          /*  FragmentManager.setFragment(
+                DaysFragment.newInstance(),
+                activity as AppCompatActivity
+            )*/ //временно закоментили, новый лайф хак как коментить
+        // перебросим на активити сразу при нажатии на кнопку
+        }
 
     }
-
-
-
-
-
 
 
     companion object {

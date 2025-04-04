@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.fitnessapp.databinding.FragmentTrainingBinding
 import com.example.fitnessapp.training.ui.adapters.VpAdapter
-import com.example.fitnessapp.training.utils.TrainingUtils
+import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
 import com.google.android.material.tabs.TabLayoutMediator
 
 class TrainingFragment : Fragment() {

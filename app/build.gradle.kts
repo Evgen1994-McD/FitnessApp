@@ -58,14 +58,14 @@ dependencies {
 
 
     //Dagger Hilt
-    val daggerVersion = "2.46.1"
+    val daggerVersion = "2.56.1"
     implementation("com.google.dagger:hilt-android:$daggerVersion")
     ksp("com.google.dagger:hilt-compiler:$daggerVersion") // Для KSP
 
 
     implementation("androidx.room:room-ktx:$roomVersion") // Для Kotlin Extensions
     implementation(libs.androidx.core.ktx)
-    implementation(libs. androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)

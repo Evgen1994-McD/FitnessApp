@@ -19,7 +19,7 @@ import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.fragments.ExListFragment
-import com.example.fitnessapp.training.utils.TrainingUtils
+import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
 import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
@@ -96,9 +96,9 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
     resources.getStringArray(R.array.day_exercise).forEach {
   model.currentDay++
  val exCounter = it.split(",").size  // мы делаем чек бокс на экране с упражнениями. Он будет заполняться только когда ВСЕ упражнения данного дня - выполнены. Для этого возьмем массив, разделим по запятокй у узнаем размер, чтобы сравнить со счетчиком
-    tArray.add(DayModel(it, model.getExerciseCount() == exCounter, 0)) // вот здесь я передал пока что 0 потому что добавленное поле DayModel требует указать все поля в конструкторе
+     //  tArray.add(DayModel(it, model.getExerciseCount() == exCounter, 0)) // вот здесь я передал пока что 0 потому что добавленное поле DayModel требует указать все поля в конструкторе
     }
-        binding.progressbar.max = tArray.size // размер массива это максимум проресс бара
+      //  binding.progressbar.max = tArray.size // размер массива это максимум проресс бара
         tArray.forEach{
             if (it.isDone) daysDoneCounter++ // Делаю прогресс бар ( сколько выполнено дней) - для этого сделал переменную restDaysCounter, которая считает по циклу количество isDone
         }
@@ -108,8 +108,8 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
 
     private fun updateRestDaysUI(restDays : Int, days: Int) = with(binding){
         val rDays = getString(R.string.rest)+ " $restDays "+ getString(R.string.rest_days) // собрали строку, сколько осталось дней ) на главном экране
-        tvRestDays.text = rDays
-        progressbar.progress = days - restDays // покажем прогресс в прогресс баре (DaysFragment)
+            //tvRestDays.text = rDays
+       // progressbar.progress = days - restDays // покажем прогресс в прогресс баре (DaysFragment)
     }
 
     private fun fillExerciseList(day: DayModel) {
@@ -118,7 +118,7 @@ model.currentDay = 0     // мы обнуляем currentDay для того, ч
            val exerciseList = resources.getStringArray(R.array.exercise)  // Внутри цикла forEach получаем упражнения из массива, которое далее тоже разделим на 3 части
            val exercise = exerciseList[it.toInt()] // здесь уже переводим It который получили выше в ИНТ и получаем элемент из массива с упражнениями. Далее мы тоже разделим его по палочке и получим элементы упражнения
         val exerciseArray = exercise.split("|")    // теперь элементы упражнения будут по порядку по позициям. Название, время. Картинка
-        templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], false, exerciseArray[2])) // мы заполнили ExerciseModel.
+            // Врем коммент  templist.add(ExerciseModel(exerciseArray[0], exerciseArray[1], false, exerciseArray[2])) // мы заполнили ExerciseModel.
         }// В итоге когда пройдёт весь список, у нас будут заполнены все упражнения в templist !
 
     model.mutableListExercise.value = templist // Везде где будет подключен "Обсервер", где подключен ViewModel, будет передаваться список из наших упражнений

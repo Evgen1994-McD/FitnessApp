@@ -1,4 +1,4 @@
-package com.example.fitnessapp.training.utils
+package com.example.fitnessapp.training.utilsfortraining
 
 import com.example.fitnessapp.R
 
