@@ -7,7 +7,7 @@ import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
 
 class VpAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
-      return DaysFragment.newInstance(TrainingUtils.difListType[position]) // здесь в нью инстанс нужно передать уровень сложности, ведь у нас пока там ничего нет, пофиксим ДайзФрагмент
+      return DaysFragment.newInstance() // здесь в нью инстанс нужно передать уровень сложности, ведь у нас пока там ничего нет, пофиксим ДайзФрагмент
     } // Чтобы передать сложность пришлось внести изменения в DaysFragment
 
     override fun getItemCount(): Int {

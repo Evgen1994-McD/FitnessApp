@@ -5,14 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.fitnessapp.databinding.FragmentTrainingBinding
+import com.example.fitnessapp.training.ui.DaysViewModel
 import com.example.fitnessapp.training.ui.adapters.VpAdapter
 import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlin.getValue
 
 class TrainingFragment : Fragment() {
+    private val diffList = listOf(
+        "easy",
+        "middle",
+        "hard"
+    )
+
 private lateinit var binding: FragmentTrainingBinding
+    private val model: DaysViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -35,6 +46,7 @@ private lateinit var binding: FragmentTrainingBinding
         override fun onPageSelected(position: Int) { // выбрали что будем знать фрагмент. тут передаётся 0, 1 или 2 позиция
             // в соответствие с позицией уже открывается изи мидл или хард
             super.onPageSelected(position)
+            model.getExerciseDaysByDifficulty(diffList[position])
         }
     })
     }

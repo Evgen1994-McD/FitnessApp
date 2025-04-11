@@ -8,7 +8,7 @@
 
 
     <style name="Theme.FitnessApp" parent="Theme.MaterialComponents.Light" >
-        <item name="colorPrimary">@color/black_light</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorSecondary">@color/secondary</item>
         <item name="android:windowFullscreen">true</item>
 
