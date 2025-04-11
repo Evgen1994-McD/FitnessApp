@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.example.fitnessapp.databinding.FragmentTrainingBinding
 import com.example.fitnessapp.training.ui.adapters.VpAdapter
 import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
@@ -29,6 +30,13 @@ private lateinit var binding: FragmentTrainingBinding
 //мы хотим менять названия у наших табов, сейчас этим и займемся
             tab.text = getString(TrainingUtils.tabTitles[pos]) //Передаём в табы текст из ресурсов по позиции
         }.attach() // обязательно делается Аттач, иначе не будет работать
+    binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){ // хотим знать какой фрагмент во вью пейджере
+        //мы открыли
+        override fun onPageSelected(position: Int) { // выбрали что будем знать фрагмент. тут передаётся 0, 1 или 2 позиция
+            // в соответствие с позицией уже открывается изи мидл или хард
+            super.onPageSelected(position)
+        }
+    })
     }
 
 
