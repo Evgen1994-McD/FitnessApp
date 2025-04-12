@@ -15,6 +15,7 @@
     <color name="secondary">#4CAF50</color>
     <color name="progressbar_color">#B00020</color>
     <color name="blue_tint_color">#E7B1E6ED</color>
+    <color name="list_item_bg">#f8f9fe</color>
 
 
 </resources>
