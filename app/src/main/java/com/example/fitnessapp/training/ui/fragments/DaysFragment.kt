@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.adapter.DaysAdapter
@@ -56,6 +57,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
         adapter = DaysAdapter(this@DaysFragment)
         rcviewdays.layoutManager = LinearLayoutManager(activity as AppCompatActivity)
         rcviewdays.adapter = adapter
+        rcviewdays.itemAnimator = null
     }
 
     private fun updateAdapter() {
@@ -104,8 +106,19 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
                 })
 
 
-        }else {  //ToDo Open exerciseListFragment
+        }else {
+            openExerciseListFragment(day)
+
 
         }
+    }
+
+   private fun openExerciseListFragment(day: DayModel){
+        val bundle = Bundle().apply {
+            putSerializable("day", day) // Делаем Бандл. Чтобы передать целвй класс нужно делать
+            // через сериализацию
+        }
+
+        findNavController().navigate(R.id.action_trainingFragment_to_exListFragment, bundle)
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/trainingFragment">
+
+    <fragment
+        android:id="@+id/trainingFragment"
+        android:name="com.example.fitnessapp.training.ui.fragments.TrainingFragment"
+        android:label="fragment_training"
+        tools:layout="@layout/fragment_training" >
+        <action
+            android:id="@+id/action_trainingFragment_to_exListFragment"
+            app:destination="@id/exListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/exerciseFragment"
+        android:name="com.example.fitnessapp.fragments.ExerciseFragment"
+        android:label="ExerciseFragment" />
+    <fragment
+        android:id="@+id/exListFragment"
+        android:name="com.example.fitnessapp.fragments.ExListFragment"
+        android:label="ExListFragment" />
+</navigation>

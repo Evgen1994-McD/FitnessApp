@@ -45,9 +45,12 @@ android {
 }
 
 dependencies {
-
+    //Navigation
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") //Для отрисовки графиков
-    implementation("com.applandeo:material-calendar-view:1.9.2") // для календаря
+    implementation("com.applandeo:material-calendar-view:1.9.2")
+    // для календаря
 
 //Room
     val roomVersion = "2.5.0" // Используйте последнюю стабильную версию

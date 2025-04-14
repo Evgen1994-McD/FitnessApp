@@ -22,23 +22,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.placeholder)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        model.pref = getSharedPreferences(getString(R.string.PrefForDoing), MODE_PRIVATE)   // MODE_PRIVATE - чтобы только наше приложение могло получить доступ к таблице с данными. Название таблицы сохранили в ресурсы - String
 
-          FragmentManager.setFragment(TrainingFragment(), this) /* переделали, теперь тут запускаем
-          фрагмент Трейнинг, который создали уже во второй части. */
+
 
 
     }
 
-     override fun onBackPressed() {   // узнать что сейчас актуально. Это для выхода не из приложения а на главный экран при нажатии кнопки назад на фрагменте.
-
-        if (FragmentManager.currentFragment is TrainingFragment)super.onBackPressed()
-            // тоже коментим( после будем настраивать)  else FragmentManager.setFragment(DaysFragment.newInstance(), this)  // Теперь если основной фрагмент - экран закроется. Если не основной, то приложение не закроется, а откроется основное активити. Один фрагмент заменяет другой фрагмент если необходимо.
-
-    }
     }

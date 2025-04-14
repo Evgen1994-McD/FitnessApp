@@ -1,5 +1,6 @@
 package com.example.fitnessapp.training.ui
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +23,7 @@ val daysList = MutableLiveData<List<DayModel>>() // список дней с т�
             mainDb.daysDao.getAllDaysByDifficulty(difficulty).collect { /* collect -
             получить то что найдём в БД */
                 list ->
+                Log.d("MyLog", "Days list: ${list.size}")
 daysList.value = list // передали лист который нашли
             }
 

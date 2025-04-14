@@ -1,7 +1,9 @@
 package com.example.fitnessapp.db
 
+import androidx.navigation.NavType
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "day_model_table") // Это сущность данных в базе данных, в скобках указали номер таблицы
 data class DayModel(
@@ -12,4 +14,4 @@ data class DayModel(
     var isDone : Boolean,
     var dayNumber : Int, // будем передавать день по счетчику
     var doneExerciseCounter:Int
-)
+) : Serializable // чтобы сделать бандл нужно подключить интерфейс сериализации
