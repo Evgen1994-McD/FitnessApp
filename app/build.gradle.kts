@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") //Для отрисовки графиков
     implementation("com.applandeo:material-calendar-view:1.9.2")
+    implementation(libs.androidx.legacy.support.v4)
     // для календаря
 
 //Room
