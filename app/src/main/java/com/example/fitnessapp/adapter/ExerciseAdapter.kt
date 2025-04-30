@@ -18,7 +18,7 @@ class ExerciseAdapter() : ListAdapter<ExerciseModel, ExerciseAdapter.ExerciseHol
         private val binding = ExerciseListItemBinding.bind(view)
 
         fun setData(exercise : ExerciseModel) = with(binding) {
-            checkBox2.isChecked = exercise.isDone // Там где будет из isDone = true - то отметим чек бокс. ИЗИ
+            checkBoxImage.visibility = if( exercise.isDone) View.VISIBLE else View.INVISIBLE// Там где будет из isDone = true - то отметим чек бокс. ИЗИ
 
 
             tvNameEx.text = exercise.name //Название упражнения

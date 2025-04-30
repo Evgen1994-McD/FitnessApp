@@ -1,4 +1,4 @@
-package com.example.fitnessapp.fragments
+package com.example.fitnessapp.exercises.ui.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +16,8 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.adapter.ExerciseAdapter
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.exercises.ui.ExerciseListViewModel
+import com.example.fitnessapp.fragments.WaitingFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 
@@ -23,7 +25,7 @@ class ExListFragment : Fragment() {
     private var dayModel: DayModel? = null
     private lateinit var binding: ExerciseListFragmentBinding
     private lateinit var adapter: ExerciseAdapter
-    private val model: MainViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
+    private val model: ExerciseListViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
 
@@ -45,15 +47,12 @@ class ExListFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
         dayModel = getDayFromArguments() // Вызвавли функци получания Деймодел и открытия нужного объекта
-       Log.d("MyLog", "Exercises:${dayModel?.exercises}")
+
         init() //функия инит которая ниже
-        model.mutableListExercise.observe(viewLifecycleOwner) {  // Тут мы получаем список который создали ранее, посредси
-            for (i in 0 until model.getExerciseCount()) { // это мы делаем чтобы отметить чекбоксы. Берем с позиции 0, и отмечаем до позиции выполнненных упражнений в определенном дне
-                it[i] =
-                    it[i].copy(isDone = true) // это i = i скопировать статус isDone = true и поставить галочки.
-            }  // то есть берем элемент и если это упражнение выполнено, то перезеписываем переменнную isDone = true. Вот и всё. По умолчанию она как бы False !
-            adapter.submitList(it)
-        }
+        exerciseListObserver()
+        dayModel = getDayFromArguments()
+        model.getDayExerciseList(dayModel)
+
     }
 
     private fun getDayFromArguments(): DayModel? {
@@ -81,13 +80,11 @@ class ExListFragment : Fragment() {
         }
 
     }
-
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance() = ExListFragment()
-
-
+    private fun exerciseListObserver(){ // делаю эксерсайз лист обсервер и здесь мы используем класс вью модел
+model.exerciseList.observe(viewLifecycleOwner) { list -> // этот обсервер выдаёт лист как только он появится. Этот лист надо будет передавать в наш адаптер
+adapter.submitList(list) // передали этот список
+}
     }
+
+
 }
