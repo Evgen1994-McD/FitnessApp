@@ -1,6 +1,8 @@
-package com.example.fitnessapp.training.utilsfortraining
+package com.example.fitnessapp.training.utils
 
+import androidx.collection.intListOf
 import com.example.fitnessapp.R
+import com.example.fitnessapp.training.data.TrainingTopCardModel
 
 object TrainingUtils { //здесь будут константы которые будут определять уровень сложности. У нас будет 3 уровня сложности
     const val EASY = "easy"
@@ -21,4 +23,32 @@ object TrainingUtils { //здесь будут константы которые
         R.string.middle,
         R.string.hard
     )
+
+    val topCardList = intListOf(
+        TrainingTopCardModel(
+            R.drawable.easy,
+            "",
+            0,
+            0,
+            "Easy"
+        ),
+                TrainingTopCardModel(
+                R.drawable.middle,
+        "",
+        0,
+        0,
+        "Middle"
+    ),
+    TrainingTopCardModel(
+    R.drawable.hard,
+    "",
+    0,
+    0,
+    "Hard"
+    )
+    )
+
+
+
+
 }

@@ -3,7 +3,7 @@ package com.example.fitnessapp.training.ui.adapters
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.fitnessapp.training.ui.fragments.DaysFragment
-import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
+import com.example.fitnessapp.training.utils.TrainingUtils
 
 class VpAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {

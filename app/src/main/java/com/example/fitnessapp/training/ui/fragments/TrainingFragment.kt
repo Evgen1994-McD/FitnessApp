@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.fitnessapp.databinding.FragmentTrainingBinding
 import com.example.fitnessapp.training.ui.DaysViewModel
 import com.example.fitnessapp.training.ui.adapters.VpAdapter
-import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
+import com.example.fitnessapp.training.utils.TrainingUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.getValue
 
