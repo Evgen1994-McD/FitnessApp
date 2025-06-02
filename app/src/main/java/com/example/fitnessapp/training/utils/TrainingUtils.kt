@@ -24,27 +24,27 @@ object TrainingUtils { //здесь будут константы которые
         R.string.hard
     )
 
-    val topCardList = intListOf(
+    val topCardList = listOf(
         TrainingTopCardModel(
             R.drawable.easy,
             "",
             0,
             0,
-            "Easy"
-        ),
+            "easy"  // эта диффикулти вместо id - чтобы отличать уровень сложности
+        ),  // стандартная сложность не подходит потому чтотам может быть локазизация, и фильтр уже будет зависеть от языка на телефоне
                 TrainingTopCardModel(
                 R.drawable.middle,
         "",
         0,
         0,
-        "Middle"
+        "middle"
     ),
     TrainingTopCardModel(
     R.drawable.hard,
     "",
     0,
     0,
-    "Hard"
+    "hard"
     )
     )
 

@@ -35,6 +35,8 @@ private lateinit var binding: FragmentTrainingBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val vpAdapter = VpAdapter(this) // Мутим метод онВьюкреатед и вызываем тут наш адаптер ВПадаптер
+        topCardObserver()
+
         binding.vp.adapter = vpAdapter //привязываем адаптер к ВьюПейджеру. Но мы хотим связать Пейджер и ТабЛайоут
         //Для связки нужен специальный Медиатор
         TabLayoutMediator(binding.tabLayout, binding.vp){ tab, pos ->  // Для применения указать таблайоут + ВьюПейджер
@@ -46,10 +48,22 @@ private lateinit var binding: FragmentTrainingBinding
         override fun onPageSelected(position: Int) { // выбрали что будем знать фрагмент. тут передаётся 0, 1 или 2 позиция
             // в соответствие с позицией уже открывается изи мидл или хард
             super.onPageSelected(position)
-            model.getExerciseDaysByDifficulty(diffList[position])
+            model.getExerciseDaysByDifficulty(
+                TrainingUtils.topCardList[position].copy(
+                difficultyTitle = getString(TrainingUtils.tabTitles[position])
+            )
+            )
         }
     })
     }
 
+
+    private fun topCardObserver() = with(binding){
+        model.topCardUpdate.observe(viewLifecycleOwner){ card ->
+im.setImageResource(card.imageId)
+difTitle.text = card.difficultyTitle
+
+        }
+    }
 
     }
