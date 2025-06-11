@@ -28,10 +28,24 @@ val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
                 list ->
                 Log.d("MyLog", "Days list: ${list.size}")
 daysList.value = list // передали лист который нашли
-                topCardUpdate.value = trainingTopCardModel
+                topCardUpdate.value = trainingTopCardModel.copy(
+                    maxProgress = list.size,
+                    progress = getProgress(list)
+
+                )
             }
 
         }
     }
 
+
+    private fun getProgress(list:List<DayModel>): Int {
+        var counter = 0
+        list.forEach { day ->
+            if (day.isDone){
+                counter++
+            } // Подсчитаем сколько дней уже выполнено. Если выполнено - то Counter +1, для прогресс бара
+        }
+        return list.size - counter // таким образом узнали прогресс
+    }
 }

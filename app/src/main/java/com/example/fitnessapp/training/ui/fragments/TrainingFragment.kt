@@ -1,5 +1,6 @@
 package com.example.fitnessapp.training.ui.fragments
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
+import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentTrainingBinding
 import com.example.fitnessapp.training.ui.DaysViewModel
 import com.example.fitnessapp.training.ui.adapters.VpAdapter
@@ -62,8 +64,31 @@ private lateinit var binding: FragmentTrainingBinding
         model.topCardUpdate.observe(viewLifecycleOwner){ card ->
 im.setImageResource(card.imageId)
 difTitle.text = card.difficultyTitle
-
+progressbar.max =  card.maxProgress
+            animProgressBar(card.maxProgress - card.progress)
+            val daysRestText = getString(R.string.rest) +" "+ card.progress
+            tvRestDays.text = daysRestText
         }
     }
+/* Сделали прогресс, передачу сколько осталось дней + текст
+Передаём с помощью обсервера ( вью модел)!
+ */
+private fun animProgressBar ( progress : Int) {
+    val anim = ObjectAnimator.ofInt(
+        binding.progressbar,
+        "progress",
+        binding.progressbar.progress,
+        progress * 100
+    )
+    anim.duration = 700
+    anim.start()
+
+    /*
+    анимация прогресс бара ( сколько дней сделано)
+    умножается на 100 чтобы не было рывков
+    duration - за сколько милисекунд дойдём до целевого прогресса
+     */
+}
+
 
     }
