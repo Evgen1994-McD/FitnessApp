@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
@@ -52,6 +53,7 @@ class ExListFragment : Fragment() {
         exerciseListObserver()
         dayModel = getDayFromArguments()
         model.getDayExerciseList(dayModel)
+        topCardObserver() // запускаю топКардОбсервер который будет мне обновлять состояние вью
 
     }
 
@@ -84,6 +86,23 @@ class ExListFragment : Fragment() {
 model.exerciseList.observe(viewLifecycleOwner) { list -> // этот обсервер выдаёт лист как только он появится. Этот лист надо будет передавать в наш адаптер
 adapter.submitList(list) // передали этот список
 }
+    }
+    private fun topCardObserver(){
+        model.topCardUpdate.observe(viewLifecycleOwner){ card ->
+            binding.apply {
+                val alphaAnimation = AlphaAnimation(0.2f, 1.0f)
+                alphaAnimation.duration = 700
+                im.setImageResource(card.imageId)
+                im.startAnimation(alphaAnimation)
+                difTitle.setText(card.difficultyTitle)
+                    /*
+                    Сделали функцию топ кард обсервер. Она подписывается на обновление лайв дата и обновляет
+                    состояние экрана при получении изменений
+                     */
+            }
+
+
+        }
     }
 
 

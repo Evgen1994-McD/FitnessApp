@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -51,9 +52,7 @@ private lateinit var binding: FragmentTrainingBinding
             // в соответствие с позицией уже открывается изи мидл или хард
             super.onPageSelected(position)
             model.getExerciseDaysByDifficulty(
-                TrainingUtils.topCardList[position].copy(
-                difficultyTitle = getString(TrainingUtils.tabTitles[position])
-            )
+                TrainingUtils.topCardList[position]
             )
         }
     })
@@ -62,8 +61,10 @@ private lateinit var binding: FragmentTrainingBinding
 
     private fun topCardObserver() = with(binding){
         model.topCardUpdate.observe(viewLifecycleOwner){ card ->
+            val alphaAnimation = AlphaAnimation(0.2f, 1.0f)
+            alphaAnimation.duration = 700
 im.setImageResource(card.imageId)
-difTitle.text = card.difficultyTitle
+difTitle.setText(card.difficultyTitle)
 progressbar.max =  card.maxProgress
             animProgressBar(card.maxProgress - card.progress)
             val daysRestText = getString(R.string.rest) +" "+ card.progress

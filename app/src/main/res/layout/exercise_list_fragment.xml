@@ -22,6 +22,16 @@
         tools:textColor="@color/black"
         tools:visibility="visible" />
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
@@ -35,7 +45,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
@@ -56,11 +66,13 @@
 
                     <ImageView
                         android:id="@+id/im"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/easy"
+                        app:layout_constraintBottom_toTopOf="@+id/progressbar"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -89,7 +101,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:paddingTop="2dp"
-                        android:progress="50"
+                        android:progress="0"
                         android:progressBackgroundTint="@color/design_default_color_error"
                         android:scaleY="3"
                         app:layout_constraintBottom_toBottomOf="parent"

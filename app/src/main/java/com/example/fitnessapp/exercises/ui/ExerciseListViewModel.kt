@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.training.data.TrainingTopCardModel
+import com.example.fitnessapp.training.utils.TrainingUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -17,12 +19,15 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
 ) : ViewModel() {
     val exerciseList =
         MutableLiveData<List<ExerciseModel>>() // сюда мы с базы данных будем передавать данные, а затем получать список с помощью обсервера уже на фрагменте
+    val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
 
     fun getDayExerciseList(dayModel: DayModel?) =
         viewModelScope.launch { // запускаем в корутине, потому что сложная операция
             val day =
                 dayModel?.id?.let { mainDb.daysDao.getDay(it) } // выбарается самый свежий день из базы данных по id
-
+if (day!=null){
+    getTopCardData(day)
+}
             val allExerciseList = mainDb.exerciseDao.getAllExercises() // получаем список со всеми упражнениями который будем потом перебирать
             val tempExerciseList = ArrayList<ExerciseModel>()
             day?.let { dayModel ->
@@ -33,5 +38,19 @@ tempExerciseList.add(allExerciseList[index.toInt()])  // сюда добавля
 exerciseList.value = tempExerciseList // передали упражнения
         }
             /* теперь остаётся все передать в функцию и поставить обсервер чтобы следить за изменениями. Когда переберём списко - сразу выдаст этот список и передадим его уже в адаптер */
-
+            fun getTopCardData(day: DayModel){
+                var index = 0
+                when(day.difficulty){
+                    "middle" -> {
+                        index = 1
+                    }
+                    "hard" -> {
+                        index = 2
+                    }
+                    else -> index = 0
+                }
+                topCardUpdate.value = TrainingUtils.topCardList[index] /*
+                Передаю карточку по позиции, которую определили выше. Позицию перевели в Int - чтобы взять нужную карточку из массива
+              */
+            }
 }
