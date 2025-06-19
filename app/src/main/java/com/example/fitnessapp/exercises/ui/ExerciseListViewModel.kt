@@ -38,9 +38,9 @@ tempExerciseList.add(allExerciseList[index.toInt()])  // сюда добавля
 exerciseList.value = tempExerciseList // передали упражнения
         }
             /* теперь остаётся все передать в функцию и поставить обсервер чтобы следить за изменениями. Когда переберём списко - сразу выдаст этот список и передадим его уже в адаптер */
-            fun getTopCardData(day: DayModel){
+            fun getTopCardData(dayModel: DayModel){
                 var index = 0
-                when(day.difficulty){
+                when(dayModel.difficulty){
                     "middle" -> {
                         index = 1
                     }
@@ -49,8 +49,16 @@ exerciseList.value = tempExerciseList // передали упражнения
                     }
                     else -> index = 0
                 }
-                topCardUpdate.value = TrainingUtils.topCardList[index] /*
+                topCardUpdate.value = TrainingUtils.topCardList[index].copy(
+                    progress = dayModel.doneExerciseCounter,
+                    maxProgress = dayModel.exercises.split(",").size
+                ) /*
                 Передаю карточку по позиции, которую определили выше. Позицию перевели в Int - чтобы взять нужную карточку из массива
+              progress - вычисллили текущий прогресс ( он будет в базе данных, а передаётся совместно с dayModel
+              maxProgress - вычислили, путём разделения массива переданного daymodel по запятой с помощью метода split, и узнав
+              его размер с помощью метода массива .size
+
+
               */
             }
 }

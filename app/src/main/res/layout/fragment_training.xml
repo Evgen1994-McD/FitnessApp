@@ -61,6 +61,7 @@
                 android:text="Easy"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                android:tooltipText="Easy"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

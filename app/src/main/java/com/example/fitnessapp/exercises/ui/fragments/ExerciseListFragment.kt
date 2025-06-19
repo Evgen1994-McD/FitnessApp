@@ -1,8 +1,8 @@
 package com.example.fitnessapp.exercises.ui.fragments
 
+import android.animation.ObjectAnimator
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,9 +20,8 @@ import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.exercises.ui.ExerciseListViewModel
 import com.example.fitnessapp.fragments.WaitingFragment
 import com.example.fitnessapp.utils.FragmentManager
-import com.example.fitnessapp.utils.MainViewModel
 
-class ExListFragment : Fragment() {
+class ExerciseListFragment : Fragment() {
     private var dayModel: DayModel? = null
     private lateinit var binding: ExerciseListFragmentBinding
     private lateinit var adapter: ExerciseAdapter
@@ -94,15 +93,59 @@ adapter.submitList(list) // передали этот список
                 alphaAnimation.duration = 700
                 im.setImageResource(card.imageId)
                 im.startAnimation(alphaAnimation)
+
+                val alphaAnimationText = AlphaAnimation(0.0f, 1.0f)
+                alphaAnimationText.startOffset = 300  // Задержка запуска анимации чтобы не сразу запускать
+                alphaAnimationText.duration = 800
                 difTitle.setText(card.difficultyTitle)
+                difTitle.visibility = View.VISIBLE
+                difTitle.startAnimation(alphaAnimationText)
+
+
+                val alphaAnimationText2 = AlphaAnimation(0.0f, 1.0f)
+                alphaAnimationText2.startOffset = 600  // Задержка запуска анимации чтобы не сразу запускать
+                alphaAnimationText2.duration = 800
+                val daysRest = card.maxProgress - card.progress
+val tvRestText = getString(R.string.rest) + " " + daysRest
+tvRestDays.text = if(daysRest == 0) {
+getString(R.string.Done)
+} else tvRestText
+                tvRestDays.visibility = View.VISIBLE
+                tvRestDays.startAnimation(alphaAnimationText2)
+progressbar.max = card.maxProgress
+
+                animProgressBar(card.progress)
                     /*
                     Сделали функцию топ кард обсервер. Она подписывается на обновление лайв дата и обновляет
                     состояние экрана при получении изменений
+                    alphaAnimation - картинка
+                    alphaAnimationText - сложность
+                    alphaAnimationText2 - осталось дней
+
                      */
             }
 
 
         }
+    }
+
+
+    private fun animProgressBar ( progress : Int) {
+        val anim = ObjectAnimator.ofInt(
+            binding.progressbar,
+            "progress",
+            binding.progressbar.progress,
+            progress * 100
+        )
+        anim.startDelay = 900 // Задержка появления прогресс бара
+        anim.duration = 700
+        anim.start()
+
+        /*
+        анимация прогресс бара ( сколько дней сделано)
+        умножается на 100 чтобы не было рывков
+        duration - за сколько милисекунд дойдём до целевого прогресса
+         */
     }
 
 

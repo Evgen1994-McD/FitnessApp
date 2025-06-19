@@ -20,6 +20,6 @@
         android:label="ExerciseFragment" />
     <fragment
         android:id="@+id/exListFragment"
-        android:name="com.example.fitnessapp.exercises.ui.fragments.ExListFragment"
+        android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseListFragment"
         android:label="ExListFragment" />
 </navigation>
