@@ -1,4 +1,4 @@
-package com.example.fitnessapp.fragments
+package com.example.fitnessapp.exercises.ui.fragments
 
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -13,8 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.media3.common.util.UnstableApi
 import com.example.fitnessapp.R
-import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.databinding.ExerciseBinding
+import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.fragments.DaysFinishFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import com.example.fitnessapp.utils.TimeUtils
@@ -68,7 +69,7 @@ currentDay = model.currentDay
         } else {
             exerciseCounter++ // последнее упражнение не увеличивалось. Для этого мы увеличим его вручную
             FragmentManager.setFragment(
-                DaysFinishFragment.newInstance(),
+                DaysFinishFragment.Companion.newInstance(),
                 activity as AppCompatActivity
             ) // запускаем финишный фрагмент если больше нет упражнений в списке
         }

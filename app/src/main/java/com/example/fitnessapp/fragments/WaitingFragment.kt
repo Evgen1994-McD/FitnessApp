@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.WaitingFragmentBinding
+import com.example.fitnessapp.exercises.ui.fragments.ExerciseFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.TimeUtils
 

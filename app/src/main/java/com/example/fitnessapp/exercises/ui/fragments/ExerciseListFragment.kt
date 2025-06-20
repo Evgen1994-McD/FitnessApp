@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.adapter.ExerciseAdapter
@@ -56,17 +57,7 @@ class ExerciseListFragment : Fragment() {
 
     }
 
-    private fun getDayFromArguments(): DayModel? {
-        return arguments.let { bundle ->
-            if (Build.VERSION.SDK_INT >= 33) {
-                bundle?.getSerializable("day", DayModel::class.java)
 
-            } else {
-                bundle?.getSerializable("day") as DayModel
-            }
-
-        }
-    }
 
 
     private fun init() = with(binding) {  // Инициализируем Адаптер и добавляем RecyclerVIew
@@ -74,11 +65,18 @@ class ExerciseListFragment : Fragment() {
         rcView.layoutManager = LinearLayoutManager(activity)
         rcView.adapter = adapter // Назначили адаптер
         bStart.setOnClickListener {
-            FragmentManager.setFragment(
-                WaitingFragment.newInstance(),
-                activity as AppCompatActivity
-            )  // открываем фрагмент с помощью кнопки начать
+            val bundle = Bundle().apply {
+                putSerializable("day", dayModel )
+            }
+findNavController().navigate(R.id.action_exListFragment_to_exerciseFragment,
+    bundle)
         }
+        /*
+        Прикольно.
+        Переход на фрагмент с упражнениями сделали с помощью навигации, а чтобы передать туда
+        экземпляр класса Daymodel - создали бандл и положили туда этот деймодел, который ранее получили с другого экрана
+        (с Training Fragment ( который у меня домашний фрагмент))
+         */
 
     }
     private fun exerciseListObserver(){ // делаю эксерсайз лист обсервер и здесь мы используем класс вью модел
