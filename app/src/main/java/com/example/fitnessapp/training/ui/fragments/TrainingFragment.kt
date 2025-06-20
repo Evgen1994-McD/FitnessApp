@@ -43,8 +43,12 @@ private lateinit var binding: FragmentTrainingBinding
 
         binding.vp.adapter = vpAdapter //привязываем адаптер к ВьюПейджеру. Но мы хотим связать Пейджер и ТабЛайоут
         //Для связки нужен специальный Медиатор
-       var ab =
+
+
+
+        var ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
+
         ab?.title = "Список тренировок"    // Хардкод потом перепишу
 
         TabLayoutMediator(binding.tabLayout, binding.vp){ tab, pos ->  // Для применения указать таблайоут + ВьюПейджер
