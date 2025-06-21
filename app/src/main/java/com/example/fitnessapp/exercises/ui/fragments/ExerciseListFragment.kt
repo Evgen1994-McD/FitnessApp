@@ -21,6 +21,7 @@ import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.exercises.ui.ExerciseListViewModel
 import com.example.fitnessapp.fragments.WaitingFragment
 import com.example.fitnessapp.utils.FragmentManager
+import com.example.fitnessapp.utils.getDayFromArguments
 
 class ExerciseListFragment : Fragment() {
     private var dayModel: DayModel? = null
@@ -54,7 +55,12 @@ class ExerciseListFragment : Fragment() {
         dayModel = getDayFromArguments()
         model.getDayExerciseList(dayModel)
         topCardObserver() // запускаю топКардОбсервер который будет мне обновлять состояние вью
-
+/*
+Функция getDayFromArguments - это экстеншен функция, которыую мы создали чтобы использовать
+на любом фрагменте.
+Вызввается она просто импортом - то есть вызываешь её как будто она уже есть в классе,
+а затем импортируешь
+ */
     }
 
 

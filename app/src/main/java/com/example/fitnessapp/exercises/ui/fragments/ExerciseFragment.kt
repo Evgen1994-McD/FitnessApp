@@ -11,14 +11,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.ExerciseBinding
+import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.fragments.DaysFinishFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import com.example.fitnessapp.utils.TimeUtils
+import com.example.fitnessapp.utils.getDayFromArguments
 import pl.droidsonroids.gif.GifDrawable
 
 class ExerciseFragment : Fragment() {
@@ -27,7 +30,7 @@ class ExerciseFragment : Fragment() {
     private var exerciseCounter = 0 // отсюда будем брать данные для сохранения в sharedpref
     private var timer: CountDownTimer? = null // переменная для таймера
     private var exList: ArrayList<ExerciseModel>? = null
-    private var currentDay = 0
+    private  var currentDay : DayModel? = null   // Это деймодел кооторый мы передали в аргументах
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
 
@@ -42,20 +45,29 @@ class ExerciseFragment : Fragment() {
 
     @OptIn(UnstableApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-currentDay = model.currentDay
+        /*
+        getDayFromArguments - это получение аргумента ( ДейМодел) который мы передали в Бандл
+        и отправили как аргумент с помощью навигации
+         */
         super.onViewCreated(view, savedInstanceState)
-        exerciseCounter =
-            model.getExerciseCount() // тут мы вызвваем упражнения на котором остановились из SharedPreferences
+        currentDay = getDayFromArguments()
+        Log.d("MyLog", "Day number: ${currentDay?.dayNumber}" )
+            //   exerciseCounter =
+        //    model.getExerciseCount() // тут мы вызвваем упражнения на котором остановились из SharedPreferences
         ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
-        model.mutableListExercise.observe(viewLifecycleOwner) {  // Тут мы получаем список который создали ранее, посредси
+        /* model.mutableListExercise.observe(viewLifecycleOwner) {  // Тут мы получаем список который создали ранее, посредси
             exList = it
             nextExercise()
         }
         binding.bNext.setOnClickListener { // Запускаем функцию следующего упражнения
             nextExercise()
         }
+
+         */
     }
+
+
 
 
     private fun nextExercise() { // функция которая запускает следующее упражнение
@@ -108,26 +120,26 @@ currentDay = model.currentDay
         with(binding) { // функция которая запускает упражнение которое будет следом за текущим
             if (exerciseCounter < exList?.size!!) {
                 val ex = exList?.get(exerciseCounter) ?: return
-                imNext.setImageDrawable(GifDrawable(root.context.assets, ex.image))
+                    //   imNext.setImageDrawable(GifDrawable(root.context.assets, ex.image))
                 setTimeType(ex)
             } else {
-                imNext.setImageDrawable(
-                    GifDrawable(
-                        root.context.assets,
-                        "congrats.gif"
-                    )
-                ) // Передаём напрямую гиф с поздравлениями, если упражнений больше нет
-                tvNextName.text = getString(R.string.GoodDone)
+                //imNext.setImageDrawable(
+//                    GifDrawable(
+//                        root.context.assets,
+//                        "congrats.gif"
+//                    )
+//                ) // Передаём напрямую гиф с поздравлениями, если упражнений больше нет
+//                tvNextName.text = getString(R.string.GoodDone)
             }
 
         }
 
     private fun setTimeType(ex: ExerciseModel) {
         if (ex.time.startsWith("x")) {
-            binding.tvNextName.text = ex.time
+//            binding.tvNextName.text = ex.time
         } else {
             val name = ex.name + ": ${TimeUtils.getTime(ex.time.toLong() * 1000)}"
-            binding.tvNextName.text = name
+//            binding.tvNextName.text = name
         }
     }
 
@@ -166,11 +178,5 @@ currentDay = model.currentDay
     }
 
 
-    companion object {
 
-        @JvmStatic
-        fun newInstance() = ExerciseFragment()
-
-
-    }
 }
