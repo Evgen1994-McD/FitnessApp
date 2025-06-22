@@ -59,14 +59,17 @@ class ExerciseFragment : Fragment() {
         и отправили как аргумент с помощью навигации
          */
         super.onViewCreated(view, savedInstanceState)
+        ab =
+            (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
+
         currentDay = getDayFromArguments()
         updateExercise() // привязали обсервер вью модели
         updateTime()
+        updateToolbar()
         currentDay?.let { model.getExercises(it) } // с помощью let мы сделали так, что если currentDay
             // будет null - То ничего не запустится. А если не будет, то запустится
 
-        ab =
-            (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
+
 
         binding.bNext.setOnClickListener {
 
@@ -110,6 +113,13 @@ progressBar.progress = time.toInt()
             /*
             передаём прогресс в прогресс бар
              */
+        }
+    }
+
+    private fun updateToolbar(){
+        model.updateToolbar.observe(viewLifecycleOwner){ text ->
+            ab?.title = text
+
         }
     }
 

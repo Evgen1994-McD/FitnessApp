@@ -20,12 +20,13 @@ private val mainDb: MainDb,
 ) : ViewModel() {
     var updateExercise = MutableLiveData<ExerciseModel>()
     var updateTime = MutableLiveData<Long>()
-
+    var updateToolbar = MutableLiveData<String>()
     private var timer: CountDownTimer? = null // переменная для таймера
-
     var currentDay: DayModel? = null
     private var exercisesStack : List<ExerciseModel> = emptyList() // изначально пустой список с упражнениями который мы заполним позже
     private var doneExerciseCounter = 0 // это счётчик для упражнений ( функция nextExercise() )
+    private var doneExerciseCounterToSave = 0
+    private var totalExerciseNumber = 0
 
     private fun updateDay(dayModel: DayModel) = viewModelScope.launch {
         mainDb.daysDao.insertDay(dayModel)
@@ -49,6 +50,9 @@ currentDay передаём тот же, но перезапишем парам�
                 dayModel.exercises,
                 exerciseList
                 )
+doneExerciseCounterToSave = dayModel.doneExerciseCounter
+            totalExerciseNumber = dayModel.exercises.split(",").size
+
             exercisesStack = exerciseHelper.createExerciseStack(
                 exercisesOfTheDay.subList(
                     dayModel.doneExerciseCounter,
@@ -90,7 +94,7 @@ currentDay передаём тот же, но перезапишем парам�
 
     fun nextExercise(){
         timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
-
+updateToolbar()
         val exercise = exercisesStack[doneExerciseCounter++]
         updateExercise.value = exercise
 
@@ -99,6 +103,13 @@ currentDay передаём тот же, но перезапишем парам�
         (Далее после проекта добавить не мутабл лайв дата)
          */
     }
+
+    private fun updateToolbar(){
+        if (doneExerciseCounter % 2 == 0) { // если счётчик делится на 2 то считаем и обновляем, если нет то нет
+            val text = "Выполнено: ${doneExerciseCounterToSave++} / $totalExerciseNumber"
+            updateToolbar.value = text
+        }
+        }
 
     fun onPause(){
         timer?.cancel()
