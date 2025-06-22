@@ -1,7 +1,6 @@
 package com.example.fitnessapp.exercises.ui.fragments
 
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.ExerciseBinding
@@ -21,7 +18,6 @@ import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.exercises.ui.ExerciseViewModel
 import com.example.fitnessapp.fragments.DaysFinishFragment
 import com.example.fitnessapp.utils.FragmentManager
-import com.example.fitnessapp.utils.MainViewModel
 import com.example.fitnessapp.utils.TimeUtils
 import com.example.fitnessapp.utils.getDayFromArguments
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,9 +37,6 @@ class ExerciseFragment : Fragment() {
    А так нет
      */
 
-    private var exerciseCounter = 0 // отсюда будем брать данные для сохранения в sharedpref
-    private var timer: CountDownTimer? = null // переменная для таймера
-    private var exList: ArrayList<ExerciseModel>? = null
     private  var currentDay : DayModel? = null   // Это деймодел кооторый мы передали в аргументах
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
@@ -66,11 +59,18 @@ class ExerciseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         currentDay = getDayFromArguments()
         updateExercise() // привязали обсервер вью модели
+        updateTime()
         currentDay?.let { model.getExercises(it) } // с помощью let мы сделали так, что если currentDay
             // будет null - То ничего не запустится. А если не будет, то запустится
 
         ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
+
+        binding.bNext.setOnClickListener {
+
+            model.nextExercise()
+        }
+
 
     }
 
@@ -85,6 +85,7 @@ class ExerciseFragment : Fragment() {
 
             tvName.text = exercise.name
             subTitle.text = exercise.subtitle
+            showTime(exercise)
             /*
             С помощью обсервера передаю данные на фрагмент
             Кроме времени и прогресс бара - их будем делать через Таймер
@@ -94,110 +95,41 @@ class ExerciseFragment : Fragment() {
         }
     }
 
+    private fun updateTime() = with(binding){
+        model.updateTime.observe(viewLifecycleOwner){ time ->
+            tvTime.text = TimeUtils.getTime(time)
 
-
-    private fun nextExercise() { // функция которая запускает следующее упражнение
-        if (exerciseCounter < exList?.size!!) {
-            timer?.cancel() // сбросили таймер, была проблема что в каждом упражнении начинался таймер после того как один раз он появился
-            val ex = exList?.get(exerciseCounter++)
-                ?: return // увеличиваем счётчик упражнений. через оператор элвиса нам или выдает упражнение или ретарн если его нету
-            showExercise(ex)
-            setExerciseType(ex)
-            showNextExercise(ex)
-        } else {
-            exerciseCounter++ // последнее упражнение не увеличивалось. Для этого мы увеличим его вручную
-            FragmentManager.setFragment(
-                DaysFinishFragment.Companion.newInstance(),
-                activity as AppCompatActivity
-            ) // запускаем финишный фрагмент если больше нет упражнений в списке
         }
-
     }
 
-    private fun showExercise(exercise: ExerciseModel?) = with(binding) {
-        if (exercise == null) return@with // если нулл, то ретурн
-        imMine.setImageDrawable(exercise?.image?.let {
-            GifDrawable(
-                root.context.assets,
-                exercise.image
-            )
-        })
-        tvName.text = exercise.name
-        val title =
-            "$exerciseCounter/ ${exList?.size}" // Собираем строку для акшнбара. Берем счетчик упражнений + Лист упражнений ( если он не равен налл!! (?)
-        ab?.title = title // Строка которую мы собрали помещаем в Экшенбар
-        ab?.setBackgroundDrawable(resources.getColor(R.color.white).toDrawable())  // Задаю фон Тулбара
 
-    }
 
-    private fun setExerciseType(exercise: ExerciseModel?) {
+
+
+
+    private fun showTime(exercise: ExerciseModel?) {
         if (exercise?.time!!.startsWith("x")) {
-            timer?.cancel() // сбросим таймер если он есть
+//            timer?.cancel() // сбросим таймер если он есть
             binding.progressBar.visibility = View.INVISIBLE  // если количество повторений считаем, то прогрессбар не нужен, поэтому инвизибл
             binding.tvTime.text = exercise.time
         } else {
             binding.progressBar.visibility = View.VISIBLE // тут соответвтенно - нужен Прогрессбар
             binding.progressBar.progress =  exercise?.time!!.toInt() * 1000 // обновим максимум пб До максимума
-            startTimer(exercise) // запустим таймер
-        }
-    }
-
-    private fun showNextExercise(exercise: ExerciseModel?) =
-        with(binding) { // функция которая запускает упражнение которое будет следом за текущим
-            if (exerciseCounter < exList?.size!!) {
-                val ex = exList?.get(exerciseCounter) ?: return
-                    //   imNext.setImageDrawable(GifDrawable(root.context.assets, ex.image))
-                setTimeType(ex)
-            } else {
-                //imNext.setImageDrawable(
-//                    GifDrawable(
-//                        root.context.assets,
-//                        "congrats.gif"
-//                    )
-//                ) // Передаём напрямую гиф с поздравлениями, если упражнений больше нет
-//                tvNextName.text = getString(R.string.GoodDone)
-            }
-
-        }
-
-    private fun setTimeType(ex: ExerciseModel) {
-        if (ex.time.startsWith("x")) {
-//            binding.tvNextName.text = ex.time
-        } else {
-            val name = ex.name + ": ${TimeUtils.getTime(ex.time.toLong() * 1000)}"
-//            binding.tvNextName.text = name
+        model.startTimer(exercise.time.toLong()) // запустим таймер
         }
     }
 
 
-    private fun startTimer(exercise: ExerciseModel?) = with(binding) {
-
-        progressBar.max =
-
-            exercise?.time!!.toInt() * 1000  // установили максимум прогресс бара ( откуда начали отсчет. На 1000 умножили потому что в миллисекунды
-        timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
-        timer = object : CountDownTimer(
-            exercise.time.toLong() * 1000, 1
-        ) { //мы сделали тут 100 мс для того чтобы прогресс бар шел плавно, вот и всё. Если бы было 1000, то были бы большие скачки.
-            override fun onTick(restTime: Long) {
-                tvTime.text =
-                    TimeUtils.getTime(restTime) // Рассчитали время которое будет показано в таймере
-                progressBar.progress = restTime.toInt()
-
-            }
-
-            override fun onFinish() {
-                nextExercise()
-            } // тут мы переделали, он не вызывает фрагмент, а запускает следующее упражнение при завершении таймера
-        }.start()  // обязательно указываем старт для нашего таймера
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-
-        timer?.cancel() // таймер выключается при выходе из приложения, иначе будут проблемы
 
 
+
+
+    override fun onPause() {
+        super.onPause()
+        model.onPause()
+        /*
+        на паузе сработает одноименная функция во вью модел и наш таймер остановится
+         */
     }
 
 

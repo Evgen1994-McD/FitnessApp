@@ -14,7 +14,7 @@ val templist = ArrayList<ExerciseModel>()
         list.forEach { exercise ->
             templist.add(
                 exercise.copy(
-                    time = "10", // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
+                    time = "11", // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
                     subtitle = "Relax" // Это отдых
                 )
             )

@@ -1,5 +1,6 @@
 package com.example.fitnessapp.exercises.ui
 
+import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,6 +19,9 @@ private val mainDb: MainDb,
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
     var updateExercise = MutableLiveData<ExerciseModel>()
+    var updateTime = MutableLiveData<Long>()
+
+    private var timer: CountDownTimer? = null // переменная для таймера
 
     var currentDay: DayModel? = null
     private var exercisesStack : List<ExerciseModel> = emptyList() // изначально пустой список с упражнениями который мы заполним позже
@@ -63,7 +68,29 @@ currentDay передаём тот же, но перезапишем парам�
         }
 
     }
+
+
+    fun startTimer(time : Long) {
+
+
+        timer = object : CountDownTimer(
+            (time+1) * 1000, 1
+        ) { //мы сделали тут 100 мс для того чтобы прогресс бар шел плавно, вот и всё. Если бы было 1000, то были бы большие скачки.
+            override fun onTick(restTime: Long) {
+                updateTime.value = restTime
+
+
+            }
+
+            override fun onFinish() {
+                nextExercise()
+            } // тут мы переделали, он не вызывает фрагмент, а запускает следующее упражнение при завершении таймера
+        }.start()  // обязательно указываем старт для нашего таймера
+    }
+
     fun nextExercise(){
+        timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
+
         val exercise = exercisesStack[doneExerciseCounter++]
         updateExercise.value = exercise
 
@@ -71,6 +98,10 @@ currentDay передаём тот же, но перезапишем парам�
         будем запускать и передавать по обсерверу следующее упражнение на View через лайв дата.
         (Далее после проекта добавить не мутабл лайв дата)
          */
+    }
+
+    fun onPause(){
+        timer?.cancel()
     }
 
 }
