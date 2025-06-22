@@ -1,5 +1,6 @@
 package com.example.fitnessapp.exercises.ui.fragments
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -85,6 +87,12 @@ class ExerciseFragment : Fragment() {
 
             tvName.text = exercise.name
             subTitle.text = exercise.subtitle
+            setMainColors(
+                subTitle.text.toString() != "Relax"  //true значит не релакс
+            )
+            /*
+            устанавливаем нужные цвета если это релакс или нет
+             */
             showTime(exercise)
             /*
             С помощью обсервера передаю данные на фрагмент
@@ -98,7 +106,10 @@ class ExerciseFragment : Fragment() {
     private fun updateTime() = with(binding){
         model.updateTime.observe(viewLifecycleOwner){ time ->
             tvTime.text = TimeUtils.getTime(time)
-
+progressBar.progress = time.toInt()
+            /*
+            передаём прогресс в прогресс бар
+             */
         }
     }
 
@@ -114,12 +125,44 @@ class ExerciseFragment : Fragment() {
             binding.tvTime.text = exercise.time
         } else {
             binding.progressBar.visibility = View.VISIBLE // тут соответвтенно - нужен Прогрессбар
+            binding.progressBar.max = exercise.time.toInt() * 1000 // потому что считаем в милисекундах умножаем на 1000
             binding.progressBar.progress =  exercise?.time!!.toInt() * 1000 // обновим максимум пб До максимума
         model.startTimer(exercise.time.toLong()) // запустим таймер
         }
     }
 
+    private fun setMainColors(isExercise : Boolean)= with(binding){
+        val white =ContextCompat.getColor(requireContext(), R.color.white)
+        val blue =ContextCompat.getColor(requireContext(), R.color.blue)
+        val blueDark =ContextCompat.getColor(requireContext(), R.color.blue_dark)
+        val black =ContextCompat.getColor(requireContext(), R.color.black)
 
+        if (isExercise){
+
+             bg.setBackgroundColor(white)
+            tvName.setTextColor(black)
+            subTitle.setTextColor(blueDark)
+            tvTime.setTextColor(black)
+
+progressBar.progressTintList = ColorStateList.valueOf(blueDark)
+progressBar.backgroundTintList = ColorStateList.valueOf(white)
+            bNext.backgroundTintList = ColorStateList.valueOf(blue)
+            bNext.setTextColor(white)
+
+        }else {
+
+            bg.setBackgroundColor(blue)
+            tvName.setTextColor(white)
+            subTitle.setTextColor(white)
+            tvTime.setTextColor(white)
+
+            progressBar.progressTintList = ColorStateList.valueOf(white)
+            progressBar.backgroundTintList = ColorStateList.valueOf(white)
+            bNext.backgroundTintList = ColorStateList.valueOf(white)
+            bNext.setTextColor(black)
+
+        }
+    }
 
 
 
