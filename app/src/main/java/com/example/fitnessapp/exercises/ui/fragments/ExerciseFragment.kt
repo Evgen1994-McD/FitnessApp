@@ -119,7 +119,7 @@ progressBar.progress = time.toInt()
 
 
     private fun showTime(exercise: ExerciseModel?) {
-        if (exercise?.time!!.startsWith("x")) {
+        if (exercise?.time!!.startsWith("x") || exercise.time.isEmpty() ) {
 //            timer?.cancel() // сбросим таймер если он есть
             binding.progressBar.visibility = View.INVISIBLE  // если количество повторений считаем, то прогрессбар не нужен, поэтому инвизибл
             binding.tvTime.text = exercise.time
