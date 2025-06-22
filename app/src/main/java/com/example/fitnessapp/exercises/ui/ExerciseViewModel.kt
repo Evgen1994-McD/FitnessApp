@@ -1,5 +1,6 @@
 package com.example.fitnessapp.exercises.ui
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.DayModel
@@ -15,8 +16,12 @@ class ExerciseViewModel @Inject constructor(
 private val mainDb: MainDb,
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
+    var updateExercise = MutableLiveData<ExerciseModel>()
+
     var currentDay: DayModel? = null
     private var exercisesStack : List<ExerciseModel> = emptyList() // изначально пустой список с упражнениями который мы заполним позже
+    private var doneExerciseCounter = 0 // это счётчик для упражнений ( функция nextExercise() )
+
     private fun updateDay(dayModel: DayModel) = viewModelScope.launch {
         mainDb.daysDao.insertDay(dayModel)
     }
@@ -41,7 +46,8 @@ currentDay передаём тот же, но перезапишем парам�
                 )
             exercisesStack = exerciseHelper.createExerciseStack(
                 exercisesOfTheDay.subList(
-                    dayModel.doneExerciseCounter, exercisesOfTheDay.size
+                    dayModel.doneExerciseCounter,
+                    exercisesOfTheDay.size
                     /*
                     Нас интересуют только невыполненные упражнениня.
                     Поэтому мы берем СУБ лист, в котором указываем с какой по какую позицию взять элементы из нашего массива.
@@ -51,8 +57,20 @@ currentDay передаём тот же, но перезапишем парам�
                     Если понадобится сбросить - можно в дальнейшем встроить вопрос ( желаете ли продолжить)
                      */
                 )
+
             )
+            nextExercise()
         }
 
     }
+    fun nextExercise(){
+        val exercise = exercisesStack[doneExerciseCounter++]
+        updateExercise.value = exercise
+
+        /*
+        будем запускать и передавать по обсерверу следующее упражнение на View через лайв дата.
+        (Далее после проекта добавить не мутабл лайв дата)
+         */
+    }
+
 }

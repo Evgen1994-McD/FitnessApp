@@ -11,22 +11,36 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.exercises.ui.ExerciseViewModel
 import com.example.fitnessapp.fragments.DaysFinishFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import com.example.fitnessapp.utils.TimeUtils
 import com.example.fitnessapp.utils.getDayFromArguments
+import dagger.hilt.android.AndroidEntryPoint
 import pl.droidsonroids.gif.GifDrawable
-
+@AndroidEntryPoint // аннотация для того чтобы создать например вью модел
 class ExerciseFragment : Fragment() {
     private lateinit var binding: ExerciseBinding
-    private val model: MainViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
+    private val model: ExerciseViewModel by viewModels()
+    /*
+    если мы укажем viewModels() - то вью модел даггер хилт привяжет ко фрагменту - то есть фрагмент разрушится,
+    и вью модел - тоже.
+
+   Если указать activityViewModels() - то вью модел привяжется к циклу жизни активити
+
+   Мы сделали так, чтобы запускать свежие данные - чтобы изюежать багов ( запуск дважды и т.д.)
+   Если мы хотим поменяться данными с активити, с другими фрагментами, то имеет смысл привязать к активити.
+   А так нет
+     */
+
     private var exerciseCounter = 0 // отсюда будем брать данные для сохранения в sharedpref
     private var timer: CountDownTimer? = null // переменная для таймера
     private var exList: ArrayList<ExerciseModel>? = null
@@ -51,22 +65,34 @@ class ExerciseFragment : Fragment() {
          */
         super.onViewCreated(view, savedInstanceState)
         currentDay = getDayFromArguments()
-        Log.d("MyLog", "Day number: ${currentDay?.dayNumber}" )
-            //   exerciseCounter =
-        //    model.getExerciseCount() // тут мы вызвваем упражнения на котором остановились из SharedPreferences
+        updateExercise() // привязали обсервер вью модели
+        currentDay?.let { model.getExercises(it) } // с помощью let мы сделали так, что если currentDay
+            // будет null - То ничего не запустится. А если не будет, то запустится
+
         ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
-        /* model.mutableListExercise.observe(viewLifecycleOwner) {  // Тут мы получаем список который создали ранее, посредси
-            exList = it
-            nextExercise()
-        }
-        binding.bNext.setOnClickListener { // Запускаем функцию следующего упражнения
-            nextExercise()
-        }
 
-         */
     }
 
+    private fun updateExercise() = with(binding){
+        model.updateExercise.observe(viewLifecycleOwner){ exercise ->
+            imMine.setImageDrawable(exercise?.image?.let {
+                GifDrawable(
+                    root.context.assets,
+                    exercise.image
+                )
+            })
+
+            tvName.text = exercise.name
+            subTitle.text = exercise.subtitle
+            /*
+            С помощью обсервера передаю данные на фрагмент
+            Кроме времени и прогресс бара - их будем делать через Таймер
+             */
+
+
+        }
+    }
 
 
 
@@ -168,10 +194,7 @@ class ExerciseFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        model.savePref(
-            currentDay.toString(),    //// здесь было model.currentDay - потому что они сбоят с Он де тач и не ставят чек бокс по причине - фукнкция filldaysArray может сработать раньше onDetach и перезапишет её
-            exerciseCounter - 1
-        ) // если наступает ОнДетач ( то есть свернули приложение например) - то сохраняем текущее значение сколько выполнили упражнений в шаред преф
+
         timer?.cancel() // таймер выключается при выходе из приложения, иначе будут проблемы
 
 
