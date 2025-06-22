@@ -13,6 +13,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.db.DayModel
@@ -72,8 +73,23 @@ class ExerciseFragment : Fragment() {
 
 
         binding.bNext.setOnClickListener {
+            if (binding.bNext.text.toString() == getString(R.string.Done)) {
+findNavController()
+    .popBackStack(
+        R.id.trainingFragment,
+        inclusive = false
+    )
+    /*
+    возвращаемся по бекстеку назад ( стек фрагментов из навигации)
+    в функции навконтроллера popBackStack можно указать аргументы
+    Например если мы хотим по стопке вернуться не на 1 фрагмент назад, а сразу на начало, указываем куда вернуться
+    и указываем сохранять ли те фрагменты с которых мы ушли. В нашем случае - нет
+    Так мы не сможем на них вернуться с помощью кнопки назад на смартфоне
+     */
+            } else {
 
-            model.nextExercise()
+                model.nextExercise()
+            }
         }
 
 
@@ -93,6 +109,7 @@ class ExerciseFragment : Fragment() {
             setMainColors(
                 subTitle.text.toString() != "Relax"  //true значит не релакс
             )
+            changeButtonText(exercise.name)
             /*
             устанавливаем нужные цвета если это релакс или нет
              */
@@ -103,6 +120,12 @@ class ExerciseFragment : Fragment() {
              */
 
 
+        }
+    }
+
+    private fun changeButtonText(title : String){
+        if (title == "Day Finish"){
+            binding.bNext.text = getString(R.string.Done)
         }
     }
 
