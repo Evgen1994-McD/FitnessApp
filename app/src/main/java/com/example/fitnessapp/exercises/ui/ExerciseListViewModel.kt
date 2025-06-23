@@ -25,34 +25,51 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
         viewModelScope.launch { // запускаем в корутине, потому что сложная операция
             val day =
                 dayModel?.id?.let { mainDb.daysDao.getDay(it) } // выбарается самый свежий день из базы данных по id
-if (day!=null){
-    getTopCardData(day)
-}
-            val allExerciseList = mainDb.exerciseDao.getAllExercises() // получаем список со всеми упражнениями который будем потом перебирать
+            if (day != null) {
+                getTopCardData(day)
+            }
+            val allExerciseList =
+                mainDb.exerciseDao.getAllExercises() // получаем список со всеми упражнениями который будем потом перебирать
             val tempExerciseList = ArrayList<ExerciseModel>()
             day?.let { dayModel ->
-dayModel.exercises.split(",").forEach{ index ->
-tempExerciseList.add(allExerciseList[index.toInt()])  // сюда добавляем номера упражнений данного дня, а ЗАТЕМ по номеру достаём нужные из allExrciseList и помещать в новый список (exerciseList)
-} // как в первой части мы разделяем по запятой, в результате получим массив в виде объекта String
-            }
-exerciseList.value = tempExerciseList // передали упражнения
-        }
-            /* теперь остаётся все передать в функцию и поставить обсервер чтобы следить за изменениями. Когда переберём списко - сразу выдаст этот список и передадим его уже в адаптер */
-            fun getTopCardData(dayModel: DayModel){
-                var index = 0
-                when(dayModel.difficulty){
-                    "middle" -> {
-                        index = 1
+                dayModel.exercises.split(",").forEach { index ->
+                    tempExerciseList.add(allExerciseList[index.toInt()])  // сюда добавляем номера упражнений данного дня, а ЗАТЕМ по номеру достаём нужные из allExrciseList и помещать в новый список (exerciseList)
+                } // как в первой части мы разделяем по запятой, в результате получим массив в виде объекта String
+                if (dayModel.doneExerciseCounter>0) {
+                    for (i in 0..<dayModel.doneExerciseCounter) {
+                        tempExerciseList[i] = tempExerciseList[i].copy(isDone = true)
+                        /*
+                    Выше мы определили выполненные упражнения. А с помощью цикла for
+                    перебрали эти упражнения и изменили значение переменной isDone
+                    чтобы показать галочку ( Выполнено)
+                     */
                     }
-                    "hard" -> {
-                        index = 2
-                    }
-                    else -> index = 0
                 }
-                topCardUpdate.value = TrainingUtils.topCardList[index].copy(
-                    progress = dayModel.doneExerciseCounter,
-                    maxProgress = dayModel.exercises.split(",").size
-                ) /*
+                    exerciseList.value = tempExerciseList // передали упражнения
+
+            }
+
+
+        }
+
+    /* теперь остаётся все передать в функцию и поставить обсервер чтобы следить за изменениями. Когда переберём списко - сразу выдаст этот список и передадим его уже в адаптер */
+    fun getTopCardData(dayModel: DayModel) {
+        var index = 0
+        when (dayModel.difficulty) {
+            "middle" -> {
+                index = 1
+            }
+
+            "hard" -> {
+                index = 2
+            }
+
+            else -> index = 0
+        }
+        topCardUpdate.value = TrainingUtils.topCardList[index].copy(
+            progress = dayModel.doneExerciseCounter,
+            maxProgress = dayModel.exercises.split(",").size
+        ) /*
                 Передаю карточку по позиции, которую определили выше. Позицию перевели в Int - чтобы взять нужную карточку из массива
               progress - вычисллили текущий прогресс ( он будет в базе данных, а передаётся совместно с dayModel
               maxProgress - вычислили, путём разделения массива переданного daymodel по запятой с помощью метода split, и узнав
@@ -60,5 +77,5 @@ exerciseList.value = tempExerciseList // передали упражнения
 
 
               */
-            }
+    }
 }

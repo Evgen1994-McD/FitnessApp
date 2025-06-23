@@ -27,7 +27,7 @@ class ExerciseAdapter() :
 
             tvNameEx.text = exercise.name //Название упражнения
             tvcount.text =
-               getTime(exercise.time)
+                getTime(exercise.time)
             imExercise.setImageDrawable(
                 GifDrawable(
                     root.context.assets,
