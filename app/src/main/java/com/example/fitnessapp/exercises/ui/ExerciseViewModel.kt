@@ -1,6 +1,7 @@
 package com.example.fitnessapp.exercises.ui
 
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import com.example.fitnessapp.utils.MySoundPool
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,7 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
     private val mainDb: MainDb,
-    private val exerciseHelper: ExerciseHelper
+    private val exerciseHelper: ExerciseHelper,
+    private val tts: TextToSpeech,
+    private val soundPool: MySoundPool
 ) : ViewModel() {
     var updateExercise = MutableLiveData<ExerciseModel>()
     var updateTime = MutableLiveData<Long>()
@@ -78,13 +82,12 @@ class ExerciseViewModel @Inject constructor(
 
 
     fun startTimer(time: Long) {
-
-
         timer = object : CountDownTimer(
-            (time + 1) * 1000, 1
+            (time + 1) * 1000, 1000 // интервал запускается каждую секунду
         ) { //мы сделали тут 100 мс для того чтобы прогресс бар шел плавно, вот и всё. Если бы было 1000, то были бы большие скачки.
             override fun onTick(restTime: Long) {
                 updateTime.value = restTime
+                speechLastDigits(restTime)
 
 
             }
@@ -107,6 +110,33 @@ class ExerciseViewModel @Inject constructor(
          */
     }
 
+    private fun speechLastDigits(time: Long){
+        if (time<= 0) return
+        val timeInSeconds = (time/1000).toInt() // время в секундах превратили его в Интеджер, чтобы округлить
+        if (timeInSeconds==0){
+            soundPool.playSound()
+            return
+        }
+        if (timeInSeconds<4) {
+            speechText(timeInSeconds.toString())
+        }
+    }
+
+    private fun speechText(text:String){
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "ut_id" )
+
+        /*
+        queue mode у текст спит
+        QueueAdd - произносит по очереди
+        QueueFlash - заменяет прошлый текст
+        Мы делаем Флеш - потому что если пользователь перескочит на другое упражнение, нам не надо чтобы
+        произносило все подрялд из прошлого занятия
+
+       Параметры мы передали null - у нас нет параметнов
+       utteranceldId - нам не понадобится поэтому написали что в голову взброело
+         */
+    }
+
     private fun updateToolbar() {
         if (doneExerciseCounter % 2 == 0) { // если счётчик делится на 2 то считаем и обновляем, если нет то нет
             val text = "Выполнено: ${doneExerciseCounterToSave++} / $totalExerciseNumber"
@@ -116,6 +146,8 @@ class ExerciseViewModel @Inject constructor(
 
     fun onPause() {
         timer?.cancel()
+        tts.stop() // если пользователь вышел с фрагмента, то перестанет воспроизводить текст
+
         isDayDone()
         updateDay(
             currentDay!!.copy(
