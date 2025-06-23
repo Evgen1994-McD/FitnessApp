@@ -74,7 +74,7 @@ private lateinit var binding: FragmentTrainingBinding
             alphaAnimation.duration = 700
 im.setImageResource(card.imageId)
 difTitle.setText(card.difficultyTitle)
-progressbar.max =  card.maxProgress
+progressbar.max =  card.maxProgress * 100
 val restDays = card.maxProgress - card.progress
             animProgressBar( card.progress)
             val daysRestText = getString(R.string.rest) +" "+ restDays

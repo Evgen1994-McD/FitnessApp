@@ -41,11 +41,7 @@ class ExerciseListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = getString(R.string.listExercise)
-        ab?.setBackgroundDrawable(
-            resources.getColor(R.color.white).toDrawable()
-        )  // Задаю фон Тулбара
+
 
         super.onViewCreated(view, savedInstanceState)
         dayModel = getDayFromArguments() // Вызвавли функци получания Деймодел и открытия нужного объекта
@@ -61,6 +57,13 @@ class ExerciseListFragment : Fragment() {
 Вызввается она просто импортом - то есть вызываешь её как будто она уже есть в классе,
 а затем импортируешь
  */
+
+        ab = (activity as AppCompatActivity).supportActionBar
+        ab?.title = ("День: ${dayModel?.dayNumber}. Список упражнений.")
+        ab?.setBackgroundDrawable(
+            resources.getColor(R.color.white).toDrawable()
+        )  // Задаю фон Тулбара
+
     }
 
 
@@ -116,7 +119,7 @@ getString(R.string.Done)
 } else tvRestText
                 tvRestDays.visibility = View.VISIBLE
                 tvRestDays.startAnimation(alphaAnimationText2)
-progressbar.max = card.maxProgress
+progressbar.max = card.maxProgress * 100
 
                 animProgressBar(card.progress)
                     /*
