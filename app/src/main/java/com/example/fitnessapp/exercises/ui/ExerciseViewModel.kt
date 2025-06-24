@@ -102,6 +102,7 @@ class ExerciseViewModel @Inject constructor(
         timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
         updateToolbar()
         val exercise = exercisesStack[doneExerciseCounter++]
+        speechExercise(exercise)
         updateExercise.value = exercise
 
         /*
@@ -109,6 +110,28 @@ class ExerciseViewModel @Inject constructor(
         (Далее после проекта добавить не мутабл лайв дата)
          */
     }
+
+    private fun speechExercise(exerciseModel: ExerciseModel){
+        if (exerciseModel.subtitle.startsWith("Отдохните")) {
+        speechText(
+            "${exerciseModel.subtitle}. ${exerciseModel.name}"
+        )
+        }else {
+            speechText(
+                "${exerciseModel.subtitle}. ${exerciseModel.name} " +
+                getTimeToSpeech(exerciseModel)
+            )
+        }
+    }
+
+    private fun getTimeToSpeech(exerciseModel: ExerciseModel): String {
+        return if(exerciseModel.time.startsWith("x")) {
+            "${exerciseModel.time.replace("x", " ")} раз"
+        } else {
+            "${exerciseModel.time} секунд "
+        }
+    }
+
 
     private fun speechLastDigits(time: Long){
         if (time<= 0) return

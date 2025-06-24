@@ -107,7 +107,7 @@ findNavController()
             tvName.text = exercise.name
             subTitle.text = exercise.subtitle
             setMainColors(
-                subTitle.text.toString() != "Relax"  //true значит не релакс
+                subTitle.text.toString().startsWith("Start")
             )
             changeButtonText(exercise.name)
             /*
