@@ -3,6 +3,7 @@ package com.example.fitnessapp.utils
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.runtime.Composable
 import com.example.fitnessapp.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -10,7 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 object DialogManager {   // Сначала сделал как класс, но он работает только если обджект. Как и фрагмент менеджер. Если мы укажем обжект - сможем добраться без инициализации класса. Если как класс - сначала надо его инициализировать.
 
     fun showDialog(context : Context, mId : Int, listener : Listener) {  // передаём контекст, mId - messageId ( это сообщение) - Так как ресурсы у нас это ИНТ!!!
-    val builder = MaterialAlertDialogBuilder(context) // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
+    val builder = MaterialAlertDialogBuilder(ContextThemeWrapper(context, R.style.AlertDialog_AppCompat_)) // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
         var dialog : Dialog? = null // типа инициализировали диалог, изначально он равен null, а ниже мы используем его
         builder.setTitle(R.string.alert)
         builder.setMessage(mId)

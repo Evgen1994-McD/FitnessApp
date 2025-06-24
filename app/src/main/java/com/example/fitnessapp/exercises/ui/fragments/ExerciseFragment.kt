@@ -1,5 +1,6 @@
 package com.example.fitnessapp.exercises.ui.fragments
 
+import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -107,7 +108,7 @@ findNavController()
             tvName.text = exercise.name
             subTitle.text = exercise.subtitle
             setMainColors(
-                subTitle.text.toString().startsWith("Start")
+                !subTitle.text.toString().startsWith("Отдохните")
             )
             changeButtonText(exercise.name)
             /*
@@ -132,7 +133,7 @@ findNavController()
     private fun updateTime() = with(binding){
         model.updateTime.observe(viewLifecycleOwner){ time ->
             tvTime.text = TimeUtils.getTime(time)
-progressBar.progress = time.toInt()
+animProgressBar(time)
             /*
             передаём прогресс в прогресс бар
              */
@@ -197,6 +198,38 @@ progressBar.backgroundTintList = ColorStateList.valueOf(white)
         }
     }
 
+    private fun animProgressBar ( restTime : Long) {
+       val progressTo= if (restTime>1000){
+            restTime - 1000
+        } else {
+            0
+       }
+
+        /*
+        выше отрегулировали чтобы не было +1 секунды ( мы так делали потому что
+        на экране хотелось видеть 10 секунд отдыха, а если не добавлять то там начинается отсчет
+        с 9 секунд
+         */
+        val anim = ObjectAnimator.ofInt(
+            binding.progressBar,
+            "progress",
+            binding.progressBar.progress,
+            progressTo.toInt()
+            /*
+            ранее умножали на 100 ( в трейнинг фрагменте)
+            Здесь же этого не требуется потому что на вход функция принимает
+            миллисекунды, а их и так МНОГО
+             */
+        )
+        anim.duration = 700
+        anim.start()
+
+        /*
+        анимация прогресс бара ( сколько дней сделано)
+        умножается на 100 чтобы не было рывков
+        duration - за сколько милисекунд дойдём до целевого прогресса
+         */
+    }
 
 
 
