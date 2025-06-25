@@ -48,6 +48,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
         rcviewdays.layoutManager = LinearLayoutManager(activity as AppCompatActivity)
         rcviewdays.adapter = adapter
         rcviewdays.itemAnimator = null
+
     }
 
     private fun updateAdapter() {
@@ -90,7 +91,8 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
                 R.string.reset_day_message,
                 object : DialogManager.Listener{
                     override fun onClick() {
-
+                        model.resetSelectedDay(day)
+                        openExerciseListFragment(day)
                     } // с помощью Диалог менеджера сделал стирание только определенного дня, а не всех сразу. Получается, переиспользование кода выше, только с заменой ресурса
 // мы передаем количество выполненных упражнений в 0, поэтому день обнуляется при нажатии на диалог
                 })
@@ -111,4 +113,6 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
 
         findNavController().navigate(R.id.action_trainingFragment_to_exListFragment, bundle)
     }
+
+
 }

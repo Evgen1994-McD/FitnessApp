@@ -48,4 +48,11 @@ daysList.value = list // передали лист который нашли
         }
         return counter // таким образом узнали прогресс
     }
+
+     fun resetSelectedDay(day: DayModel) = viewModelScope.launch {
+        mainDb.daysDao.insertDay(day.copy(
+            doneExerciseCounter = 0,
+            isDone = false))
+
+    }
 }
