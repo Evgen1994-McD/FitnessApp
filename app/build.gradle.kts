@@ -18,7 +18,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -89,6 +89,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.fragment:fragment-ktx:1.8.6") // Зависимость для фрагментов
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")  // Библиотека для GIF - но она довольно старая, можно найти новее! (2022 год)
+
+
 
 
 }
