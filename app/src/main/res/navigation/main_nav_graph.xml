@@ -17,13 +17,27 @@
     <fragment
         android:id="@+id/exerciseFragment"
         android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseFragment"
-        android:label="ExerciseFragment" />
+        android:label="ExerciseFragment"
+        tools:layout="@layout/exercise"
+        />
     <fragment
         android:id="@+id/exListFragment"
         android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseListFragment"
-        android:label="ExListFragment" >
+        android:label="ExListFragment"
+        tools:layout="@layout/exercise_list_fragment"
+        >
         <action
             android:id="@+id/action_exListFragment_to_exerciseFragment"
             app:destination="@id/exerciseFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.fitnessapp.settings.ui.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/statisticFragment"
+        android:name="com.example.fitnessapp.statistic.ui.StatisticFragment"
+        android:label="fragment_statistic"
+        tools:layout="@layout/fragment_statistic" />
 </navigation>

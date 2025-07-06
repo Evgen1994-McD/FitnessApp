@@ -2,20 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item
     android:title="Training"
-android:id="@+id/tra"
+android:id="@+id/trainingFragment"
     android:icon="@drawable/ic_bottom_sport"
     />
 
     <item
         android:title="Statistic"
-        android:id="@+id/statistic"
+        android:id="@+id/statisticFragment"
         android:icon="@drawable/ic_bottom_statistic"
         />
 
 
     <item
         android:title="Settings"
-        android:id="@+id/settings"
+        android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_bottom_settings"
         />
 
