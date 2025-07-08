@@ -5,9 +5,11 @@ import android.speech.tts.TextToSpeech
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.util.Log
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
 import com.example.fitnessapp.utils.MySoundPool
 import com.example.fitnessapp.utils.TimeUtils
@@ -27,6 +29,11 @@ class ExerciseViewModel @Inject constructor(
     var updateToolbar = MutableLiveData<String>()
     private var timer: CountDownTimer? = null // переменная для таймера
     var currentDay: DayModel? = null
+    var statisticModel: StatisticModel? = null // глобал переменная для получения статистики
+    private var exercisesOfTheDay: List<ExerciseModel> = emptyList()
+    /*
+    открывая переменную на уровне класа, тем самым мы делаем её глобальной
+     */
     private var exercisesStack: List<ExerciseModel> =
         emptyList() // изначально пустой список с упражнениями который мы заполним позже
     private var doneExerciseCounter = 0 // это счётчик для упражнений ( функция nextExercise() )
@@ -49,11 +56,52 @@ class ExerciseViewModel @Inject constructor(
          */
     }
 
+    private fun getStatistic() = viewModelScope.launch {
+        val currentDate = TimeUtils.getCurrentDate()
+        statisticModel = mainDb.statisticDao.getStatisticByDate(currentDate) // Если статистика есть выдаст, если нет - то выдаст null
+
+    }
+
+    private fun createStatistic() : StatisticModel {
+        var kcal = 0
+        var time = 0
+exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
+    kcal += model.kcal
+    time += getTimeFromExercise(model)
+
+}
+        /*
+        exercisesOfTheDay суб лист от 0 до элемента doneExerciseCounter мы перебираем с помощью цикла forEach
+         */
+
+        return statisticModel?.copy(
+            kcal = kcal,
+            workoutTime = time.toString()
+        ) ?: StatisticModel(
+            null,  // если id null то запишется новый id в статистик модел ( мы указали стратегию)
+            TimeUtils.getCurrentDate(),
+            kcal = kcal,
+            workoutTime = time.toString()
+            )
+
+        /*
+        таким образом мы либо перезаписываем статистику ( если уже получили её до этого и она
+        не null, либо создаём новую статистику ( оператор элвиса) и передаём её
+         */
+    }
+
+    private fun getTimeFromExercise(exerciseModel: ExerciseModel): Int{
+        return if (exerciseModel.time.startsWith("x")){
+            exerciseModel.time.replace("x", "").toInt()*2
+        }
+        else exerciseModel.time.toInt()
+    }
+
     fun getExercises(dayModel: DayModel) = viewModelScope.launch {
         currentDay = dayModel.id?.let { mainDb.daysDao.getDay(it) }
 
         val exerciseList = mainDb.exerciseDao.getAllExercises()
-        val exercisesOfTheDay = exerciseHelper.getExercisesOfTheDay(
+        exercisesOfTheDay = exerciseHelper.getExercisesOfTheDay(
             dayModel.exercises,
             exerciseList
         )
@@ -75,6 +123,7 @@ class ExerciseViewModel @Inject constructor(
             )
 
         )
+        getStatistic()
         nextExercise()
 
 
@@ -181,6 +230,10 @@ class ExerciseViewModel @Inject constructor(
                 }
             )
         )
+
+        viewModelScope.launch {
+            mainDb.statisticDao.insertDayStatistic(createStatistic())
+        }
     }
     /*
     currentDay это экземпляр ДейМодел, и мы записываем готов день или нет

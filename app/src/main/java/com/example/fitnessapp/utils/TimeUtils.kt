@@ -16,6 +16,14 @@ object TimeUtils {
         return formatter.format(cv.time)
     }  // Собственно, это функция для перевода времени в МС, урок 17.
 
+    fun getCurrentDate(): String{
+        val cv = Calendar.getInstance()
+        return cvFormatter.format(cv.time)
+/*
+"dd/MM/yyyy" - функция вернет нам время в таком формате
+ */
+    }
+
 
     fun getCalendarFromDate(date: String) : java.util.Calendar{
         return java.util.Calendar.getInstance().apply {
