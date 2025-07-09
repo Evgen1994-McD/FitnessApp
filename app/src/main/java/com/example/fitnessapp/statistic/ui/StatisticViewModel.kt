@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.applandeo.materialcalendarview.EventDay
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ class StatisticViewModel @Inject constructor(
     private val mainDb: MainDb
 ) : ViewModel() {
     val eventListData = MutableLiveData<List<EventDay>>()
+    val statisticData = MutableLiveData<StatisticModel>()
 
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
@@ -33,6 +35,25 @@ eventList.add(
         }
 eventListData.value = eventList
 
+    }
+
+
+
+    fun getStatisticByDate(date: String) = viewModelScope.launch {
+statisticData.value = mainDb.statisticDao
+    .getStatisticByDate(date) ?: StatisticModel(
+        null,
+        date,
+        0,
+        "0"
+    )
+/*
+
+Получить статистику по дате.
+Даже если статистики нет ( null) - мы создадим пустой и отправим (значит пользователь
+ещё не занимался)
+
+ */
     }
 
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentSettingsBinding
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
+import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -46,7 +47,25 @@ class StatisticFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         calendarDateObserver()
+        statisitcObserver()
         model.getStatisticEvents()
+        model.getStatisticByDate(TimeUtils.getCurrentDate())
+    }
+
+    private fun statisitcObserver(){
+        model.statisticData.observe(viewLifecycleOwner) { statisticModel ->
+binding.apply {
+    time.text = TimeUtils.getWorkoutTime(
+        statisticModel.workoutTime.toLong()*1000) //умножили на 1000 потому что время надо в МС
+    kcal.text = statisticModel.kcal.toString()
+    date.text = if(TimeUtils.getCurrentDate()== statisticModel.date ){
+        "Сегодня"} else {
+            statisticModel.date
+        }
+
+}
+
+        }
     }
 
 

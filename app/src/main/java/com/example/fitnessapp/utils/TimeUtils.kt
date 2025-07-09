@@ -9,12 +9,23 @@ import java.util.Date
 
 object TimeUtils {
     val formatter = SimpleDateFormat("mm:ss")
+    val workoutFormatter = SimpleDateFormat("HH'h':mm'm'")
     val cvFormatter = SimpleDateFormat("dd/MM/yyyy")
+
+
     fun getTime(time:Long): String{
         val cv = Calendar.getInstance()
         cv.timeInMillis = time
         return formatter.format(cv.time)
     }  // Собственно, это функция для перевода времени в МС, урок 17.
+
+    fun getWorkoutTime(time:Long): String{
+        val cv = Calendar.getInstance()
+        cv.timeInMillis = time
+        return workoutFormatter.format(cv.time)
+    }  // Собственно, это функция для перевода времени в МС, урок 17.
+
+
 
     fun getCurrentDate(): String{
         val cv = Calendar.getInstance()
