@@ -13,13 +13,17 @@ import com.applandeo.materialcalendarview.listeners.OnDayClickListener
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentSettingsBinding
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
+import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter
+import com.example.fitnessapp.statistic.data.DateSelectorModel
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Month
 
 
 @AndroidEntryPoint
 class StatisticFragment : Fragment() {
-
+private lateinit var yearAdapter : DateSelectorAdapter
+private lateinit var monthAdapter : DateSelectorAdapter
     private var _binding: FragmentStatisticBinding? = null //ЭТО сам байндинг Налл
     private val binding get() = _binding!! // а здесь мы получаем байндинг
     private val model: StatisticViewModel by viewModels()
@@ -53,11 +57,57 @@ class StatisticFragment : Fragment() {
         ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
 ab?.title = "Статистика"
+        initRcViews()
         calendarDateObserver()
         statisitcObserver()
         onCalendarClick()
         model.getStatisticEvents()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
+    }
+
+    private fun initRcViews() = with(binding) {
+        val yearList = listOf(
+            DateSelectorModel(
+                "2020"
+            ),
+            DateSelectorModel(
+                "2021",
+                true
+            ),
+            DateSelectorModel(
+                "2022"
+            )
+        )
+
+        val monthList = listOf(
+            DateSelectorModel(
+                "Июль"
+            ),
+            DateSelectorModel(
+                "Август",
+                true
+            ),
+            DateSelectorModel(
+                "Сентябрь"
+            )
+        )
+        yearAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener{
+            override fun onItemClick(index: Int) {
+
+            }
+
+        })
+        monthAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener{
+            override fun onItemClick(index: Int) {
+
+            }
+
+        })
+dateWeightSelector.yearRcView.adapter = yearAdapter
+dateWeightSelector.monthRcView.adapter = monthAdapter
+
+        yearAdapter.submitList(yearList)
+        monthAdapter.submitList(monthList)
     }
 
     private fun statisitcObserver() {

@@ -17,7 +17,8 @@ class DateSelectorAdapter(private val listener: Listener): ListAdapter<DateSelec
         parent: ViewGroup,
         viewType: Int,
     ): Holder {
-    val view = LayoutInflater.from(parent.context).inflate(
+    val view = LayoutInflater.from(/* context = */ parent.context)
+        .inflate(
         R.layout.date_selected_list_item,
         parent,
         false
@@ -37,7 +38,7 @@ private val binding = DateSelectedListItemBinding.bind(view)
 
         fun bind(dateSelectorModel: DateSelectorModel) = with(binding){
            item.text = dateSelectorModel.text
-            if (item.isSelected){
+            if (dateSelectorModel.isSelected){
                 item.setTextColor(Color.WHITE)
                 item.setBackgroundResource(R.drawable.date_selected_bg)
             } else {
