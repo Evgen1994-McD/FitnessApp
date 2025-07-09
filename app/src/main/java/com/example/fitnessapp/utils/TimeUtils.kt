@@ -35,6 +35,16 @@ object TimeUtils {
  */
     }
 
+    fun getDateFromCalendar(c: java.util.Calendar) : String {
+        return cvFormatter.format(c.time)
+
+            /*
+            Здесб передали дату в виде календарь,
+            А вернули объект стринг
+             */
+        }
+
+
 
     fun getCalendarFromDate(date: String) : java.util.Calendar{
         return java.util.Calendar.getInstance().apply {
