@@ -1,5 +1,6 @@
 package com.example.fitnessapp.statistic.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import com.example.fitnessapp.databinding.DateSelectedListItemBinding
 import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter.Holder
 import com.example.fitnessapp.statistic.data.DateSelectorModel
 
-class DateSelectorAdapter: ListAdapter<DateSelectorModel, Holder>(Comparator()) {
+class DateSelectorAdapter(private val listener: Listener): ListAdapter<DateSelectorModel, Holder>(Comparator()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -21,7 +22,7 @@ class DateSelectorAdapter: ListAdapter<DateSelectorModel, Holder>(Comparator()) 
         parent,
         false
     )
-        return Holder(view)
+        return Holder(view, listener)
     }
 
     override fun onBindViewHolder(
@@ -31,11 +32,22 @@ class DateSelectorAdapter: ListAdapter<DateSelectorModel, Holder>(Comparator()) 
   holder.bind(getItem(position))
     }
 
-    class Holder(view: View ): RecyclerView.ViewHolder(view) {
+    class Holder(view: View, private val listener: Listener): RecyclerView.ViewHolder(view) {
 private val binding = DateSelectedListItemBinding.bind(view)
 
         fun bind(dateSelectorModel: DateSelectorModel) = with(binding){
            item.text = dateSelectorModel.text
+            if (item.isSelected){
+                item.setTextColor(Color.WHITE)
+                item.setBackgroundResource(R.drawable.date_selected_bg)
+            } else {
+                item.setTextColor(Color.GRAY)
+                item.setBackgroundResource(R.drawable.date_unselected_bg)
+            }
+            item.setOnClickListener {
+                listener.onItemClick(adapterPosition)
+            }
+
         }
 
     }
@@ -56,4 +68,9 @@ return oldItem == newItem
         }
 
     }
+
+    interface Listener{
+        fun onItemClick(index: Int)
+    }
+
 }
