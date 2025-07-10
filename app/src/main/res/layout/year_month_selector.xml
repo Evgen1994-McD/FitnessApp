@@ -14,7 +14,8 @@
         android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/date_selected_list_item"
-        tools:visibility="visible">
+        tools:visibility="visible"
+        >
 
     </androidx.recyclerview.widget.RecyclerView>
 
