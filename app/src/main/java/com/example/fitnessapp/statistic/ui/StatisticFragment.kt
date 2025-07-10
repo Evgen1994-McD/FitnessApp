@@ -22,8 +22,8 @@ import java.time.Month
 
 @AndroidEntryPoint
 class StatisticFragment : Fragment() {
-private lateinit var yearAdapter : DateSelectorAdapter
-private lateinit var monthAdapter : DateSelectorAdapter
+    private lateinit var yearAdapter: DateSelectorAdapter
+    private lateinit var monthAdapter: DateSelectorAdapter
     private var _binding: FragmentStatisticBinding? = null //ЭТО сам байндинг Налл
     private val binding get() = _binding!! // а здесь мы получаем байндинг
     private val model: StatisticViewModel by viewModels()
@@ -56,7 +56,7 @@ private lateinit var monthAdapter : DateSelectorAdapter
         super.onViewCreated(view, savedInstanceState)
         ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
-ab?.title = "Статистика"
+        ab?.title = "Статистика"
         initRcViews()
         calendarDateObserver()
         statisitcObserver()
@@ -91,23 +91,43 @@ ab?.title = "Статистика"
                 "Сентябрь"
             )
         )
-        yearAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener{
+        yearAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
             override fun onItemClick(index: Int) {
+                setSelectedDateForWeight(index, yearAdapter)
+            }
+
+        })
+        monthAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
+            override fun onItemClick(index: Int) {
+                setSelectedDateForWeight(index, monthAdapter)
 
             }
 
         })
-        monthAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener{
-            override fun onItemClick(index: Int) {
-
-            }
-
-        })
-dateWeightSelector.yearRcView.adapter = yearAdapter
-dateWeightSelector.monthRcView.adapter = monthAdapter
+        dateWeightSelector.yearRcView.adapter = yearAdapter
+        dateWeightSelector.monthRcView.adapter = monthAdapter
 
         yearAdapter.submitList(yearList)
         monthAdapter.submitList(monthList)
+    }
+
+
+    private fun setSelectedDateForWeight(index: Int, adapter: DateSelectorAdapter) {
+        val list = ArrayList<DateSelectorModel>(adapter.currentList)
+        for (i in list.indices) {
+            list[i] = list[i].copy(isSelected = false)
+        }
+        list[index] = list[index].copy(isSelected = true)
+        adapter.submitList(list)
+        /*
+        Передаём индекс нажатого элемента и адаптер
+        Далее при нажатии выбираем текущий лист
+        Очищаем всё ( чтобы убрать синее выделение у всего)
+        Выделяем выбранный элемент
+
+         for(i in list.indices)  - позволяет пробежать все элементы
+         и изменить одно значение ( на false) у всех
+         */
     }
 
     private fun statisitcObserver() {
@@ -126,10 +146,10 @@ dateWeightSelector.monthRcView.adapter = monthAdapter
         }
     }
 
-    private fun onCalendarClick(){
-        binding.cView.setOnDayClickListener(object : OnDayClickListener{
+    private fun onCalendarClick() {
+        binding.cView.setOnDayClickListener(object : OnDayClickListener {
             override fun onDayClick(eventDay: EventDay) {
-               model.getStatisticByDate(TimeUtils.getDateFromCalendar(eventDay.calendar))
+                model.getStatisticByDate(TimeUtils.getDateFromCalendar(eventDay.calendar))
             }
 
         })
