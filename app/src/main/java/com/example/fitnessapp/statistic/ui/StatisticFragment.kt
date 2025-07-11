@@ -99,28 +99,29 @@ class StatisticFragment : Fragment() {
         calendarDateObserver()
         statisitcObserver()
         onCalendarClick()
+        model.getYearList()
+
         model.getStatisticEvents()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
         model.getWeightByYearAndMonth()
+        observeYearList()
+
     }
 
+    private fun observeYearList(){
+        model.yearListData.observe(viewLifecycleOwner){ list ->
+            val yearTemp = ArrayList<DateSelectorModel>(list)
+            yearTemp[yearTemp.size - 1] =
+                yearTemp[yearTemp.size - 1].copy(isSelected = true)
+            model.year = yearTemp[yearTemp.size - 1].text.toInt()
+
+            yearAdapter.submitList(yearTemp)
+
+        }
+
+}
+
     private fun initRcViews() = with(binding) {
-        val yearList = listOf(
-            DateSelectorModel(
-                "2022"
-            ),
-            DateSelectorModel(
-                "2023"
-            ),
-            DateSelectorModel(
-                "2024"
-            ),
-            DateSelectorModel(
-                "2025"
-            )
-
-        )
-
 
         yearAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
             override fun onItemClick(index: Int) {
@@ -140,12 +141,6 @@ class StatisticFragment : Fragment() {
         dateWeightSelector.yearRcView.adapter = yearAdapter
         dateWeightSelector.monthRcView.adapter = monthAdapter
 
-        val yearTemp = ArrayList<DateSelectorModel>(yearList)
-        yearTemp[yearTemp.size - 1] =
-            yearTemp[yearTemp.size - 1].copy(isSelected = true)
-        model.year = yearTemp[yearTemp.size - 1].text.toInt()
-
-        yearAdapter.submitList(yearTemp)
 
 
         val monthTemp = ArrayList<DateSelectorModel>(UtilsArrays.monthList)

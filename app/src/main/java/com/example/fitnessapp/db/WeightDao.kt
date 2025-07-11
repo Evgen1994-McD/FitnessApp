@@ -15,6 +15,11 @@ interface WeightDao {
     ): List<WeightModel>
     // Тут мы фильтруем уже по месяцу и по году и когда есть совпадения нам выдаст результаты
 
+    @Query("SELECT * FROM weight_table") // фильтруем по году и месяцу
+    suspend fun getAllWeightList(
+    ): List<WeightModel>
+
+
     @Query("SELECT * FROM weight_table WHERE year = :year AND month =:month AND day =:day") // Сдесь мы хотим получить вес дня еслли он есть, либо Налл если нет
     suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel // чтобы пользователь не записывал много раз в один день
 

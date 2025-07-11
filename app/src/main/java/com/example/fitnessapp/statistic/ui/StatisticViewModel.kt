@@ -8,6 +8,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
+import com.example.fitnessapp.statistic.data.DateSelectorModel
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ class StatisticViewModel @Inject constructor(
     var month = Calendar.getInstance().get(Calendar.MONTH)
     val eventListData = MutableLiveData<List<EventDay>>()
     val statisticData = MutableLiveData<StatisticModel>()
+    val yearListData = MutableLiveData<List<DateSelectorModel>>()
 
     val weightListData = MutableLiveData<List<WeightModel>>()
 
@@ -60,6 +62,27 @@ statisticData.value = mainDb.statisticDao
 ещё не занимался)
 
  */
+    }
+
+    fun getYearList() = viewModelScope.launch {
+        val tempYearList = ArrayList<DateSelectorModel>()
+        val weightList = mainDb.weightDao.getAllWeightList()
+       weightList.forEach { weightModel ->
+
+           if(!tempYearList.any{ it.text.toInt() == weightModel.year }){
+               tempYearList.add(DateSelectorModel(
+                   weightModel.year.toString()
+               ))
+           }
+
+
+/*
+Будем перебирать все записи. Как только наткнемся на год например 2020 -
+записываем, остальные года 2020 пропускаем пока не дойдём до 2021 и так далее
+!tempYearList.any{ it.text.toInt() == weightModel.year } - с помощью any проверяем содержится данный год или нет
+ */
+       }
+yearListData.value = tempYearList
     }
 
     fun getWeightByYearAndMonth() = viewModelScope.launch {
