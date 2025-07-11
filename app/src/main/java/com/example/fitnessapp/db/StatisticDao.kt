@@ -17,4 +17,7 @@ interface StatisticDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDayStatistic(statisticModel: StatisticModel)
 
+    @Query("DELETE  FROM statistic_table") // получить всё из статистик тейбл
+    suspend fun clearStatistic()   //Опять же, мы будем получать один раз, поэтому это суспенд функция а не Флоу
+
 }
