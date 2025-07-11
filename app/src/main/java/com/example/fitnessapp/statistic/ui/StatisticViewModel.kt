@@ -82,7 +82,14 @@ statisticData.value = mainDb.statisticDao
 !tempYearList.any{ it.text.toInt() == weightModel.year } - с помощью any проверяем содержится данный год или нет
  */
        }
+        if(!tempYearList.isNullOrEmpty()){
 yearListData.value = tempYearList
+       } else {
+           tempYearList.add(DateSelectorModel(Calendar.getInstance().get(Calendar.YEAR).toString()
+           ))
+           yearListData.value = tempYearList
+
+    }
     }
 
     fun getWeightByYearAndMonth() = viewModelScope.launch {

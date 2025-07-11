@@ -103,7 +103,6 @@ class StatisticFragment : Fragment() {
 
         model.getStatisticEvents()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
-        model.getWeightByYearAndMonth()
         observeYearList()
 
     }
@@ -114,8 +113,8 @@ class StatisticFragment : Fragment() {
             yearTemp[yearTemp.size - 1] =
                 yearTemp[yearTemp.size - 1].copy(isSelected = true)
             model.year = yearTemp[yearTemp.size - 1].text.toInt()
-
             yearAdapter.submitList(yearTemp)
+            model.getWeightByYearAndMonth()
 
         }
 
