@@ -3,9 +3,11 @@ package com.example.fitnessapp.utils
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.view.LayoutInflater
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.runtime.Composable
 import com.example.fitnessapp.R
+import com.example.fitnessapp.databinding.WeightDialogBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 object DialogManager {   // Сначала сделал как класс, но он работает только если обджект. Как и фрагмент менеджер. Если мы укажем обжект - сможем добраться без инициализации класса. Если как класс - сначала надо его инициализировать.
@@ -29,9 +31,36 @@ dialog.show() // показываем диалог, иначе его не бу�
 
     }
 
+    fun showWeightDialog(context : Context, listener : WeightListener) {  // передаём контекст, mId - messageId ( это сообщение) - Так как ресурсы у нас это ИНТ!!!
+        val builder = MaterialAlertDialogBuilder(context) // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
+        val dialog =builder.create()
+        val binding = WeightDialogBinding.inflate(LayoutInflater.from(context))
+dialog.setView(binding.root)
+
+        binding.apply {
+            bCancel.setOnClickListener{
+                dialog.dismiss()
+            }
+
+            bSave.setOnClickListener{
+                listener.onClick(edWeight.text.toString())
+
+                dialog.dismiss()
+            }
+        }
+        dialog.show() // показываем диалог, иначе его не будет видн
+
+
+
+    }
+
+
     interface Listener {
         fun onClick()  // мы создали Интерфейс с функцией Он клик, это будет наш кликер :D
     }
 
+    interface WeightListener {
+        fun onClick(weight:String)  // мы создали Интерфейс с функцией Он клик, это будет наш кликер :D
+    }
 
 }

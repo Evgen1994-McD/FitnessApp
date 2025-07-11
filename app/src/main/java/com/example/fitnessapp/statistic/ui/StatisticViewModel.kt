@@ -7,15 +7,19 @@ import com.applandeo.materialcalendarview.EventDay
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
+import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class StatisticViewModel @Inject constructor(
     private val mainDb: MainDb
 ) : ViewModel() {
+    var year = -1
+    var month = -1
     val eventListData = MutableLiveData<List<EventDay>>()
     val statisticData = MutableLiveData<StatisticModel>()
 
@@ -54,6 +58,19 @@ statisticData.value = mainDb.statisticDao
 ещё не занимался)
 
  */
+    }
+
+    fun saveWeight(weight:Int) = viewModelScope.launch {
+        val cv =Calendar.getInstance()
+        mainDb.weightDao.insertWeight(
+            WeightModel(
+                null,
+                weight,
+                cv.get(Calendar.DAY_OF_MONTH),
+                cv.get(Calendar.MONTH),
+                cv.get(Calendar.YEAR)
+            )
+        )
     }
 
 }

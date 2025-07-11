@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import com.example.fitnessapp.databinding.FragmentSettingsBinding
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
 import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter
 import com.example.fitnessapp.statistic.data.DateSelectorModel
+import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Month
@@ -54,6 +56,23 @@ class StatisticFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.weightEditButton.setOnClickListener { 
+            DialogManager.showWeightDialog(requireContext(), object : DialogManager.WeightListener {
+                override fun onClick(weight: String) {
+                   if (weight.isNullOrEmpty()){ return
+                   } else { try {
+                       model.saveWeight(weight.toDouble().toInt())
+                   } catch (e: NumberFormatException){
+                       Toast.makeText(requireContext(), "Неверный формат", Toast.LENGTH_SHORT ).show()
+
+                   }
+
+                   }
+                }
+
+            })
+            
+        }
         ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
         ab?.title = "Статистика"
