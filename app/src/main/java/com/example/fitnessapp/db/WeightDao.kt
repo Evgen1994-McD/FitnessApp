@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WeightDao {
     @Query("SELECT * FROM weight_table WHERE year = :year AND month =:month") // фильтруем по году и месяцу
-    fun getMonthWeightList(
+   suspend fun getMonthWeightList(
         year: Int,
         month: Int
-    ): Flow<List<WeightModel>> // здесь снова флоу потому что важно видеть изменения.
+    ): List<WeightModel>
     // Тут мы фильтруем уже по месяцу и по году и когда есть совпадения нам выдаст результаты
 
     @Query("SELECT * FROM weight_table WHERE year = :year AND month =:month AND day =:day") // Сдесь мы хотим получить вес дня еслли он есть, либо Налл если нет

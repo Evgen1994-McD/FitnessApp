@@ -1,6 +1,7 @@
 package com.example.fitnessapp.statistic.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
 import com.example.fitnessapp.R
@@ -79,12 +81,14 @@ class StatisticFragment : Fragment() {
         ab =
             (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
         ab?.title = "Статистика"
+        weightListObserver()
         initRcViews()
         calendarDateObserver()
         statisitcObserver()
         onCalendarClick()
         model.getStatisticEvents()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
+        model.getWeightByYearAndMonth()
     }
 
     private fun initRcViews() = with(binding) {
@@ -142,6 +146,16 @@ class StatisticFragment : Fragment() {
         monthAdapter.submitList(monthTemp)
     }
 
+    private fun weightListObserver(){
+        model.weightListData.observe(viewLifecycleOwner){ list ->
+            list.forEach { weightModel ->
+                Log.d("MyLog", "Weight: ${weightModel.weight}")
+
+            }
+
+        }
+    }
+
 
     private fun setSelectedDateForWeight(index: Int, adapter: DateSelectorAdapter) {
         val list = ArrayList<DateSelectorModel>(adapter.currentList)
@@ -150,6 +164,7 @@ class StatisticFragment : Fragment() {
         }
         list[index] = list[index].copy(isSelected = true)
         adapter.submitList(list)
+        model.getWeightByYearAndMonth()
         /*
         Передаём индекс нажатого элемента и адаптер
         Далее при нажатии выбираем текущий лист

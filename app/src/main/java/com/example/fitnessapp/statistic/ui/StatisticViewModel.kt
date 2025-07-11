@@ -23,6 +23,8 @@ class StatisticViewModel @Inject constructor(
     val eventListData = MutableLiveData<List<EventDay>>()
     val statisticData = MutableLiveData<StatisticModel>()
 
+    val weightListData = MutableLiveData<List<WeightModel>>()
+
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
         val statisticList = mainDb.statisticDao.getStatistic()
@@ -58,6 +60,13 @@ statisticData.value = mainDb.statisticDao
 ещё не занимался)
 
  */
+    }
+
+    fun getWeightByYearAndMonth() = viewModelScope.launch {
+        weightListData.value = mainDb.weightDao.getMonthWeightList(
+            year,
+            month
+        )
     }
 
     fun saveWeight(weight:Int) = viewModelScope.launch {
