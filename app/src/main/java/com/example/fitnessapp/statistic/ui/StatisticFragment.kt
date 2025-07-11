@@ -16,10 +16,13 @@ import com.example.fitnessapp.databinding.FragmentSettingsBinding
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
 import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter
 import com.example.fitnessapp.statistic.data.DateSelectorModel
+import com.example.fitnessapp.statistic.utils.UtilsArrays
 import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Month
+import java.util.Calendar
+import java.util.Date
 
 
 @AndroidEntryPoint
@@ -87,37 +90,31 @@ class StatisticFragment : Fragment() {
     private fun initRcViews() = with(binding) {
         val yearList = listOf(
             DateSelectorModel(
-                "2020"
-            ),
-            DateSelectorModel(
-                "2021",
-                true
-            ),
-            DateSelectorModel(
                 "2022"
+            ),
+            DateSelectorModel(
+                "2023"
+            ),
+            DateSelectorModel(
+                "2024"
+            ),
+            DateSelectorModel(
+                "2025"
             )
+
         )
 
-        val monthList = listOf(
-            DateSelectorModel(
-                "Июль"
-            ),
-            DateSelectorModel(
-                "Август",
-                true
-            ),
-            DateSelectorModel(
-                "Сентябрь"
-            )
-        )
+
         yearAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
             override fun onItemClick(index: Int) {
+                model.year = yearAdapter.currentList[index].text.toInt()
                 setSelectedDateForWeight(index, yearAdapter)
             }
 
         })
         monthAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
             override fun onItemClick(index: Int) {
+                model.month = index
                 setSelectedDateForWeight(index, monthAdapter)
 
             }
@@ -126,8 +123,23 @@ class StatisticFragment : Fragment() {
         dateWeightSelector.yearRcView.adapter = yearAdapter
         dateWeightSelector.monthRcView.adapter = monthAdapter
 
-        yearAdapter.submitList(yearList)
-        monthAdapter.submitList(monthList)
+        val yearTemp = ArrayList<DateSelectorModel>(yearList)
+        yearTemp[yearTemp.size-1] =
+            yearTemp[yearTemp.size-1].copy(isSelected = true)
+        model.year = yearTemp[yearTemp.size-1].text.toInt()
+
+        yearAdapter.submitList(yearTemp)
+
+
+        val monthTemp = ArrayList<DateSelectorModel>(UtilsArrays.monthList)
+        monthTemp[Calendar.getInstance().get(Calendar.MONTH)] =
+                monthTemp[Calendar.getInstance().get(Calendar.MONTH)].copy(isSelected = true)
+        /*
+        Интересное решение.
+        У нас есть 12 месяцев в массиве.
+        Получаем мы их по порядковому номеру из календаря, и изменяем поле isSelected
+         */
+        monthAdapter.submitList(monthTemp)
     }
 
 

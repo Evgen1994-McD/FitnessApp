@@ -19,7 +19,7 @@ class StatisticViewModel @Inject constructor(
     private val mainDb: MainDb
 ) : ViewModel() {
     var year = -1
-    var month = -1
+    var month = Calendar.getInstance().get(Calendar.MONTH)
     val eventListData = MutableLiveData<List<EventDay>>()
     val statisticData = MutableLiveData<StatisticModel>()
 
