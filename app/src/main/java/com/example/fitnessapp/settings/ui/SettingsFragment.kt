@@ -43,6 +43,9 @@ class SettingsFragment : Fragment() {
                         }
                     })
             }
+            customTrainingSettingsButton.setOnClickListener {
+
+            }
         }
     }
 
