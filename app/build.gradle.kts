@@ -50,6 +50,8 @@ dependencies {
 
     // Календарь
     implementation("com.applandeo:material-calendar-view:1.9.2")
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Room
     val roomVersion = "2.5.0"

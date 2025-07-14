@@ -1,4 +1,4 @@
-package com.example.fitnessapp.customTraining.ui
+package com.example.fitnessapp.customTraining.daysList.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.DaysAdapter
 import com.example.fitnessapp.customTraining.adapter.CustomDaysAdapter
 import com.example.fitnessapp.databinding.FragmentCustomDaysListBinding
 import com.example.fitnessapp.db.DayModel

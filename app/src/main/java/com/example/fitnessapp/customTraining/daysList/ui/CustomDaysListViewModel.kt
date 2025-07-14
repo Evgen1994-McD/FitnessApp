@@ -1,9 +1,8 @@
-package com.example.fitnessapp.customTraining.ui
+package com.example.fitnessapp.customTraining.daysList.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.fitnessapp.customTraining.adapter.CustomDaysAdapter
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.MainDb
 import dagger.hilt.android.lifecycle.HiltViewModel

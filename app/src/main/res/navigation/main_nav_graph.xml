@@ -42,7 +42,7 @@
         tools:layout="@layout/fragment_statistic" />
     <fragment
         android:id="@+id/customDaysListFragment"
-        android:name="com.example.fitnessapp.customTraining.ui.CustomDaysListFragment"
+        android:name="com.example.fitnessapp.customTraining.daysList.ui.CustomDaysListFragment"
         android:label="fragment_custom_days_list"
         tools:layout="@layout/fragment_custom_days_list" />
 </navigation>

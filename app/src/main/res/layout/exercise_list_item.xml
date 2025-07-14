@@ -25,13 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="TextView"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/checkBoxImage"
         app:layout_constraintStart_toEndOf="@+id/imExercise"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,14 +59,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_check_bx_im_24" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginHorizontal="10dp"
-        android:background="@color/black_light"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView3"
-        app:layout_constraintHorizontal_bias="0.285"
-        app:layout_constraintStart_toEndOf="@+id/imExercise"></LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
