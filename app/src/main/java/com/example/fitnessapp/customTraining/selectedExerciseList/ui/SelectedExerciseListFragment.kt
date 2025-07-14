@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
 import com.example.fitnessapp.customTraining.selectedExerciseList.adapter.SelectedListExerciseAdapter
 import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
 import com.example.fitnessapp.db.ExerciseModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Collections
 
 @AndroidEntryPoint
 class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Listener {
@@ -48,17 +51,16 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
 
         )
     )
-private var binding: FragmentSelectedExerciseListBinding? = null
+    private var binding: FragmentSelectedExerciseListBinding? = null
     private val _binding get() = binding!!
     private lateinit var adapter: SelectedListExerciseAdapter
 
     private val model: SelectedExerciseListViewModel by viewModels()
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentSelectedExerciseListBinding.inflate(
             inflater,
@@ -75,21 +77,56 @@ private var binding: FragmentSelectedExerciseListBinding? = null
     }
 
 
-    private fun initRcView(){
+    private fun initRcView() {
         _binding.apply {
             rcView.layoutManager = LinearLayoutManager(requireContext())
             adapter = SelectedListExerciseAdapter(this@SelectedExerciseListFragment)
             rcView.adapter = adapter
             adapter.submitList(exerciseList)
+            createItemTouchHelper().attachToRecyclerView(rcView)
         }
+    }
+
+    private fun createItemTouchHelper(): ItemTouchHelper {
+        return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) { /*
+        с помощью ItemTouchHelper можем как перетаскивать вверх - вниз, так и свайпать элементы
+        В данном случае нас интересует только верх - низ.
+        Мы будем использовать функцию onMove, где между вью холдерами и таргет вью холдером
+        будем менять и перемешивать элементы.
+
+        Элементы для перемешивания берем как Адаптер. текущий лист
+       */
+            override fun onMove(
+                recyclerView: RecyclerView,
+                startItem: RecyclerView.ViewHolder,
+                targetItem: RecyclerView.ViewHolder,
+            ): Boolean {
+                val tempList = ArrayList<ExerciseModel>(adapter.currentList)
+                Collections.swap(tempList, startItem.adapterPosition, targetItem.adapterPosition)
+                adapter.submitList(tempList)
+                return true
+
+            }
+
+            override fun onSwiped(
+                viewHolder: RecyclerView.ViewHolder,
+                direction: Int,
+            ) {
+
+            }
+
+        }
+        )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding=null
+        binding = null
     }
 
     override fun onDelete() {
-    Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()
     }
 }
