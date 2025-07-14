@@ -11,7 +11,9 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.customTraining.chooseExercises.ui.adapter.ChooseExercisesAdapter
 import com.example.fitnessapp.databinding.FragmentChooseExercisesBinding
 import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     private lateinit var adapter: ChooseExercisesAdapter
     private var binding: FragmentChooseExercisesBinding? = null
@@ -36,6 +38,8 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRcView()
+        exerciseListObserver()
+        model.getAllExercises()
     }
 
     private fun initRcView() = with(_binding){
@@ -43,6 +47,13 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         adapter = ChooseExercisesAdapter(this@ChooseExercisesFragment)
         rcView.adapter = adapter
     }
+
+    private fun exerciseListObserver(){
+        model.exerciseListData.observe(viewLifecycleOwner){ list ->
+            adapter.submitList(list)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
