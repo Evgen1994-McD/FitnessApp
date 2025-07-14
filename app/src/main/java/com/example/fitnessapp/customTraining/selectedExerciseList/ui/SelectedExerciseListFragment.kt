@@ -20,38 +20,7 @@ import java.util.Collections
 
 @AndroidEntryPoint
 class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Listener {
-    val exerciseList = listOf(
-        ExerciseModel(
-            null,
-            "Push up",
-            "",
-            "x30",
-            false,
-            "otszhimania.gif",
-            62
 
-        ),
-        ExerciseModel(
-            null,
-            "Bicycle",
-            "",
-            "30",
-            false,
-            "bicycle.gif",
-            62
-
-        ),
-        ExerciseModel(
-            null,
-            "Push up",
-            "",
-            "x50",
-            false,
-            "otszhimania.gif",
-            62
-
-        )
-    )
     private var binding: FragmentSelectedExerciseListBinding? = null
     private val _binding get() = binding!!
     private lateinit var adapter: SelectedListExerciseAdapter
@@ -75,9 +44,33 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRcView()
+        dayObserver()
+        getArgs()
         _binding.addExercises.setOnClickListener {
             findNavController().navigate(R.id.chooseExercisesFragment)
         }
+    }
+
+    private fun dayObserver(){
+        model.dayData.observe(viewLifecycleOwner){ day ->
+            Toast.makeText(requireContext(), "Day id: ${day.id}", Toast.LENGTH_SHORT).show()
+
+        }
+    }
+
+    private fun getArgs(){
+        arguments.apply {
+             val dayId = this?.getInt("day_id") ?: -1
+            if(dayId != -1){
+model.getDayById(dayId)
+            }
+        }
+
+        /*
+        Получили аргументы дня который отправили с предыдущего фрагмента
+        По id во вью модел получаем день из БД и этот день
+        передаём на фрагмент через Лайв Дата
+         */
     }
 
 
@@ -86,7 +79,7 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
             rcView.layoutManager = LinearLayoutManager(requireContext())
             adapter = SelectedListExerciseAdapter(this@SelectedExerciseListFragment)
             rcView.adapter = adapter
-            adapter.submitList(exerciseList)
+
             createItemTouchHelper().attachToRecyclerView(rcView)
         }
     }

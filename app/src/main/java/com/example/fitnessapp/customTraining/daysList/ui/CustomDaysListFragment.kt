@@ -83,7 +83,10 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
         }
 
     override fun onClick(day: DayModel) {
-     findNavController().navigate(R.id.selectedExerciseListFragment)
+        val bundle = Bundle().apply {
+            putInt("day_id", day.id ?: -1)
+        }
+     findNavController().navigate(R.id.selectedExerciseListFragment, bundle)
     }
 
     override fun onDelete(day: DayModel) {
