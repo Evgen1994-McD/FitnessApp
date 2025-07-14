@@ -25,8 +25,11 @@ class DaysAdapter(var listener: Listener) :
                 checkBoxImage.visibility = if (day.isDone) View.VISIBLE else View.INVISIBLE // заменили чек бокс и прописали условие
                 val exCounter =
                     day.exercises.split(",").size.toString() // мы передали сюда day. А там есть строка exercices. Мы сейчас её разделим по символу и получим массив. c
-                tvCounter.text =
+                tvCounter.text = if (day.exercises.isEmpty()) {
+                     "0 " + root.context.getString(R.string.exercises)
+                } else {
                     exCounter + " " + root.context.getString(R.string.exercises)// передали строку которую перевели в массив, узнали её размер и перевели в стринг. Таким образом мы узнали количетство упражнений в каждом дне
+                }
                 itemView.setOnClickListener { listener.onClick(day.copy(dayNumber = adapterPosition + 1)) }
 
             }

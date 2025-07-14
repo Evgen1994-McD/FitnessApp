@@ -90,5 +90,10 @@ dependencies {
 
     // Дополнительные зависимости
     implementation("androidx.fragment:fragment-ktx:1.8.6") // Зависимость для фрагментов
+
+    //live data
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
+
+
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
 }
