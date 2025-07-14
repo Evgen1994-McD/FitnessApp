@@ -14,16 +14,14 @@ import com.example.fitnessapp.utils.TimeUtils
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
-class SelectedListExerciseAdapter() :
+class SelectedListExerciseAdapter( val listener: Listener) :
     ListAdapter<ExerciseModel, SelectedListExerciseAdapter.ExerciseHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
 
-    class ExerciseHolder(view: View) :
+    class ExerciseHolder(view: View, val listener: Listener) :
         RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
         private val binding = SelectedExerciseListItemBinding.bind(view)
 
         fun setData(exercise: ExerciseModel) = with(binding) {
-            checkBoxImage.visibility =
-                if (exercise.isDone) View.VISIBLE else View.INVISIBLE// Там где будет из isDone = true - то отметим чек бокс. ИЗИ
 
 
             tvNameEx.text = exercise.name //Название упражнения
@@ -35,7 +33,9 @@ class SelectedListExerciseAdapter() :
                     exercise.image
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
-
+delete.setOnClickListener {
+    listener.onDelete()
+}
         }
 
         private fun getTime(time: String): String {
@@ -51,7 +51,7 @@ class SelectedListExerciseAdapter() :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.selected_exercise_list_item, parent, false)
-        return ExerciseHolder(view)
+        return ExerciseHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: ExerciseHolder, position: Int) {
@@ -70,7 +70,11 @@ class SelectedListExerciseAdapter() :
             return oldItem == newItem
         }
 
+
+
     }
 
-
+    interface Listener{
+        fun onDelete()
+    }
 }

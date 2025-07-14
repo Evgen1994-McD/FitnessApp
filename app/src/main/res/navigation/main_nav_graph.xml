@@ -45,4 +45,9 @@
         android:name="com.example.fitnessapp.customTraining.daysList.ui.CustomDaysListFragment"
         android:label="fragment_custom_days_list"
         tools:layout="@layout/fragment_custom_days_list" />
+    <fragment
+        android:id="@+id/selectedExerciseListFragment"
+        android:name="com.example.fitnessapp.customTraining.selectedExerciseList.ui.SelectedExerciseListFragment"
+        android:label="fragment_selected_exercise_list"
+        tools:layout="@layout/fragment_selected_exercise_list" />
 </navigation>

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.customTraining.adapter.CustomDaysAdapter
@@ -82,7 +83,7 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
         }
 
     override fun onClick(day: DayModel) {
-        TODO("Not yet implemented")
+     findNavController().navigate(R.id.selectedExerciseListFragment)
     }
 
     override fun onDelete(day: DayModel) {

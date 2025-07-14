@@ -14,13 +14,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginHorizontal="10dp">
 
         <ImageView
             android:id="@+id/imExercise"
             android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +38,7 @@
             android:text="TextView"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/checkBoxImage"
+            app:layout_constraintEnd_toStartOf="@+id/delete"
             app:layout_constraintStart_toEndOf="@+id/imExercise"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,7 +55,7 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <ImageView
-            android:id="@+id/checkBoxImage"
+            android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
