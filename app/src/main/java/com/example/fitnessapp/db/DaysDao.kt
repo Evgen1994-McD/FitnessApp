@@ -1,6 +1,7 @@
 package com.example.fitnessapp.db
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -22,5 +23,8 @@ suspend fun getDay(dayId: Int) : DayModel
 
     @Query("SELECT * FROM day_model_table")
    suspend fun getAllDays() : List<DayModel>
+
+   @Delete
+   suspend fun deleteDay(dayModel: DayModel)
 
 }

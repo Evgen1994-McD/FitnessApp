@@ -9,14 +9,15 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.adapter.DaysAdapter
+import com.example.fitnessapp.customTraining.adapter.CustomDaysAdapter
 import com.example.fitnessapp.databinding.FragmentCustomDaysListBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.utils.DialogManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CustomDaysListFragment : Fragment(), DaysAdapter.Listener {
-    private lateinit var daysAdapter: DaysAdapter
+class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
+    private lateinit var daysAdapter: CustomDaysAdapter
 
         private var _binding: FragmentCustomDaysListBinding? = null //ЭТО сам байндинг Налл
         private val binding get() = _binding!! // а здесь мы получаем байндинг
@@ -60,7 +61,7 @@ class CustomDaysListFragment : Fragment(), DaysAdapter.Listener {
     private fun initRcView(){
         binding.apply {
             rcView.layoutManager = LinearLayoutManager(requireContext())
-            daysAdapter = DaysAdapter(this@CustomDaysListFragment)
+            daysAdapter = CustomDaysAdapter(this@CustomDaysListFragment)
             rcView.adapter = daysAdapter
         }
     }
@@ -83,6 +84,22 @@ class CustomDaysListFragment : Fragment(), DaysAdapter.Listener {
 
     override fun onClick(day: DayModel) {
         TODO("Not yet implemented")
+    }
+
+    override fun onDelete(day: DayModel) {
+DialogManager.showDialog(requireContext(), R.string.delete_day, object :DialogManager.Listener{
+    override fun onClick() {
+      model.deleteDay(day)
+    }
+/*
+Удаление добавленных дней
+Добавили иконку
+Добавили строку, вызываем диалог при нажантии
+Если пользователь хочет удалить, с помощью вью модел( написали там функцию)
+- Удалаяем
+ */
+})
+
     }
 
     /*

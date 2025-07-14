@@ -24,7 +24,7 @@
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>
     <string name="reset_day_message">Хотите снова повторить этот день?</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_day">Вы действительно хотите удалить этот день?</string>
 
 
 </resources>
