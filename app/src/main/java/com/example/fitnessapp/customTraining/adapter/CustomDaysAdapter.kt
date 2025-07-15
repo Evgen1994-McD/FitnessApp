@@ -24,7 +24,7 @@ class CustomDaysAdapter(var listener: Listener) :
                     root.context.getString(R.string.day) + " " + "${adapterPosition + 1}"   // через контекст !binding! получили доступ к ресурсам и собрали строку из
                 tvName.text = name
                 val exCounter =
-                    ((day.exercises.split(",").size)-1).toString() // мы передали сюда day. А там есть строка exercices. Мы сейчас её разделим по символу и получим массив. c
+                    ((day.exercises.split(",").size)).toString() // мы передали сюда day. А там есть строка exercices. Мы сейчас её разделим по символу и получим массив. c
                 tvCounter.text = if (day.exercises.isEmpty()) {
                      "0 " + root.context.getString(R.string.exercises)
                 } else {

@@ -84,6 +84,9 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         if (exercise.id!= -1) {
             newExercises += ",${exercise.id}"
         }
+        val count = newExercises.split(",").size - 1
+        val choosenCounterText = "Выбрано упражнений : $count"
+        _binding.tvChoosenExCounter.text = choosenCounterText
         Snackbar.make(_binding.rcView, "Exercise ${exercise.name} added", Snackbar.LENGTH_SHORT).show()
     }
 

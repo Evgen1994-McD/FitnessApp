@@ -29,9 +29,12 @@ private var dayModel: DayModel? = null
     }
 
     fun updateDay(exercises: String) = viewModelScope.launch {
+        val tempExercises = exercises.replaceFirst(",", "")
         mainDb.daysDao.insertDay(
             dayModel?.copy(
-                exercises = exercises
+                doneExerciseCounter = 0,
+                isDone = false,
+                exercises = tempExercises
             )!!)
     }
 }

@@ -28,8 +28,13 @@ private var dayModel: DayModel? = null
 
     fun updateDay(exercises: String) = viewModelScope.launch {
         val oldExercises = dayModel?.exercises ?: ""
+        val tempExercises = if(oldExercises.isEmpty()){
+            exercises.replaceFirst(",", "")
+        } else {
+            exercises
+        }
         dayModel?.copy(
-            exercises = oldExercises + exercises
+            exercises = oldExercises + tempExercises
         )?.let {
             mainDb.daysDao.insertDay(it)
         }

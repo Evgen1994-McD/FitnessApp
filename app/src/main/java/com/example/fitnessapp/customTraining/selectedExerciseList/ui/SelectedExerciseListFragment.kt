@@ -61,7 +61,10 @@ _binding.textEmpty.visibility = if(list.isEmpty()){
     View.VISIBLE
 } else {
     View.GONE
+
 }
+            val count = "Количество упражнений: ${list.size}"
+            _binding.tvExCount.text = count
             adapter.submitList(list)
         }
     }
