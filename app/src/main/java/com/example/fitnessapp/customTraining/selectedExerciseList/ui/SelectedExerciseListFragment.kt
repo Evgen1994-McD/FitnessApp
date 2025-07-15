@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,17 +53,24 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
     }
 
     private fun dayObserver(){
-        model.dayData.observe(viewLifecycleOwner){ day ->
-            Toast.makeText(requireContext(), "Day id: ${day.id}", Toast.LENGTH_SHORT).show()
-
+        model.exerciseData.observe(viewLifecycleOwner){ list ->
+_binding.textEmpty.visibility = if(list.isEmpty()){
+    View.VISIBLE
+} else {
+    View.GONE
+}
+            adapter.submitList(list)
         }
     }
 
     private fun getArgs(){
         arguments.apply {
              val dayId = this?.getInt("day_id") ?: -1
+             val dayNumber = this?.getInt("day_number") ?: -1
+            (requireActivity() as AppCompatActivity).
+                supportActionBar?.title = "День ${dayNumber}"
             if(dayId != -1){
-model.getDayById(dayId)
+model.getExercises(dayId)
             }
         }
 

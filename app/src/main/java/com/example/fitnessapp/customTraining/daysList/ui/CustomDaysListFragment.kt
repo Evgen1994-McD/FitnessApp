@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -38,6 +39,9 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+            (requireActivity() as AppCompatActivity).
+                supportActionBar?.title = "Custom Training"
+
             binding.addNewDayButton.setOnClickListener {
                 model.insertDay(
                     DayModel(null,
@@ -85,6 +89,7 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
     override fun onClick(day: DayModel) {
         val bundle = Bundle().apply {
             putInt("day_id", day.id ?: -1)
+            putInt("day_number", day.dayNumber)
         }
      findNavController().navigate(R.id.selectedExerciseListFragment, bundle)
     }

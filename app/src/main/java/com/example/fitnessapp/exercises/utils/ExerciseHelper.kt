@@ -55,13 +55,15 @@ val templist = ArrayList<ExerciseModel>()
 val exercisesIndexesArray = exercisesIndexes.split(",") // Это массив который получаем разделителем
         val tempList = ArrayList<ExerciseModel>()
         for (i in exercisesIndexesArray.indices){
-            tempList.add(
-                list[exercisesIndexesArray[i].toInt()]
-                /*
+            if (exercisesIndexesArray[i].isNotEmpty()) {
+                tempList.add(
+                    list[exercisesIndexesArray[i].toInt()]
+                    /*
                 В данном методе получаем упражнения нужного дня путём разделения переданной строки из БД
                 по запятой.
                  */
-            )
+                )
+            }
         }
         return tempList
     }
