@@ -110,10 +110,13 @@ yearListData.value = tempYearList
                 cv.get(Calendar.YEAR)
             )
         )
+        getWeightByYearAndMonth()
     }
 
     fun updateWeight(weightModel: WeightModel) = viewModelScope.launch {
         mainDb.weightDao.insertWeight(weightModel)
+        getWeightByYearAndMonth()
+
     }
 
 }

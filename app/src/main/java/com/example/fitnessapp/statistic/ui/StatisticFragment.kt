@@ -140,8 +140,8 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
 
 
         val monthTemp = ArrayList<DateSelectorModel>(UtilsArrays.monthList)
-        monthTemp[Calendar.getInstance().get(Calendar.MONTH)] =
-            monthTemp[Calendar.getInstance().get(Calendar.MONTH)].copy(isSelected = true)
+        monthTemp[model.month] =
+            monthTemp[model.month].copy(isSelected = true)
         /*
         Интересное решение.
         У нас есть 12 месяцев в массиве.
