@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.customTraining.chooseExercises.ui.adapter.ChooseExercisesAdapter
@@ -15,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
+    private var newExercises = ""
     private lateinit var adapter: ChooseExercisesAdapter
     private var binding: FragmentChooseExercisesBinding? = null
     private val _binding get() = binding!!
@@ -37,6 +40,11 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding.doneButton.setOnClickListener {
+            model.updateDay(newExercises)
+            findNavController().popBackStack()
+        }
+        getArgs()
         initRcView()
         exerciseListObserver()
         model.getAllExercises()
@@ -53,6 +61,16 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
             adapter.submitList(list)
         }
     }
+    private fun getArgs() {
+        arguments.apply {
+            val dayId = this?.getInt("day_id") ?: -1
+
+            if (dayId != -1) {
+                model.getDayById(dayId)
+            }
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -60,7 +78,8 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
 
     override fun onClick(id: Int) {
-
+newExercises += ",$id"
     }
 
 }
+

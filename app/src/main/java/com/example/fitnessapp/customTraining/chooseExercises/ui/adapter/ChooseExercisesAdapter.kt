@@ -34,7 +34,7 @@ delete.visibility = View.INVISIBLE
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
             itemView.setOnClickListener {
-                listener.onClick(exercise.id!!)
+                listener.onClick(adapterPosition)
             }
 
         }

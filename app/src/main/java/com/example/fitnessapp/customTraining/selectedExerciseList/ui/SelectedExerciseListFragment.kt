@@ -21,7 +21,7 @@ import java.util.Collections
 
 @AndroidEntryPoint
 class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Listener {
-
+private var dayId = -1
     private var binding: FragmentSelectedExerciseListBinding? = null
     private val _binding get() = binding!!
     private lateinit var adapter: SelectedListExerciseAdapter
@@ -48,7 +48,10 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
         dayObserver()
         getArgs()
         _binding.addExercises.setOnClickListener {
-            findNavController().navigate(R.id.chooseExercisesFragment)
+            val bundle = Bundle().apply {
+                putInt("day_id", dayId)
+            }
+            findNavController().navigate(R.id.chooseExercisesFragment, bundle)
         }
     }
 
@@ -65,7 +68,7 @@ _binding.textEmpty.visibility = if(list.isEmpty()){
 
     private fun getArgs(){
         arguments.apply {
-             val dayId = this?.getInt("day_id") ?: -1
+             dayId = this?.getInt("day_id") ?: -1
              val dayNumber = this?.getInt("day_number") ?: -1
             (requireActivity() as AppCompatActivity).
                 supportActionBar?.title = "День ${dayNumber}"
