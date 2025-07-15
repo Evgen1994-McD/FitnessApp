@@ -1,21 +1,16 @@
 package com.example.fitnessapp.statistic.ui
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.Color
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
-import com.example.fitnessapp.R
-import com.example.fitnessapp.databinding.FragmentSettingsBinding
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter
@@ -28,16 +23,18 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Month
 import java.util.Calendar
-import java.util.Date
 
 
 @AndroidEntryPoint
-class StatisticFragment : Fragment() {
+class StatisticFragment : Fragment(), OnChartValueSelectedListener {
+    private var currentWeightList : List<WeightModel>? = null
     private lateinit var yearAdapter: DateSelectorAdapter
     private lateinit var monthAdapter: DateSelectorAdapter
     private var _binding: FragmentStatisticBinding? = null //ЭТО сам байндинг Налл
@@ -155,8 +152,8 @@ class StatisticFragment : Fragment() {
 
     private fun weightListObserver() {
         model.weightListData.observe(viewLifecycleOwner) { list ->
-
                 setChartData(list)
+            currentWeightList = list
 
 
 
@@ -231,6 +228,7 @@ class StatisticFragment : Fragment() {
 
     private fun barChartSettings() {
         binding.apply {
+            barChart.setOnChartValueSelectedListener(this@StatisticFragment)
             barChart.description.isEnabled = false
             barChart.legend.apply {
                 horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
@@ -287,5 +285,43 @@ class StatisticFragment : Fragment() {
         }
     }
 
+    override fun onValueSelected(
+        e: Entry?,
+        h: Highlight?,
+    ) {
+        val dayNumber =(( e as BarEntry).x + 1).toInt() // + 1 из за форматтера так как массивы и график начинается с 0
+        val weightModel = getWeightModelByDay(dayNumber) ?: return
+
+        DialogManager.showWeightDialog(
+            requireContext(),
+            object : DialogManager.WeightListener{
+                override fun onClick(weight: String) {
+                    model.updateWeight(weightModel.copy(
+                        weight = weight.toInt()
+                    ))
+
+                }
+
+            },
+            weightModel.weight.toString()
+        )
+    }
+
+    override fun onNothingSelected() {
+
+    }
+
+
+    private fun getWeightModelByDay(day: Int) : WeightModel? {
+        val daysList = currentWeightList?.filter {
+            it.day == day
+        }
+        return if (daysList.isNullOrEmpty() ){
+            null
+        } else
+        {
+            daysList[0]
+        }
+    }
 
 }

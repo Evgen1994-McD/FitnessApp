@@ -112,4 +112,8 @@ yearListData.value = tempYearList
         )
     }
 
+    fun updateWeight(weightModel: WeightModel) = viewModelScope.launch {
+        mainDb.weightDao.insertWeight(weightModel)
+    }
+
 }
