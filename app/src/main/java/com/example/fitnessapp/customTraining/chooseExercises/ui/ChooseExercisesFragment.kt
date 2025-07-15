@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.Snackbar
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.customTraining.chooseExercises.ui.adapter.ChooseExercisesAdapter
 import com.example.fitnessapp.databinding.FragmentChooseExercisesBinding
 import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
+import com.example.fitnessapp.db.ExerciseModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -77,10 +80,11 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         binding = null
     }
 
-    override fun onClick(id: Int) {
-        if (id!= -1) {
-            newExercises += ",$id"
+    override fun onClick(exercise: ExerciseModel) {
+        if (exercise.id!= -1) {
+            newExercises += ",${exercise.id}"
         }
+        Snackbar.make(_binding.rcView, "Exercise ${exercise.name} added", Snackbar.LENGTH_SHORT).show()
     }
 
 }

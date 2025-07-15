@@ -11,6 +11,9 @@ android {
     namespace = "com.example.fitnessapp"
     compileSdk = 35
 
+
+
+
     defaultConfig {
         applicationId = "com.example.fitnessapp"
         minSdk = 29
@@ -38,6 +41,7 @@ android {
         compose = true
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -95,6 +99,10 @@ dependencies {
 
     //live data
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
+    //Lottie Animation
+    implementation(libs.dotlottie.android)
+    implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
+    implementation("com.airbnb.android:lottie:3.4.0")
 
 
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")  // GIF-библиотека (не рекомендуется использовать такую старую версию!)

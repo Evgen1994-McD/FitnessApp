@@ -1,8 +1,10 @@
 package com.example.fitnessapp.customTraining.chooseExercises.ui.adapter
 
+import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,27 @@ class ChooseExercisesAdapter(val listener: Listener) :
         RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
         private val binding = SelectedExerciseListItemBinding.bind(view)
 
+        init {
+            binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
+                override fun onAnimationStart(animation: Animator) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    binding.lottieView.visibility = View.INVISIBLE
+
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+
+                }
+            })
+        }
+
         fun setData(exercise: ExerciseModel) = with(binding) {
 
 delete.visibility = View.INVISIBLE
@@ -34,7 +57,10 @@ delete.visibility = View.INVISIBLE
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
             itemView.setOnClickListener {
-                listener.onClick(exercise.id ?: -1)
+                listener.onClick(exercise)
+                binding.lottieView.visibility = View.VISIBLE
+
+                lottieView.playAnimation()
             }
 
         }
@@ -76,6 +102,6 @@ delete.visibility = View.INVISIBLE
     }
 
     interface Listener{
-        fun onClick(id: Int)
+        fun onClick(exercise: ExerciseModel)
     }
 }
