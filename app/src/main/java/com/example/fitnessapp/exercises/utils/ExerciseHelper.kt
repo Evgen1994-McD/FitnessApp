@@ -50,14 +50,18 @@ val templist = ArrayList<ExerciseModel>()
     }
 
 
-    fun getExercisesOfTheDay(exercisesIndexes : String,
+    fun getExercisesOfTheDay(exercisesIds : String,
                              list : List<ExerciseModel>) : List<ExerciseModel>{
-val exercisesIndexesArray = exercisesIndexes.split(",") // Это массив который получаем разделителем
+val exercisesIdsArray = exercisesIds.split(",") // Это массив который получаем разделителем
         val tempList = ArrayList<ExerciseModel>()
-        for (i in exercisesIndexesArray.indices){
-            if (exercisesIndexesArray[i].isNotEmpty()) {
+        for (i in exercisesIdsArray.indices){
+            if (exercisesIdsArray[i].isNotEmpty()) {
+                val exerciseId = exercisesIdsArray[i].toInt()
+                val exercise = list.filter {
+                    it.id == exerciseId
+                } [0]
                 tempList.add(
-                    list[exercisesIndexesArray[i].toInt()]
+                    exercise
                     /*
                 В данном методе получаем упражнения нужного дня путём разделения переданной строки из БД
                 по запятой.
