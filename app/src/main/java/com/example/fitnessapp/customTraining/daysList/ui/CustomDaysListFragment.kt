@@ -40,13 +40,13 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             (requireActivity() as AppCompatActivity).
-                supportActionBar?.title = "Custom Training"
+                supportActionBar?.title = getString(R.string.custom_training_title_ab)
 
             binding.addNewDayButton.setOnClickListener {
                 model.insertDay(
                     DayModel(null,
                         "",
-                        "custom",
+                        getString(R.string.custom),
                         false,
                         0,
                         0)

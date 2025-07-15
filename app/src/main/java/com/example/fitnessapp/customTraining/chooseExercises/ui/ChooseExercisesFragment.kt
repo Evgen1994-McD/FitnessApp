@@ -1,19 +1,16 @@
 package com.example.fitnessapp.customTraining.chooseExercises.ui
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.customTraining.chooseExercises.ui.adapter.ChooseExercisesAdapter
 import com.example.fitnessapp.databinding.FragmentChooseExercisesBinding
-import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
 import com.example.fitnessapp.db.ExerciseModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,17 +50,18 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         model.getAllExercises()
     }
 
-    private fun initRcView() = with(_binding){
+    private fun initRcView() = with(_binding) {
         rcView.layoutManager = LinearLayoutManager(requireContext())
         adapter = ChooseExercisesAdapter(this@ChooseExercisesFragment)
         rcView.adapter = adapter
     }
 
-    private fun exerciseListObserver(){
-        model.exerciseListData.observe(viewLifecycleOwner){ list ->
+    private fun exerciseListObserver() {
+        model.exerciseListData.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
         }
     }
+
     private fun getArgs() {
         arguments.apply {
             val dayId = this?.getInt("day_id") ?: -1
@@ -81,13 +79,17 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
 
     override fun onClick(exercise: ExerciseModel) {
-        if (exercise.id!= -1) {
+        if (exercise.id != -1) {
             newExercises += ",${exercise.id}"
         }
         val count = newExercises.split(",").size - 1
-        val choosenCounterText = "Выбрано упражнений : $count"
+        val choosenCounterText = "${getString(R.string.selected_exercise_count)} $count"
         _binding.tvChoosenExCounter.text = choosenCounterText
-        Snackbar.make(_binding.rcView, "Exercise ${exercise.name} added", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+            _binding.rcView,
+            "${getString(R.string.selected_exercise_added)} ${exercise.name} ",
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
 }
