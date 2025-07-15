@@ -56,6 +56,11 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                 R.id.chooseExercisesFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
                 }
+                R.id.exListFragment ->{
+                    binding.bottomNavigationView.visibility = View.GONE
+                } R.id.exerciseFragment ->{
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dotlottie.dlplayer.Event
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.training.data.TrainingTopCardModel
@@ -19,6 +20,7 @@ class DaysViewModel @Inject constructor(
 
 val daysList = MutableLiveData<List<DayModel>>() // список дней с тренировками
 val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
+val isCustomListEmpty = MutableLiveData<Boolean>()
 
     fun getExerciseDaysByDifficulty ( trainingTopCardModel: TrainingTopCardModel) {
         viewModelScope.launch {  /* это трудоёмкая операция, поэтому делаем
@@ -38,6 +40,14 @@ daysList.value = list // передали лист который нашли
         }
     }
 
+    fun getCustomDaysList() = viewModelScope.launch {
+mainDb.daysDao.getAllDaysByDifficulty("custom").collect {
+isCustomListEmpty.value = it.isEmpty()
+}
+        /*
+        у нас Flow - поэтому мы делаем collect ( это не просто список)
+         */
+    }
 
     private fun getProgress(list:List<DayModel>): Int {
         var counter = 0

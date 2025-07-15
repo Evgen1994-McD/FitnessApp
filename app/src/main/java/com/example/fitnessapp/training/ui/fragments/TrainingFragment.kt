@@ -38,35 +38,22 @@ private lateinit var binding: FragmentTrainingBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val vpAdapter = VpAdapter(this) // Мутим метод онВьюкреатед и вызываем тут наш адаптер ВПадаптер
         topCardObserver()
+        isCustomTrainingEmpty()
+        model.getCustomDaysList()
 
-        binding.vp.adapter = vpAdapter //привязываем адаптер к ВьюПейджеру. Но мы хотим связать Пейджер и ТабЛайоут
-        //Для связки нужен специальный Медиатор
-
-
-
-        var ab =
-            (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
-
-        ab?.title = "Список тренировок"    // Хардкод потом перепишу
-
-        TabLayoutMediator(binding.tabLayout, binding.vp){ tab, pos ->  // Для применения указать таблайоут + ВьюПейджер
-//мы хотим менять названия у наших табов, сейчас этим и займемся
-            tab.text = getString(TrainingUtils.tabTitles[pos]) //Передаём в табы текст из ресурсов по позиции
-        }.attach() // обязательно делается Аттач, иначе не будет работать
-    binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){ // хотим знать какой фрагмент во вью пейджере
-        //мы открыли
-        override fun onPageSelected(position: Int) { // выбрали что будем знать фрагмент. тут передаётся 0, 1 или 2 позиция
-            // в соответствие с позицией уже открывается изи мидл или хард
-            super.onPageSelected(position)
-            model.getExerciseDaysByDifficulty(
-                TrainingUtils.topCardList[position]
-            )
-        }
-    })
     }
+    private fun isCustomTrainingEmpty(){
+        model.isCustomListEmpty.observe(viewLifecycleOwner){
+            val index = if(it){
+                1
+            } else {
+                0
+            }
+            initVpAdapter(index)
 
+        }
+    }
 
     private fun topCardObserver() = with(binding){
         model.topCardUpdate.observe(viewLifecycleOwner){ card ->
@@ -101,5 +88,28 @@ private fun animProgressBar ( progress : Int) {
      */
 }
 
+    private fun initVpAdapter(index: Int){
+        val vpAdapter = VpAdapter(this, index) // Мутим метод онВьюкреатед и вызываем тут наш адаптер ВПадаптер
+        binding.vp.adapter = vpAdapter //привязываем адаптер к ВьюПейджеру. Но мы хотим связать Пейджер и ТабЛайоут
+        //Для связки нужен специальный Медиатор
+        var ab =
+            (activity as AppCompatActivity).supportActionBar // Инициализировали экшнбар в он вью креатед
+
+        ab?.title = "Список тренировок"    // Хардкод потом перепишу
+        TabLayoutMediator(binding.tabLayout, binding.vp){ tab, pos ->  // Для применения указать таблайоут + ВьюПейджер
+//мы хотим менять названия у наших табов, сейчас этим и займемся
+            tab.text = getString(TrainingUtils.tabTitles[pos]) //Передаём в табы текст из ресурсов по позиции
+        }.attach() // обязательно делается Аттач, иначе не будет работать
+        binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){ // хотим знать какой фрагмент во вью пейджере
+            //мы открыли
+            override fun onPageSelected(position: Int) { // выбрали что будем знать фрагмент. тут передаётся 0, 1 или 2 позиция
+                // в соответствие с позицией уже открывается изи мидл или хард
+                super.onPageSelected(position)
+                model.getExerciseDaysByDifficulty(
+                    TrainingUtils.topCardList[position]
+                )
+            }
+        })
+    }
 
     }

@@ -33,6 +33,7 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
             val tempExerciseList = ArrayList<ExerciseModel>()
             day?.let { dayModel ->
                 dayModel.exercises.split(",").forEach { id ->
+                    if (id.isNullOrEmpty()) return@forEach //Выходим из цикла если id пуст или null
                     tempExerciseList.add(allExerciseList.filter {
                         it.id == id.toInt()
                     }[0])  // сюда добавляем номера упражнений данного дня, а ЗАТЕМ по номеру достаём нужные из allExrciseList и помещать в новый список (exerciseList)

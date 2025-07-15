@@ -18,9 +18,10 @@
     <string name="reset">Сбросить </string>
     <string name="alert">Внимание! </string>
     <string name="back">Отмена</string>
-    <string name="easy">EASY</string>
-    <string name="middle">MIDDLE</string>
-    <string name="hard">HARD</string>
+    <string name="easy">Easy</string>
+    <string name="middle">Middle</string>
+    <string name="hard">Hard</string>
+    <string name="custom">Custom</string>
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>
     <string name="reset_day_message">Хотите снова повторить этот день?</string>
     <!-- TODO: Remove or change this placeholder text -->
