@@ -34,7 +34,7 @@ class SelectedListExerciseAdapter( val listener: Listener) :
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
 delete.setOnClickListener {
-    listener.onDelete()
+    listener.onDelete(adapterPosition)
 }
         }
 
@@ -75,6 +75,6 @@ delete.setOnClickListener {
     }
 
     interface Listener{
-        fun onDelete()
+        fun onDelete(pos: Int)
     }
 }

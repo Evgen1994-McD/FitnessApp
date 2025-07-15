@@ -17,14 +17,21 @@ class SelectedExerciseListViewModel @Inject constructor(
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
 val exerciseData = MutableLiveData<List<ExerciseModel>>()
-
+private var dayModel: DayModel? = null
     fun getExercises(id: Int) = viewModelScope.launch {
-       val day  = mainDb.daysDao.getDay(id)
+       dayModel  = mainDb.daysDao.getDay(id)
         val exerciseList = mainDb.exerciseDao.getAllExercises()
         exerciseData.value = exerciseHelper.
         getExercisesOfTheDay(
-            day.exercises,
+            dayModel?.exercises!!,
             exerciseList
         )
+    }
+
+    fun updateDay(exercises: String) = viewModelScope.launch {
+        mainDb.daysDao.insertDay(
+            dayModel?.copy(
+                exercises = exercises
+            )!!)
     }
 }

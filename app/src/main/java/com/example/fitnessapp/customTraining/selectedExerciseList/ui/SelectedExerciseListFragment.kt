@@ -131,10 +131,23 @@ model.getExercises(dayId)
 
     override fun onDestroyView() {
         super.onDestroyView()
+updateDay()
         binding = null
     }
 
-    override fun onDelete() {
-        Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()
+    private fun updateDay(){
+        var exercises = ""
+        adapter.currentList.forEach {
+            exercises += ",${it.id}"
+        }
+        model.updateDay(exercises)
+    }
+    override fun onDelete(pos:Int) {
+        val tempList = ArrayList<ExerciseModel>(adapter.currentList)
+        tempList.removeAt(pos)
+        adapter.submitList(tempList)
+        if (tempList.isEmpty()){
+            _binding.textEmpty.visibility = View.VISIBLE
+        }
     }
 }

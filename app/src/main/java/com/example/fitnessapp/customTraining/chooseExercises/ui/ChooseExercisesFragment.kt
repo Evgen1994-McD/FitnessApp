@@ -78,7 +78,9 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
 
     override fun onClick(id: Int) {
-newExercises += ",$id"
+        if (id!= -1) {
+            newExercises += ",$id"
+        }
     }
 
 }
