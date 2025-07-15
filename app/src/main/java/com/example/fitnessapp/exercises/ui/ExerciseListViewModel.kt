@@ -32,8 +32,10 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
                 mainDb.exerciseDao.getAllExercises() // получаем список со всеми упражнениями который будем потом перебирать
             val tempExerciseList = ArrayList<ExerciseModel>()
             day?.let { dayModel ->
-                dayModel.exercises.split(",").forEach { index ->
-                    tempExerciseList.add(allExerciseList[index.toInt()])  // сюда добавляем номера упражнений данного дня, а ЗАТЕМ по номеру достаём нужные из allExrciseList и помещать в новый список (exerciseList)
+                dayModel.exercises.split(",").forEach { id ->
+                    tempExerciseList.add(allExerciseList.filter {
+                        it.id == id.toInt()
+                    }[0])  // сюда добавляем номера упражнений данного дня, а ЗАТЕМ по номеру достаём нужные из allExrciseList и помещать в новый список (exerciseList)
                 } // как в первой части мы разделяем по запятой, в результате получим массив в виде объекта String
                 if (dayModel.doneExerciseCounter>0) {
                     for (i in 0..<dayModel.doneExerciseCounter) {
