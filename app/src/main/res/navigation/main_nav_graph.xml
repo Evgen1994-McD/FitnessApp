@@ -9,17 +9,50 @@
         android:id="@+id/trainingFragment"
         android:name="com.example.fitnessapp.training.ui.fragments.TrainingFragment"
         android:label="fragment_training"
-        tools:layout="@layout/fragment_training" >
+        tools:layout="@layout/fragment_training">
         <action
             android:id="@+id/action_trainingFragment_to_exListFragment"
             app:destination="@id/exListFragment" />
     </fragment>
     <fragment
         android:id="@+id/exerciseFragment"
-        android:name="com.example.fitnessapp.fragments.ExerciseFragment"
-        android:label="ExerciseFragment" />
+        android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseFragment"
+        android:label="ExerciseFragment"
+        tools:layout="@layout/exercise"
+        />
     <fragment
         android:id="@+id/exListFragment"
-        android:name="com.example.fitnessapp.fragments.ExListFragment"
-        android:label="ExListFragment" />
+        android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseListFragment"
+        android:label="ExListFragment"
+        tools:layout="@layout/exercise_list_fragment"
+        >
+        <action
+            android:id="@+id/action_exListFragment_to_exerciseFragment"
+            app:destination="@id/exerciseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.fitnessapp.settings.ui.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/statisticFragment"
+        android:name="com.example.fitnessapp.statistic.ui.StatisticFragment"
+        android:label="fragment_statistic"
+        tools:layout="@layout/fragment_statistic" />
+    <fragment
+        android:id="@+id/customDaysListFragment"
+        android:name="com.example.fitnessapp.customTraining.daysList.ui.CustomDaysListFragment"
+        android:label="fragment_custom_days_list"
+        tools:layout="@layout/fragment_custom_days_list" />
+    <fragment
+        android:id="@+id/selectedExerciseListFragment"
+        android:name="com.example.fitnessapp.customTraining.selectedExerciseList.ui.SelectedExerciseListFragment"
+        android:label="fragment_selected_exercise_list"
+        tools:layout="@layout/fragment_selected_exercise_list" />
+    <fragment
+        android:id="@+id/chooseExercisesFragment"
+        android:name="com.example.fitnessapp.customTraining.chooseExercises.ui.ChooseExercisesFragment"
+        android:label="fragment_choose_exercises"
+        tools:layout="@layout/fragment_choose_exercises" />
 </navigation>

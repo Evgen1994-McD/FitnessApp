@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.WaitingFragmentBinding
+import com.example.fitnessapp.exercises.ui.fragments.ExerciseFragment
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.TimeUtils
 
@@ -37,11 +38,11 @@ class WaitingFragment : Fragment() {
         binding.pBar.max = COUNT_DOWN_TIME.toInt() // Установили максимальное значение прогресс бара
         startTimer()
         binding.bSkip.setOnClickListener {
-            FragmentManager.setFragment(
-                ExerciseFragment.newInstance(),
-                activity as AppCompatActivity //запускаем фрагмент с упражнениями если не хотим ждать таймер
-            )
-            timer.cancel() // останавливаем таймер при нажатии на кнопку
+//            FragmentManager.setFragment(
+//                ExerciseFragment.newInstance(),
+//                activity as AppCompatActivity //запускаем фрагмент с упражнениями если не хотим ждать таймер
+//            )
+//            timer.cancel() // останавливаем таймер при нажатии на кнопку
         }
     }
 
@@ -58,10 +59,10 @@ class WaitingFragment : Fragment() {
             }
 
             override fun onFinish() {
-                FragmentManager.setFragment(
-                    ExerciseFragment.newInstance(),
-                    activity as AppCompatActivity //запускаем фрагмент с упражнениями как закончится таймер
-                )
+//                FragmentManager.setFragment(
+//                    ExerciseFragment.newInstance(),
+//                    activity as AppCompatActivity //запускаем фрагмент с упражнениями как закончится таймер
+//                )
 
             }
 

@@ -40,7 +40,7 @@
             android:layout_marginBottom="4dp"
             android:fontFamily="sans-serif-condensed"
             android:text="TextView"
-            android:textColor="@color/progressbar_color"
+            android:textColor="@color/red"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tvName"
             app:layout_constraintHorizontal_bias="0.0"

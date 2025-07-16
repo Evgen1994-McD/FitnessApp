@@ -2,14 +2,10 @@ package com.example.fitnessapp.training.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -18,13 +14,8 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.adapter.DaysAdapter
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.db.DayModel
-import com.example.fitnessapp.db.ExerciseModel
-import com.example.fitnessapp.fragments.ExListFragment
 import com.example.fitnessapp.training.ui.DaysViewModel
-import com.example.fitnessapp.training.utilsfortraining.TrainingUtils
 import com.example.fitnessapp.utils.DialogManager
-import com.example.fitnessapp.utils.FragmentManager
-import com.example.fitnessapp.utils.MainViewModel
 
 @Suppress("DEPRECATION")
 class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
@@ -58,6 +49,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
         rcviewdays.layoutManager = LinearLayoutManager(activity as AppCompatActivity)
         rcviewdays.adapter = adapter
         rcviewdays.itemAnimator = null
+
     }
 
     private fun updateAdapter() {
@@ -100,15 +92,20 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
                 R.string.reset_day_message,
                 object : DialogManager.Listener{
                     override fun onClick() {
-
+                        model.resetSelectedDay(day)
+                        openExerciseListFragment(day)
                     } // с помощью Диалог менеджера сделал стирание только определенного дня, а не всех сразу. Получается, переиспользование кода выше, только с заменой ресурса
 // мы передаем количество выполненных упражнений в 0, поэтому день обнуляется при нажатии на диалог
                 })
 
 
-        }else {
-            openExerciseListFragment(day)
+        }else if(day.exercises.isEmpty()) {
+            Toast.makeText(requireContext(),
+                "В данном дне нет упражнений.",
+                Toast.LENGTH_SHORT).show()
 
+        } else {
+            openExerciseListFragment(day)
 
         }
     }
@@ -121,4 +118,6 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
 
         findNavController().navigate(R.id.action_trainingFragment_to_exListFragment, bundle)
     }
+
+
 }

@@ -3,14 +3,16 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-
-    id("com.google.devtools.ksp")  // для КСП
-    id("com.google.dagger.hilt.android")  // для даггера
+    id("com.google.devtools.ksp")      // для KSP
+    id("com.google.dagger.hilt.android") // для Dagger Hilt
 }
 
 android {
     namespace = "com.example.fitnessapp"
     compileSdk = 35
+
+
+
 
     defaultConfig {
         applicationId = "com.example.fitnessapp"
@@ -18,17 +20,14 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
@@ -42,31 +41,34 @@ android {
         compose = true
         viewBinding = true
     }
+
 }
 
 dependencies {
-    //Navigation
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-   implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") //Для отрисовки графиков
+
+    // Графики MPAndroidChart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Календарь
     implementation("com.applandeo:material-calendar-view:1.9.2")
-    // для календаря
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-//Room
-    val roomVersion = "2.5.0" // Используйте последнюю стабильную версию
-
+    // Room
+    val roomVersion = "2.5.0"
     implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion") // Для KSP
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
-
-    //Dagger Hilt
+    // Dagger Hilt
     val daggerVersion = "2.56.1"
     implementation("com.google.dagger:hilt-android:$daggerVersion")
-    ksp("com.google.dagger:hilt-compiler:$daggerVersion") // Для KSP
+    ksp("com.google.dagger:hilt-compiler:$daggerVersion")
 
-
-    implementation("androidx.room:room-ktx:$roomVersion") // Для Kotlin Extensions
+    // Core dependencies for Composable UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -75,11 +77,15 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // Other libraries
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.media3.common.ktx)
+
+    // Тестовые зависимости
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -87,8 +93,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Дополнительные зависимости
     implementation("androidx.fragment:fragment-ktx:1.8.6") // Зависимость для фрагментов
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")  // Библиотека для GIF - но она довольно старая, можно найти новее! (2022 год)
+
+    //live data
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
+    //Lottie Animation
+    implementation(libs.dotlottie.android)
+    implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
+    implementation("com.airbnb.android:lottie:3.4.0")
 
 
+    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
 }
