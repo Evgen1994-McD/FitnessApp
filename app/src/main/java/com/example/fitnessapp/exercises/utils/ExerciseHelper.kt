@@ -1,26 +1,34 @@
 package com.example.fitnessapp.exercises.utils
 
+import android.content.Context
+import com.example.fitnessapp.R
 import com.example.fitnessapp.db.ExerciseModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 
 @ViewModelScoped  //Пометили анотацией чтобы привязать этот класс к жизни ViewModel
-class ExerciseHelper @Inject constructor(
+class ExerciseHelper @Inject constructor(@ApplicationContext private val context: Context
 
 ) {
 
     fun createExerciseStack(list: List<ExerciseModel>) : List<ExerciseModel>{
 val templist = ArrayList<ExerciseModel>()
-        list.forEach { exercise ->
+        list.forEachIndexed {index, exercise ->
             templist.add(
                 exercise.copy(
-                    time = "11", // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
-                    subtitle = "Отдохните. Следующее упражнение:" // Это отдых
+                    time = context.getString(R.string.recovery), // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
+                    subtitle = if (index == 0) {
+                        context.getString(R.string.subtitle_start)
+                    } else {
+
+                        context.getString(R.string.subtitle) // Это отдых
+                    }
                 )
             )
             templist.add(
                 exercise.copy(
-                    subtitle = "Start" // Это уже само упражнение
+                    subtitle = context.getString(R.string.start) // Это уже само упражнение
                 )
             )
         }
@@ -33,11 +41,11 @@ val templist = ArrayList<ExerciseModel>()
             Некоторые поля не нужны, но их тоже надо заполнить для проформы.
              */
             null,
-            "Day Finish",
-            "Nice training",
+            context.getString(R.string.day_finish_name),
+            context.getString(R.string.day_finish_subtitle),
             "", // это финиш тут заполнили просто так, тут не важно
             true, // это финиш тут заполнили просто так, тут не важно
-            "congrats.gif", // из папки ассетс
+            context.getString(R.string.day_finish_gif), // из папки ассетс
             0
         )
     )

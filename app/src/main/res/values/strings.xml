@@ -36,6 +36,21 @@
     <string name="selected_exercise_count">Выбрано упражнений : </string>
     <string name="selected_exercise_added">Добавлено упражнение :  </string>
     <string name="custom_training_title_ab">Персональная тренировка</string>
+    <string name="selected_exercise_counter">Количество упражнений: </string>
+
+<!--    Exercise Helper-->
+    <string name="recovery">11</string>
+    <string name="subtitle">Отдохните. Следующее упражнение:</string>
+    <string name="subtitle_start">Приготовьтесь. Следующее упражнение:</string>
+
+    <string name="day_finish_name">Готово</string>
+    <string name="day_finish_subtitle">Отличная тренировка!</string>
+
+
+
+    <!--  Картинки для упражнений-->
+
+    <string name="day_finish_gif">congrats.gif</string>
 
 
 </resources>

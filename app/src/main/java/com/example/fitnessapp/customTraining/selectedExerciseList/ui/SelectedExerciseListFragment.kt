@@ -63,7 +63,7 @@ _binding.textEmpty.visibility = if(list.isEmpty()){
     View.GONE
 
 }
-            val count = "Количество упражнений: ${list.size}"
+            val count = "${getString(R.string.selected_exercise_count)} ${list.size}"
             _binding.tvExCount.text = count
             adapter.submitList(list)
         }
@@ -74,7 +74,7 @@ _binding.textEmpty.visibility = if(list.isEmpty()){
              dayId = this?.getInt("day_id") ?: -1
              val dayNumber = this?.getInt("day_number") ?: -1
             (requireActivity() as AppCompatActivity).
-                supportActionBar?.title = "День ${dayNumber}"
+                supportActionBar?.title = "${getString(R.string.day)} ${dayNumber}"
             if(dayId != -1){
 model.getExercises(dayId)
             }
