@@ -1,23 +1,29 @@
 [versions]
-agp = "8.9.0"
+agp = "8.9.3"
+dotlottieAndroid = "0.0.3"
 kotlin = "2.0.21"
-coreKtx = "1.15.0"
+coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.6.1"
+lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2024.09.00"
-appcompat = "1.7.0"
+composeBom = "2025.06.01"
+appcompat = "1.7.1"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
-media3CommonKtx = "1.5.1"
-navigationFragmentKtx = "2.8.9"
-navigationUiKtx = "2.8.9"
+media3CommonKtx = "1.7.1"
+navigationFragmentKtx = "2.9.1"
+navigationUiKtx = "2.9.1"
+legacySupportV4 = "1.0.0"
+lifecycleLivedataKtx = "2.9.1"
+lifecycleViewmodelKtx = "2.9.1"
+fragmentKtx = "1.8.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+dotlottie-android = { module = "com.github.LottieFiles:dotlottie-android", version.ref = "dotlottieAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -38,6 +44,10 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

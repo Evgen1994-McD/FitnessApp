@@ -1,15 +1,18 @@
 package com.example.fitnessapp.di
 
 import android.app.Application
+import android.speech.tts.TextToSpeech
 import androidx.room.Room
 import androidx.transition.Visibility
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.utils.App
+import com.example.fitnessapp.utils.MySoundPool
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.Locale
 import javax.inject.Singleton
 
 @Module //Мы создали модуль для даггера где будут методы которые будут инициализировтаь классы
@@ -31,4 +34,31 @@ object MainModule {
 
 
     }
+
+    @Provides
+    @Singleton
+    fun provideTTS(app: Application): TextToSpeech {
+        var tts: TextToSpeech? = null
+        tts = TextToSpeech(app){
+            if (TextToSpeech.SUCCESS==it){
+                tts?.setLanguage(Locale.getDefault())
+            }
+        }
+        return tts
+
+
+    }
+
+    @Provides
+    @Singleton
+    fun provideSoundPool(app: Application): MySoundPool {
+        return MySoundPool(app)
+/*
+Теперь мы можем получать инстанцию класса MySoundPool везде где нам
+заблагорассудится и получать звук с помощью @Inject
+ */
+
+    }
+
+
 }
