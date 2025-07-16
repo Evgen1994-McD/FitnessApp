@@ -7,7 +7,7 @@
     </style>
 
 
-    <style name="Theme.FitnessApp" parent="Theme.MaterialComponents.Light" >
+    <style name="Theme.FitnessApp" parent="Theme.MaterialComponents.Light.NoActionBar" >
         <item name="colorPrimary">@color/white</item>
         <item name="colorSecondary">@color/secondary</item>
         <item name="android:windowFullscreen">true</item>

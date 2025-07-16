@@ -41,6 +41,8 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+        val toolbar = binding.materialToolbar
+        setSupportActionBar(toolbar)
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController =  navHostFragment.navController
         bottomNavigationView = binding.bottomNavigationView

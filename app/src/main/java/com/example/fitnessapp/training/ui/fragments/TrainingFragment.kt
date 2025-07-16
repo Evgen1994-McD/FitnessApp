@@ -42,6 +42,7 @@ private lateinit var binding: FragmentTrainingBinding
         isCustomTrainingEmpty()
         model.getCustomDaysList()
 
+
     }
     private fun isCustomTrainingEmpty(){
         model.isCustomListEmpty.observe(viewLifecycleOwner){
