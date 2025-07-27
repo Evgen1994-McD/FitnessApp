@@ -125,7 +125,7 @@ findNavController()
     }
 
     private fun changeButtonText(title : String){
-        if (title == "Day Finish"){
+        if (title == getString(R.string.day_finish_name)){
             binding.bNext.text = getString(R.string.Done)
         }
     }

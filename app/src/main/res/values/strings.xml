@@ -17,7 +17,7 @@
     <string name="waiting_message">Начало упражнений через :</string>
     <string name="start">Начать</string>
     <string name="Next">Следующее</string>
-    <string name="GoodDone">Поздраляю!!! Ты молодец!</string>
+    <string name="GoodDone">Отлично,\nвы закончили\n тренировку!</string>
     <string name="Back">Назад в Меню</string>
     <string name="Done">Готово</string>
     <string name="Waiting">Приготовьтесь</string>
@@ -50,7 +50,8 @@
 
     <!--  Картинки для упражнений-->
 
-    <string name="day_finish_gif">congrats.gif</string>
+    <string name="day_finish_gif">finish_gif.gif</string>
+    <string name="day_finish_fire">finish_fire.gif</string>
 
 
 </resources>
