@@ -97,10 +97,11 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
         statisitcObserver()
         onCalendarClick()
         model.getYearList()
-
+        model.getMonthList()
         model.getStatisticEvents()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
         observeYearList()
+        observeMonthList()
 
     }
 
@@ -117,6 +118,31 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
 
 }
 
+    private fun observeMonthList(){
+        model.monthListData.observe(viewLifecycleOwner){ list ->
+            val monthTemp = ArrayList<DateSelectorModel>(list)
+            monthTemp[monthTemp.size - 1] =
+                monthTemp[monthTemp.size - 1].copy(isSelected = true)
+            model.month = monthTemp[monthTemp.size - 1].text.toInt()
+            val monthToText = monthTemp.map { currentItem ->
+                val index = currentItem.text.toIntOrNull()
+                if (index != null && index >= 0 && index < UtilsArrays.monthList.size) {
+                    currentItem.copy(text = UtilsArrays.monthList[index].text)
+                } else {
+                    currentItem // Оставляем текущий элемент неизменённым, если индекс вышел за диапазон
+                }
+            }
+            monthAdapter.submitList(monthToText)
+            model.getWeightByYearAndMonth()
+
+          }
+
+
+        }
+
+
+
+
     private fun initRcViews() = with(binding) {
 
         yearAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
@@ -128,7 +154,9 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
         })
         monthAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
             override fun onItemClick(index: Int) {
-                model.month = index
+                val monthName = monthAdapter.currentList[index].text
+                val findMonthIndex = UtilsArrays.monthList.indexOfFirst { it.text == monthName }
+                model.month = findMonthIndex
                 setSelectedDateForWeight(index, monthAdapter)
 
             }

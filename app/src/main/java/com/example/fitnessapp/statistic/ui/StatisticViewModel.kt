@@ -24,6 +24,7 @@ class StatisticViewModel @Inject constructor(
     val eventListData = MutableLiveData<List<EventDay>>()
     val statisticData = MutableLiveData<StatisticModel>()
     val yearListData = MutableLiveData<List<DateSelectorModel>>()
+    val monthListData = MutableLiveData<List<DateSelectorModel>>()
 
     val weightListData = MutableLiveData<List<WeightModel>>()
 
@@ -91,6 +92,37 @@ yearListData.value = tempYearList
 
     }
     }
+
+
+    fun getMonthList() = viewModelScope.launch {
+        val tempMonthList = ArrayList<DateSelectorModel>()
+        val weightList = mainDb.weightDao.getAllWeightList()
+        weightList.forEach { weightModel ->
+
+            if(!tempMonthList.any{ it.text.toInt() == weightModel.month }){
+                tempMonthList.add(DateSelectorModel(
+                    weightModel.month.toString()
+                ))
+            }
+
+
+            /*
+            Будем перебирать все записи. Как только наткнемся на год например 2020 -
+            записываем, остальные года 2020 пропускаем пока не дойдём до 2021 и так далее
+            !tempYearList.any{ it.text.toInt() == weightModel.year } - с помощью any проверяем содержится данный год или нет
+             */
+        }
+        if(!tempMonthList.isNullOrEmpty()){
+            monthListData.value = tempMonthList
+        } else {
+            tempMonthList.add(DateSelectorModel(Calendar.getInstance().get(Calendar.MONTH).toString()
+            ))
+            monthListData.value = tempMonthList
+
+        }
+    }
+
+
 
     fun getWeightByYearAndMonth() = viewModelScope.launch {
         weightListData.value = mainDb.weightDao.getMonthWeightList(
