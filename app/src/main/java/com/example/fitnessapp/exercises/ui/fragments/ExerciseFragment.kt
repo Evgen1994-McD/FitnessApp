@@ -1,5 +1,6 @@
 package com.example.fitnessapp.exercises.ui.fragments
 
+import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -68,6 +69,27 @@ class ExerciseFragment : Fragment() {
         updateToolbar()
         currentDay?.let { model.getExercises(it) } // с помощью let мы сделали так, что если currentDay
             // будет null - То ничего не запустится. А если не будет, то запустится
+
+
+
+        binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(animation: Animator) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+
+            }
+
+            override fun onAnimationCancel(animation: Animator) {
+
+            }
+
+            override fun onAnimationRepeat(animation: Animator) {
+
+            }
+        })
+
 
 
 
@@ -209,6 +231,9 @@ progressBar.backgroundTintList = ColorStateList.valueOf(white)
 
         if (isExercise){
             bg.setBackgroundColor(white)
+            imMine.visibility = View.INVISIBLE
+            lottieView.visibility= View.VISIBLE
+            lottieView.playAnimation()
 
 
             tvName.setTextColor(black)
