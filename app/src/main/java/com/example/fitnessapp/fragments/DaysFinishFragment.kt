@@ -10,6 +10,7 @@ import com.example.fitnessapp.databinding.FinishBinding
 import com.example.fitnessapp.utils.FragmentManager
 import pl.droidsonroids.gif.GifDrawable
 import androidx.appcompat.app.ActionBar
+import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
 import com.example.fitnessapp.training.ui.fragments.DaysFragment
 
@@ -32,18 +33,14 @@ class DaysFinishFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         ab = (activity as AppCompatActivity).supportActionBar
         ab?.title = getString(R.string.Done)
-        binding.imFinish.setImageDrawable(
-            GifDrawable(
-                (activity as AppCompatActivity).assets,
-                "congrats.gif"
-            )
-        ) // передали ассетс через активити аз апкомпакт активити
+
         binding.bBack.setOnClickListener {
-          /*  FragmentManager.setFragment(
-                DaysFragment.newInstance(),
-                activity as AppCompatActivity
-            )*/ //временно закоментили, новый лайф хак как коментить
-        // перебросим на активити сразу при нажатии на кнопку
+            findNavController()
+                .popBackStack(
+                    R.id.trainingFragment,
+                    inclusive = false
+                )
+
         }
 
     }

@@ -75,11 +75,8 @@ class ExerciseFragment : Fragment() {
 
         binding.bNext.setOnClickListener {
             if (binding.bNext.text.toString() == getString(R.string.Done)) {
-findNavController()
-    .popBackStack(
-        R.id.trainingFragment,
-        inclusive = false
-    )
+findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment)
+
     /*
     возвращаемся по бекстеку назад ( стек фрагментов из навигации)
     в функции навконтроллера popBackStack можно указать аргументы
@@ -109,6 +106,10 @@ findNavController()
             subTitle.text = exercise.subtitle
             setMainColors(
                 !subTitle.text.toString().startsWith("Отдохните")
+            )
+            setPreFinishColors(
+                subTitle.text.toString().startsWith(getString(R.string.day_finish_subtitle))
+
             )
             changeButtonText(exercise.name)
             /*
@@ -197,6 +198,31 @@ progressBar.backgroundTintList = ColorStateList.valueOf(white)
 
         }
     }
+
+
+    private fun setPreFinishColors(isExercise : Boolean)= with(binding){
+        val white =ContextCompat.getColor(requireContext(), R.color.white)
+        val blue =ContextCompat.getColor(requireContext(), R.color.blue)
+        val blueDark =ContextCompat.getColor(requireContext(), R.color.blue_dark)
+        val black =ContextCompat.getColor(requireContext(), R.color.black)
+
+        if (isExercise){
+            bg.setBackgroundColor(white)
+
+
+            tvName.setTextColor(black)
+            subTitle.setTextColor(blueDark)
+            tvTime.setTextColor(black)
+
+            bNext.backgroundTintList = ColorStateList.valueOf(blue)
+            bNext.setTextColor(white)
+
+        }
+    }
+
+
+
+
 
     private fun animProgressBar ( restTime : Long) {
        val progressTo= if (restTime>1000){

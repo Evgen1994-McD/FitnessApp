@@ -4,7 +4,7 @@
     <string name="easy">Easy</string>
     <string name="middle">Middle</string>
     <string name="hard">Hard</string>
-    <string name="custom">Custom</string>
+    <string name="custom">custom</string>
 
 
 
@@ -19,7 +19,7 @@
     <string name="Next">Следующее</string>
     <string name="GoodDone">Отлично,\nвы закончили\n тренировку!</string>
     <string name="Back">Назад в Меню</string>
-    <string name="Done">Готово</string>
+    <string name="Done">Статистика</string>
     <string name="Waiting">Приготовьтесь</string>
     <string name="listExercise">Список упражнений</string>
     <string name="PrefForDoing">main</string>
@@ -43,7 +43,7 @@
     <string name="subtitle">Отдохните. Следующее упражнение:</string>
     <string name="subtitle_start">Приготовьтесь. Следующее упражнение:</string>
 
-    <string name="day_finish_name">Готово</string>
+    <string name="day_finish_name">Так держать!</string>
     <string name="day_finish_subtitle">Отличная тренировка!</string>
 
 
@@ -52,6 +52,14 @@
 
     <string name="day_finish_gif">finish_gif.gif</string>
     <string name="day_finish_fire">finish_fire.gif</string>
+
+
+
+
+    <!--  Финишный фрагмент статистики-->
+    <string name="kcal">Калории</string>
+    <string name="exercise">Упражнения</string>
+    <string name="time">Время</string>
 
 
 </resources>

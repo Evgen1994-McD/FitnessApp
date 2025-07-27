@@ -19,7 +19,11 @@
         android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseFragment"
         android:label="ExerciseFragment"
         tools:layout="@layout/exercise"
-        />
+        >
+        <action
+            android:id="@+id/action_exerciseFragment_to_daysFinishFragment"
+            app:destination="@id/daysFinishFragment" />
+    </fragment>
     <fragment
         android:id="@+id/exListFragment"
         android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseListFragment"
@@ -54,5 +58,13 @@
         android:id="@+id/chooseExercisesFragment"
         android:name="com.example.fitnessapp.customTraining.chooseExercises.ui.ChooseExercisesFragment"
         android:label="fragment_choose_exercises"
-        tools:layout="@layout/fragment_choose_exercises" />
+        tools:layout="@layout/fragment_choose_exercises"
+        />
+    <fragment
+        android:id="@+id/daysFinishFragment"
+        android:name="com.example.fitnessapp.fragments.DaysFinishFragment"
+        android:label="DaysFinishFragment"
+        tools:layout="@layout/finish"
+
+        />
 </navigation>

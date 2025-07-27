@@ -62,7 +62,10 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.bottomNavigationView.visibility = View.GONE
                 } R.id.exerciseFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
+                } R.id.daysFinishFragment ->{
+                    binding.bottomNavigationView.visibility = View.GONE
                 }
+
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
