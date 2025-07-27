@@ -10,7 +10,6 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.media3.common.util.UnstableApi
@@ -20,8 +19,6 @@ import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.exercises.ui.ExerciseViewModel
-import com.example.fitnessapp.fragments.DaysFinishFragment
-import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.TimeUtils
 import com.example.fitnessapp.utils.getDayFromArguments
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +27,7 @@ import pl.droidsonroids.gif.GifDrawable
 class ExerciseFragment : Fragment() {
     private lateinit var binding: ExerciseBinding
     private val model: ExerciseViewModel by viewModels()
+    private var totalExerciseCounter = "0"
     /*
     если мы укажем viewModels() - то вью модел даггер хилт привяжет ко фрагменту - то есть фрагмент разрушится,
     и вью модел - тоже.
@@ -75,7 +73,9 @@ class ExerciseFragment : Fragment() {
 
         binding.bNext.setOnClickListener {
             if (binding.bNext.text.toString() == getString(R.string.Done)) {
-findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment)
+                var bundle = Bundle()
+                bundle.putString("tec", totalExerciseCounter)
+findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment, bundle)
 
     /*
     возвращаемся по бекстеку назад ( стек фрагментов из навигации)
@@ -144,6 +144,7 @@ animProgressBar(time)
     private fun updateToolbar(){
         model.updateToolbar.observe(viewLifecycleOwner){ text ->
             ab?.title = text
+             totalExerciseCounter = text.split("/")[1]
 
         }
     }

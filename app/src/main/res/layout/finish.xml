@@ -152,7 +152,7 @@
                         app:layout_constraintTop_toTopOf="@id/textView11" />
 
                     <TextView
-                        android:id="@+id/textView12"
+                        android:id="@+id/tv_ex_counter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="10"
@@ -165,7 +165,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
                     <TextView
-                        android:id="@+id/textView13"
+                        android:id="@+id/tv_kcal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="198.2"
@@ -177,7 +177,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
                     <TextView
-                        android:id="@+id/textView14"
+                        android:id="@+id/tv_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00:16"

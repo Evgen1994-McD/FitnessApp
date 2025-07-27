@@ -216,6 +216,9 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         }
     }
 
+
+
+
     fun onPause() {
         timer?.cancel()
         tts.stop() // если пользователь вышел с фрагмента, то перестанет воспроизводить текст

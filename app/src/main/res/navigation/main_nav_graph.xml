@@ -62,7 +62,7 @@
         />
     <fragment
         android:id="@+id/daysFinishFragment"
-        android:name="com.example.fitnessapp.fragments.DaysFinishFragment"
+        android:name="com.example.fitnessapp.statistic.ui.DaysFinishFragment"
         android:label="DaysFinishFragment"
         tools:layout="@layout/finish"
 
