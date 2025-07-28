@@ -68,6 +68,7 @@ delete.setOnClickListener {
         override fun areContentsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
 
             return oldItem == newItem
+
         }
 
 

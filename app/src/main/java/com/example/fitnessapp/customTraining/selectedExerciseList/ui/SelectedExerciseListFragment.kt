@@ -2,6 +2,7 @@ package com.example.fitnessapp.customTraining.selectedExerciseList.ui
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -147,10 +148,27 @@ updateDay()
     }
     override fun onDelete(pos:Int) {
         val tempList = ArrayList<ExerciseModel>(adapter.currentList)
-        tempList.removeAt(pos)
-        adapter.submitList(tempList)
+//        tempList.removeAt(pos)
+        var replacerWithoutX =((tempList[pos].time).split("x") )[1]
+        var upX2 =  (replacerWithoutX.toInt()*2).toString()
+        var stringTime = "x$upX2"
+Log.d("MyLog", stringTime)
+        tempList[pos].time = stringTime
+
+//        adapter.submitList(tempList)
+        adapter.submitList(ArrayList(tempList))
         if (tempList.isEmpty()){
             _binding.textEmpty.visibility = View.VISIBLE
         }
     }
+
+
+    /*
+    В данной функции прорабатываю изменение количества выполнений упражнений в своей
+    тренировке.
+    !
+    !
+    !
+
+     */
 }

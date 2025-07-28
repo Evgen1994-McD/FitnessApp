@@ -59,6 +59,9 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     private fun exerciseListObserver() {
         model.exerciseListData.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
+                /*
+                передаём все упражнения в лайв дата ( для выбора тренировки)
+                 */
         }
     }
 
