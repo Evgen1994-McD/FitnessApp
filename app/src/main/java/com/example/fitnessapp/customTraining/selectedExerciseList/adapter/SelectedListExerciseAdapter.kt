@@ -61,8 +61,7 @@ delete.setOnClickListener {
 
     class MyComporator : DiffUtil.ItemCallback<ExerciseModel>() {
         override fun areItemsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
-            return oldItem.id == newItem.id
-
+            return oldItem == newItem && oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {

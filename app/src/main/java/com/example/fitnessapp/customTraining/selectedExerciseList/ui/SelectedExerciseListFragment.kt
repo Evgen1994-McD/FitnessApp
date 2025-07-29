@@ -156,7 +156,7 @@ Log.d("MyLog", stringTime)
         tempList[pos].time = stringTime
 
 //        adapter.submitList(tempList)
-        adapter.submitList(ArrayList(tempList))
+        adapter.submitList(tempList)
         adapter.notifyDataSetChanged()
         if (tempList.isEmpty()){
             _binding.textEmpty.visibility = View.VISIBLE
