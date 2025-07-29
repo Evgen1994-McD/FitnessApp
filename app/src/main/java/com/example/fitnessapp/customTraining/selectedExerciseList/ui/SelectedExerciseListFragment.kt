@@ -160,6 +160,7 @@ Log.d("MyLog", stringTime)
 //        adapter.submitList(tempList)
         adapter.submitList(tempList)
         adapter.notifyDataSetChanged()
+      updateDay()
         if (tempList.isEmpty()){
             _binding.textEmpty.visibility = View.VISIBLE
         }
