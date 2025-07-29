@@ -148,12 +148,14 @@ updateDay()
     }
     override fun onDelete(pos:Int) {
         val tempList = ArrayList<ExerciseModel>(adapter.currentList)
+       val selectedExercise = tempList[pos]
 //        tempList.removeAt(pos)
         var replacerWithoutX =((tempList[pos].time).split("x") )[1]
         var upX2 =  (replacerWithoutX.toInt()*2).toString()
         var stringTime = "x$upX2"
 Log.d("MyLog", stringTime)
-        tempList[pos].time = stringTime
+        selectedExercise.time = stringTime
+      val newID =  model.saveNewExercise(selectedExercise)
 
 //        adapter.submitList(tempList)
         adapter.submitList(tempList)
