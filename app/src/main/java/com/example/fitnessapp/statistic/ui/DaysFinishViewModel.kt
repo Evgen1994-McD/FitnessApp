@@ -31,8 +31,7 @@ class DaysFinishViewModel @Inject constructor(
 
     fun addTrainingHarder(difficulty: String) = viewModelScope.launch {
 
-        mainDb.daysDao.getDontDonesDayByDifficulty(difficulty).collect { list ->
-            list.forEach { day ->
+        mainDb.daysDao.getDontDonesDayByDifficulty(difficulty).forEach { day ->
                 val exerciseList = mainDb.exerciseDao.getAllExercises()
 
                 val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
@@ -42,14 +41,15 @@ class DaysFinishViewModel @Inject constructor(
                     val newEx = addExerciseTime(ex)
                     newEx.id.toString()
                 }.joinToString(separator = ",")
+                Log.d("finish", " Новые АйДи = $newExIds")
 
                 // Обновляем день с новыми идентификаторами упражнений
                 mainDb.daysDao.insertDay(day.copy(exercises = newExIds))
-            }
+
         }
     }
 
-    suspend fun addExerciseTime(exerciseModel: ExerciseModel): ExerciseModel {
+    private suspend fun addExerciseTime(exerciseModel: ExerciseModel): ExerciseModel {
         try {
             var replacerWithoutX = ""
             var upX2 = ""
@@ -58,10 +58,14 @@ class DaysFinishViewModel @Inject constructor(
                 replacerWithoutX = exerciseModel.time.split("x")[1]
                 upX2 = (replacerWithoutX.toInt() * 2).toString()
                 stringTime = "x$upX2"
+                Log.d("finish", " Новое время = $stringTime")
+
             } else {
                 replacerWithoutX = exerciseModel.time
                 upX2 = (replacerWithoutX.toInt() * 2).toString()
                 stringTime = upX2
+                Log.d("finish", " Новое время = $stringTime")
+
             }
 
             val newEx = exerciseModel.copy(time = stringTime)
