@@ -41,6 +41,9 @@ delete.setOnClickListener {
                 listener.addExerciseTime(adapterPosition)
 
             }
+            down.setOnClickListener {
+                listener.decreaseExerciseTime(adapterPosition)
+            }
         }
 
         private fun getTime(time: String): String {

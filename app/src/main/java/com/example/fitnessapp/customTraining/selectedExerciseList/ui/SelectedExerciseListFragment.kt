@@ -182,28 +182,90 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
     }
 
      override fun addExerciseTime(pos:Int) {
-         /*
+         try {
+
+
+             /*
          функция для настройки времени упражнений ( кастом)
           */
+             tempList = ArrayList<ExerciseModel>(adapter.currentList)
+             val selectedExercise = let { tempList[pos].copy() }
+             var replacerWithoutX = ""
+             var upX2 = ""
+             var stringTime = ""
+             Log.d("MyLog", "Selected id = ${selectedExercise.id}")
+             if (selectedExercise.time.startsWith("x")) {
+                 replacerWithoutX = ((selectedExercise.time).split("x"))[1]
+                 upX2 = (replacerWithoutX.toInt() * 2).toString()
+                 stringTime = "x$upX2"
+             } else {
+                 replacerWithoutX = selectedExercise.time
+                 upX2 = (replacerWithoutX.toInt() * 2).toString()
+                 stringTime = upX2
+
+             }
+
+             Log.d("MyLog", stringTime)
+             val newEx = selectedExercise.copy(time = stringTime)
+             runBlocking {
+                 model.saveNewExerciseAndReplace(newEx, pos)
+             }
+//        adapter.submitList(tempList)
+             runBlocking {
+                 model.getExercises(dayId)
+
+             }
+             if (tempList.isEmpty()) {
+                 _binding.textEmpty.visibility = View.VISIBLE
+             }
+         }
+         catch (e: IndexOutOfBoundsException) {
+       Log.d("MyLog", "Неверный Индекс")
+         } catch (e: NumberFormatException) {
+             Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
+         } catch (e: Exception) {
+             Toast.makeText(context, "Возникла неизвестная ошибка.", Toast.LENGTH_SHORT).show()
+         }
+    }
+
+
+
+
+    override fun decreaseExerciseTime(pos:Int) {
+        /*
+        функция для настройки времени упражнений ( кастом)
+         */
+
+        try {
+
+
         tempList = ArrayList<ExerciseModel>(adapter.currentList)
-       val selectedExercise = let {  tempList[pos].copy()}
+        val selectedExercise = let {  tempList[pos].copy()}
         var replacerWithoutX =""
         var upX2 =""
-         var stringTime = ""
+        var stringTime = ""
         Log.d("MyLog", "Selected id = ${selectedExercise.id}")
         if (selectedExercise.time.startsWith("x")) {
             replacerWithoutX = ((selectedExercise.time).split("x"))[1]
-            upX2 =  (replacerWithoutX.toInt()*2).toString()
+             if (replacerWithoutX.toInt()/2 >0){
+                upX2 = (replacerWithoutX.toInt()/2).toString()
+            } else upX2 = "1"
+
+
             stringTime = "x$upX2"
         } else {
             replacerWithoutX = selectedExercise.time
-            upX2 = (replacerWithoutX.toInt()*2).toString()
+
+            if (replacerWithoutX.toInt()/2 >0){
+                upX2 = (replacerWithoutX.toInt()/2).toString()
+            } else upX2 = "1"
+
             stringTime = upX2
 
         }
 
-Log.d("MyLog", stringTime)
-val newEx = selectedExercise.copy(time = stringTime)
+        Log.d("MyLog", stringTime)
+        val newEx = selectedExercise.copy(time = stringTime)
         runBlocking {
             model.saveNewExerciseAndReplace( newEx, pos)
         }
@@ -214,46 +276,14 @@ val newEx = selectedExercise.copy(time = stringTime)
         }
         if (tempList.isEmpty()){
             _binding.textEmpty.visibility = View.VISIBLE
+        } }
+        catch (e: IndexOutOfBoundsException) {
+            Toast.makeText(context, "Ошибка: Неверный индекс.", Toast.LENGTH_SHORT).show()
+        } catch (e: NumberFormatException) {
+            Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Возникла неизвестная ошибка.", Toast.LENGTH_SHORT).show()
         }
-    }
-
-
-
-
-    override fun decreaseExerciseTime(pos:Int) {
-//        /*
-//        функция для настройки времени упражнений ( кастом)
-//         */
-//        val tempList = ArrayList<ExerciseModel>(adapter.currentList)
-//        val selectedExercise = let {  tempList[pos]}
-//        var replacerWithoutX =""
-//        var upX2 =""
-//        var stringTime = ""
-//        Log.d("MyLog", "Selected id = ${selectedExercise.id}")
-//        if (selectedExercise.time.startsWith("x")) {
-//            replacerWithoutX = ((selectedExercise.time).split("x"))[1]
-//            upX2 =  (replacerWithoutX.toInt()*2).toString()
-//            stringTime = "x$upX2"
-//        } else {
-//            replacerWithoutX = selectedExercise.time
-//            upX2 = (replacerWithoutX.toInt()*2).toString()
-//            stringTime = upX2
-//
-//        }
-//
-//        Log.d("MyLog", stringTime)
-//        val newEx = selectedExercise.copy(time = stringTime)
-//        runBlocking {
-//            model.saveNewExerciseAndReplace(selectedExercise, newEx, pos)
-//        }
-//        adapter.submitList(tempList)
-//        runBlocking {
-//            model.getExercises(dayId)
-//
-//        }
-//        if (tempList.isEmpty()){
-//            _binding.textEmpty.visibility = View.VISIBLE
-//        }
     }
 
 
