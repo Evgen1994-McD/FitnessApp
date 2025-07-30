@@ -22,7 +22,7 @@ class SelectedExerciseListViewModel @Inject constructor(
     private var dayModel: DayModel? = null
 
     fun getExercises(id: Int) = viewModelScope.launch {
-        delay(100L)
+        delay(200L)
         dayModel = mainDb.daysDao.getDay(id)
         val exerciseList = mainDb.exerciseDao.getAllExercises()
         exerciseData.value = exerciseHelper.getExercisesOfTheDay(
@@ -59,6 +59,7 @@ class SelectedExerciseListViewModel @Inject constructor(
         tempListExercise  = numbers!!.joinToString(separator = ",")
         Log.d("MyLog", "tempList = $tempListExercise")
         updateDay(tempListExercise)
+        delay(100L)
     }
 
 
@@ -77,7 +78,5 @@ class SelectedExerciseListViewModel @Inject constructor(
                 isDone = false,
                 exercises = cleanedString
             )!!)
-
-
     }
 }
