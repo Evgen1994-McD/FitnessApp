@@ -15,11 +15,13 @@ import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DaysFinishFragment : Fragment() {
+class DaysFinishFragment(
+) : Fragment() {
     private lateinit var binding: FinishBinding
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
     private val model: DaysFinishViewModel by viewModels()
+    private  var difficulty = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +37,7 @@ class DaysFinishFragment : Fragment() {
         ab = (activity as AppCompatActivity).supportActionBar
         ab?.title = getString(R.string.Done)
         observerCurrentDayStatisitcs()
-
+difficulty = arguments?.getString("difficulty").toString()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
 
 
@@ -51,6 +53,8 @@ class DaysFinishFragment : Fragment() {
     }
 
 
+
+
     private fun observerCurrentDayStatisitcs(){
         model.statisticData.observe(viewLifecycleOwner){ statisitc->
             binding.tvKcal.text = statisitc.kcal.toString()
@@ -60,11 +64,6 @@ class DaysFinishFragment : Fragment() {
     }
 
 
-    companion object {
-
-        @JvmStatic
-        fun newInstance() = DaysFinishFragment()
-
 
     }
-}
+

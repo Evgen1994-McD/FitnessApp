@@ -97,6 +97,11 @@ class ExerciseFragment : Fragment() {
             if (binding.bNext.text.toString() == getString(R.string.Done)) {
                 var bundle = Bundle()
                 bundle.putString("tec", totalExerciseCounter)
+                bundle.putString("difficulty", "${currentDay?.difficulty}")
+                /*
+                В бандл передам диффикульти чтобы на финишном фрагменте, если понадобится,
+                изменить все тренировки выбранной сложности
+                 */
 findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment, bundle)
 
     /*

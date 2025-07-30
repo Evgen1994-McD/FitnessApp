@@ -27,4 +27,9 @@ suspend fun getDay(dayId: Int) : DayModel
    @Delete
    suspend fun deleteDay(dayModel: DayModel)
 
+
+    @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty AND isDone = 0") // тут мы выбираем и фильтруем себе дни по сложности
+    fun getDontDonesDayByDifficulty(difficulty: String) : Flow<List<DayModel>>// выдасти нам лист с DayModel по сложности. Флоу обязательно из пакета корутин. Флоу сам следит за изменениями и обновляет при необходимости
+
+
 }
