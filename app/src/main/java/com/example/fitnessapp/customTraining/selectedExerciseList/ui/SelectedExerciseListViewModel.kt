@@ -18,43 +18,49 @@ class SelectedExerciseListViewModel @Inject constructor(
     private val mainDb: MainDb,
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
-val exerciseData = MutableLiveData<List<ExerciseModel>>()
-private var dayModel: DayModel? = null
-    private var tempId: Long? = null
-    private var tempListExercise:String =""
+    val exerciseData = MutableLiveData<List<ExerciseModel>>()
+    private var dayModel: DayModel? = null
 
     fun getExercises(id: Int) = viewModelScope.launch {
-        delay(100)
-       dayModel  = mainDb.daysDao.getDay(id)
+        delay(100L)
+        dayModel = mainDb.daysDao.getDay(id)
         val exerciseList = mainDb.exerciseDao.getAllExercises()
-        exerciseData.value = exerciseHelper.
-        getExercisesOfTheDay(
+        exerciseData.value = exerciseHelper.getExercisesOfTheDay(
             dayModel?.exercises!!,
             exerciseList
         )
     }
 
 
-    fun saveNewExerciseAndReplace(oldExercise: ExerciseModel, newExercise:ExerciseModel) = viewModelScope.launch {
+    fun saveNewExerciseAndReplace(
+        oldExercise: ExerciseModel,
+        newExercise: ExerciseModel,
+        pos: Int
+    ) = viewModelScope.launch {
+        var tempId: Long? = null
+         var tempListExercise = ""
+
+        val input = dayModel?.exercises
+
         tempId = mainDb.exerciseDao.insertExercise(newExercise.copy(id = null))
-       val input = dayModel?.exercises
         Log.d("MyLog", "input = $input")
-        val numbers = input?.split(",")?.map { it.trim().toIntOrNull() ?: throw IllegalArgumentException("Invalid number format") }
+        val numbers = input?.split(",")?.map {
+            it.trim().toIntOrNull() ?: throw IllegalArgumentException("Invalid number format")
+        }
             ?.toMutableList()
         Log.d("MyLog", "numbers = $numbers")
         // Проходим по списку и ищем заданное число
-        for (i in numbers!!.indices) {
-            if (numbers[i] == oldExercise.id) {
-                numbers[i] = tempId!!.toInt()
-            }
-        }
+        numbers?.set(pos, tempId!!.toInt())
 
 
-        tempListExercise  = numbers.joinToString(separator = ",")
+
+
+
+        tempListExercise  = numbers!!.joinToString(separator = ",")
         Log.d("MyLog", "tempList = $tempListExercise")
         updateDay(tempListExercise)
-
     }
+
 
 
 
@@ -62,8 +68,8 @@ private var dayModel: DayModel? = null
 
 
     fun updateDay(exercises: String) = viewModelScope.launch {
+        delay(200L)
         val cleanedString = exercises.takeIf { it.startsWith(',') }?.removePrefix(",") ?: exercises
-//        val tempExercises = exercises.replaceFirst(",", "")
         Log.d("MyLog", "updateDayExercise = $cleanedString")
         mainDb.daysDao.insertDay(
             dayModel?.copy(
@@ -71,5 +77,7 @@ private var dayModel: DayModel? = null
                 isDone = false,
                 exercises = cleanedString
             )!!)
+
+
     }
 }

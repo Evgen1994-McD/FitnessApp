@@ -36,6 +36,11 @@ class SelectedListExerciseAdapter( val listener: Listener) :
 delete.setOnClickListener {
     listener.onDelete(adapterPosition)
 }
+
+            up.setOnClickListener{
+                listener.addExerciseTime(adapterPosition)
+
+            }
         }
 
         private fun getTime(time: String): String {
@@ -66,7 +71,7 @@ delete.setOnClickListener {
 
         override fun areContentsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
 
-            return oldItem == newItem || oldItem.time == newItem.time || oldItem.id == newItem.id
+            return oldItem.time == newItem.time && oldItem.id == newItem.id
 
         }
 
@@ -76,5 +81,7 @@ delete.setOnClickListener {
 
     interface Listener{
         fun onDelete(pos: Int)
+       fun addExerciseTime(pos:Int)
+        fun decreaseExerciseTime(pos:Int)
     }
 }

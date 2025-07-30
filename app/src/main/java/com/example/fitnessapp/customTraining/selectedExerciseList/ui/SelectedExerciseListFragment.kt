@@ -145,25 +145,33 @@ updateDay()
         adapter.currentList.forEach {
             exercises += ",${it.id}"
         }
-        model.updateDay(exercises)
+
+        Log.d("MyLog", " Update exercises = $exercises")
+            model.updateDay(exercises)
+
     }
 
 
     override fun onDelete(pos:Int) {
         val tempList = ArrayList<ExerciseModel>(adapter.currentList)
         tempList.removeAt(pos)
+Log.d("MyLog", "TempListOnDelete = $tempList")
         adapter.submitList(tempList)
+
+        updateDay()
+
+
         if (tempList.isEmpty()){
             _binding.textEmpty.visibility = View.VISIBLE
         }
     }
 
-     fun setExerciseTime(pos:Int) {
+     override fun addExerciseTime(pos:Int) {
          /*
          функция для настройки времени упражнений ( кастом)
           */
         val tempList = ArrayList<ExerciseModel>(adapter.currentList)
-       val selectedExercise = let {  tempList[pos]}
+       val selectedExercise = let {  tempList[pos].copy()}
         var replacerWithoutX =""
         var upX2 =""
          var stringTime = ""
@@ -182,18 +190,59 @@ updateDay()
 Log.d("MyLog", stringTime)
 val newEx = selectedExercise.copy(time = stringTime)
         runBlocking {
-            model.saveNewExerciseAndReplace(selectedExercise, newEx)
+            model.saveNewExerciseAndReplace(selectedExercise, newEx, pos)
         }
         adapter.submitList(tempList)
         runBlocking {
             model.getExercises(dayId)
 
         }
-model.getExercises(dayId)
         if (tempList.isEmpty()){
             _binding.textEmpty.visibility = View.VISIBLE
         }
     }
+
+
+
+
+    override fun decreaseExerciseTime(pos:Int) {
+        /*
+        функция для настройки времени упражнений ( кастом)
+         */
+        val tempList = ArrayList<ExerciseModel>(adapter.currentList)
+        val selectedExercise = let {  tempList[pos]}
+        var replacerWithoutX =""
+        var upX2 =""
+        var stringTime = ""
+        Log.d("MyLog", "Selected id = ${selectedExercise.id}")
+        if (selectedExercise.time.startsWith("x")) {
+            replacerWithoutX = ((selectedExercise.time).split("x"))[1]
+            upX2 =  (replacerWithoutX.toInt()*2).toString()
+            stringTime = "x$upX2"
+        } else {
+            replacerWithoutX = selectedExercise.time
+            upX2 = (replacerWithoutX.toInt()*2).toString()
+            stringTime = upX2
+
+        }
+
+        Log.d("MyLog", stringTime)
+        val newEx = selectedExercise.copy(time = stringTime)
+        runBlocking {
+            model.saveNewExerciseAndReplace(selectedExercise, newEx, pos)
+        }
+        adapter.submitList(tempList)
+        runBlocking {
+            model.getExercises(dayId)
+
+        }
+        model.getExercises(dayId)
+        if (tempList.isEmpty()){
+            _binding.textEmpty.visibility = View.VISIBLE
+        }
+    }
+
+
 
 
     /*
