@@ -50,6 +50,10 @@ difficulty = arguments?.getString("difficulty").toString()
 
         }
 
+        binding.happy.setOnClickListener {
+            model.addTrainingHarder(difficulty)
+        }
+
     }
 
 
