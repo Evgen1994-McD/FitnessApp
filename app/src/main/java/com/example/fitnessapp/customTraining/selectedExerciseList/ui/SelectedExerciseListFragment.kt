@@ -278,7 +278,7 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
             _binding.textEmpty.visibility = View.VISIBLE
         } }
         catch (e: IndexOutOfBoundsException) {
-            Toast.makeText(context, "Ошибка: Неверный индекс.", Toast.LENGTH_SHORT).show()
+            Log.d("MyLog", "Неверный Индекс")
         } catch (e: NumberFormatException) {
             Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {

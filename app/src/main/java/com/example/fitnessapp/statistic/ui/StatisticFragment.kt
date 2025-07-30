@@ -74,7 +74,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
                         return
                     } else {
                         try {
-                            model.saveWeight(weight.toDouble().toInt())
+                            model.saveWeight(weight.toDouble())
                         } catch (e: NumberFormatException) {
                             Toast.makeText(requireContext(), "Неверный формат", Toast.LENGTH_SHORT)
                                 .show()
@@ -325,7 +325,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
             object : DialogManager.WeightListener{
                 override fun onClick(weight: String) {
                     model.updateWeight(weightModel.copy(
-                        weight = weight.toInt()
+                        weight = weight.toDouble()
                     ))
 
                 }

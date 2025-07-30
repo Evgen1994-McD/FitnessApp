@@ -131,7 +131,7 @@ yearListData.value = tempYearList
         )
     }
 
-    fun saveWeight(weight:Int) = viewModelScope.launch {
+    fun saveWeight(weight: Double) = viewModelScope.launch {
         val cv =Calendar.getInstance()
         mainDb.weightDao.insertWeight(
             WeightModel(
