@@ -27,6 +27,7 @@ private var dayId = -1
     private var binding: FragmentSelectedExerciseListBinding? = null
     private val _binding get() = binding!!
     private lateinit var adapter: SelectedListExerciseAdapter
+    private lateinit var tempList: ArrayList<ExerciseModel>
 
     private val model: SelectedExerciseListViewModel by viewModels()
 
@@ -153,7 +154,7 @@ updateDay()
 
 
     override fun onDelete(pos:Int) {
-        val tempList = ArrayList<ExerciseModel>(adapter.currentList)
+        tempList = ArrayList<ExerciseModel>(adapter.currentList)
         var exercises = ""
 
         tempList.removeAt(pos)
@@ -162,7 +163,14 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
          exercises += ",${it.id}"
 
      }
-        model.updateDay(exercises)
+        runBlocking {
+            model.updateDay(exercises)
+
+        }
+        runBlocking {
+            model.getExercises(dayId)
+
+        }
         adapter.submitList(tempList)
 
 
@@ -177,7 +185,7 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
          /*
          функция для настройки времени упражнений ( кастом)
           */
-        val tempList = ArrayList<ExerciseModel>(adapter.currentList)
+        tempList = ArrayList<ExerciseModel>(adapter.currentList)
        val selectedExercise = let {  tempList[pos].copy()}
         var replacerWithoutX =""
         var upX2 =""
@@ -197,7 +205,7 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
 Log.d("MyLog", stringTime)
 val newEx = selectedExercise.copy(time = stringTime)
         runBlocking {
-            model.saveNewExerciseAndReplace(selectedExercise, newEx, pos)
+            model.saveNewExerciseAndReplace( newEx, pos)
         }
 //        adapter.submitList(tempList)
         runBlocking {

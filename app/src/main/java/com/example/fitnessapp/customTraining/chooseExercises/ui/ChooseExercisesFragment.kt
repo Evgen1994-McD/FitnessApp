@@ -88,11 +88,11 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         val count = newExercises.split(",").size - 1
         val choosenCounterText = "${getString(R.string.selected_exercise_count)} $count"
         _binding.tvChoosenExCounter.text = choosenCounterText
-        Snackbar.make(
-            _binding.rcView,
-            "${getString(R.string.selected_exercise_added)} ${exercise.name} ",
-            Snackbar.LENGTH_SHORT
-        ).show()
+//        Snackbar.make(
+//            _binding.rcView,
+//            "${getString(R.string.selected_exercise_added)} ${exercise.name} ",
+//            Snackbar.LENGTH_SHORT
+//        ).show()
     }
 
 }

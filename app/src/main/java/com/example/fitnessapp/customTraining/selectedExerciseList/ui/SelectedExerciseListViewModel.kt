@@ -22,7 +22,7 @@ class SelectedExerciseListViewModel @Inject constructor(
     private var dayModel: DayModel? = null
 
     fun getExercises(id: Int) = viewModelScope.launch {
-        delay(200L)
+        delay(200)
         dayModel = mainDb.daysDao.getDay(id)
         val exerciseList = mainDb.exerciseDao.getAllExercises()
         exerciseData.value = exerciseHelper.getExercisesOfTheDay(
@@ -33,14 +33,13 @@ class SelectedExerciseListViewModel @Inject constructor(
 
 
     fun saveNewExerciseAndReplace(
-        oldExercise: ExerciseModel,
         newExercise: ExerciseModel,
         pos: Int
     ) = viewModelScope.launch {
         var tempId: Long? = null
          var tempListExercise = ""
 
-        val input = dayModel?.exercises
+        var input = dayModel?.exercises
 
         tempId = mainDb.exerciseDao.insertExercise(newExercise.copy(id = null))
         Log.d("MyLog", "input = $input")
@@ -51,10 +50,6 @@ class SelectedExerciseListViewModel @Inject constructor(
         Log.d("MyLog", "numbers = $numbers")
         // Проходим по списку и ищем заданное число
         numbers?.set(pos, tempId!!.toInt())
-
-
-
-
 
         tempListExercise  = numbers!!.joinToString(separator = ",")
         Log.d("MyLog", "tempList = $tempListExercise")
@@ -69,7 +64,6 @@ class SelectedExerciseListViewModel @Inject constructor(
 
 
     fun updateDay(exercises: String) = viewModelScope.launch {
-        delay(200L)
         val cleanedString = exercises.takeIf { it.startsWith(',') }?.removePrefix(",") ?: exercises
         Log.d("MyLog", "updateDayExercise = $cleanedString")
         mainDb.daysDao.insertDay(
@@ -78,5 +72,7 @@ class SelectedExerciseListViewModel @Inject constructor(
                 isDone = false,
                 exercises = cleanedString
             )!!)
+        delay(200L)
+
     }
 }
