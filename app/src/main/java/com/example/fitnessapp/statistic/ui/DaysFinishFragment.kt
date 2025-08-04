@@ -1,5 +1,6 @@
 package com.example.fitnessapp.statistic.ui
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -67,6 +68,26 @@ difficulty = arguments?.getString("difficulty").toString()
                     }
                 })
         }
+
+
+//        binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
+//            override fun onAnimationStart(animation: Animator) {
+//
+//            }
+//
+//            override fun onAnimationEnd(animation: Animator) {
+//
+//            }
+//
+//            override fun onAnimationCancel(animation: Animator) {
+//
+//            }
+//
+//            override fun onAnimationRepeat(animation: Animator) {
+//
+//            }
+//        })
+
 
     }
 

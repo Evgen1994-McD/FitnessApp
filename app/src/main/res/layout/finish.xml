@@ -252,7 +252,7 @@
                         android:layout_height="40dp"
                         android:layout_marginTop="10dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/neutral"
+                        app:layout_constraintStart_toEndOf="@+id/sda"
                         app:layout_constraintTop_toBottomOf="@+id/sda"
                         app:srcCompat="@drawable/ic_happy" />
 
@@ -261,7 +261,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginTop="10dp"
-                        app:layout_constraintEnd_toStartOf="@+id/neutral"
+                        app:layout_constraintEnd_toStartOf="@+id/sda"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/sda"
                         app:srcCompat="@drawable/ic_bad" />
@@ -277,16 +277,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/neutral"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="10dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/sda"
-                        app:srcCompat="@drawable/ic_neutral" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
