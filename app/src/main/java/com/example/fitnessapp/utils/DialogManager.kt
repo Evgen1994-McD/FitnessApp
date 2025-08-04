@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.runtime.Composable
 import com.example.fitnessapp.R
+import com.example.fitnessapp.databinding.AfterTrainingDialogueBinding
 import com.example.fitnessapp.databinding.WeightDialogBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -77,5 +78,46 @@ object DialogManager {   // Сначала сделал как класс, но 
     interface WeightListener {
         fun onClick(weight: String)  // мы создали Интерфейс с функцией Он клик, это будет наш кликер :D
     }
+
+
+
+    interface OnDifficultySelectedListener {
+        fun onDifficultySelected(difficultyLevel: Int)
+    }
+
+    fun showAfterTrainingDialog(
+        context: Context,
+        listener: OnDifficultySelectedListener
+    ) {
+        val builder = MaterialAlertDialogBuilder(context)
+        val dialog = builder.create()
+        val binding = AfterTrainingDialogueBinding.inflate(LayoutInflater.from(context))
+        dialog.setView(binding.root)
+
+        binding.apply {
+            // Установим обработку кликов отдельно для каждой кнопки
+            btSoEasy.setOnClickListener {
+                listener.onDifficultySelected(DIFFICULTY_EASY)
+                dialog.dismiss()
+            }
+
+            btSoHard.setOnClickListener {
+                listener.onDifficultySelected(DIFFICULTY_HARD)
+                dialog.dismiss()
+            }
+
+            btIsNothing.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+    // Константы уровней сложности
+    const val DIFFICULTY_EASY = 1
+    const val DIFFICULTY_HARD = 2
+
+
 
 }

@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
+import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,6 +53,19 @@ difficulty = arguments?.getString("difficulty").toString()
 
         binding.happy.setOnClickListener {
             model.addTrainingHarder(difficulty)
+        }
+
+        binding.btIsBad.setOnClickListener{
+            DialogManager.showAfterTrainingDialog(requireContext(),
+                object : DialogManager.OnDifficultySelectedListener {
+                    override fun onDifficultySelected(difficultyLevel: Int) {
+                        if(difficultyLevel == 1){
+                            model.addTrainingHarder(difficulty)
+
+
+                        }
+                    }
+                })
         }
 
     }
