@@ -6,11 +6,14 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.applandeo.materialcalendarview.EventDay
+import com.example.fitnessapp.R
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
@@ -24,10 +27,30 @@ class DaysFinishViewModel @Inject constructor(
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
     val statisticData = MutableLiveData<StatisticModel>()
+    val eventListData = MutableLiveData<List<EventDay>>()
 
     fun getStatisticByDate(date: String) = viewModelScope.launch {
         statisticData.value = mainDb.statisticDao
             .getStatisticByDate(date) ?: StatisticModel(null, date, 0, "0")
+    }
+
+
+    fun getStatisticEvents() = viewModelScope.launch {
+        val eventList = ArrayList<EventDay>()
+        val statisticList = mainDb.statisticDao.getStatistic()
+        statisticList.forEach { statisticModel ->
+            eventList.add(
+                EventDay(
+                    TimeUtils.getCalendarFromDate(statisticModel.date),
+                    R.drawable.star
+                )
+            )
+            /*
+            Здесь получаем статистику и она уходит по обсерверу на фрагмент
+             */
+        }
+        eventListData.value = eventList
+
     }
 
     fun addTrainingHarder(difficulty: String) = viewModelScope.launch {

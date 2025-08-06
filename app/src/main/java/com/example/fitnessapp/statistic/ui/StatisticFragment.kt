@@ -281,7 +281,8 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
     private fun statisitcObserver() {
         model.statisticData.observe(viewLifecycleOwner) { statisticModel ->
             binding.apply {
-                time.text = TimeUtils.getWorkoutTime(
+                time.text =
+                    TimeUtils.getWorkoutTime(
                     statisticModel.workoutTime.toLong() * 1000
                 ) //умножили на 1000 потому что время надо в МС
                 kcal.text = statisticModel.kcal.toString()

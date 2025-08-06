@@ -2,6 +2,7 @@ package com.example.fitnessapp.utils
 
 import android.annotation.SuppressLint
 import android.icu.util.Calendar
+import androidx.compose.ui.text.intl.Locale
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -9,7 +10,7 @@ import java.util.Date
 
 object TimeUtils {
     val formatter = SimpleDateFormat("mm:ss")
-    val workoutFormatter = SimpleDateFormat("HH'h':mm'm'")
+    val workoutFormatter = SimpleDateFormat("HH'h':mm'm'", )
     val cvFormatter = SimpleDateFormat("dd/MM/yyyy")
 
 

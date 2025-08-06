@@ -45,6 +45,8 @@ class DaysFinishFragment(
         observerCurrentDayStatisitcs()
 difficulty = arguments?.getString("difficulty").toString()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
+        calendarDateObserver()
+        model.getStatisticEvents()
 
 
         binding.bBack.setOnClickListener {
@@ -99,7 +101,14 @@ difficulty = arguments?.getString("difficulty").toString()
     }
 
 
-
+    private fun calendarDateObserver() {
+        model.eventListData.observe(viewLifecycleOwner) { list ->
+            binding.calendarView.setEvents(list)
+            /*
+            Подписались на вью модел и получение событий для календаря
+             */
+        }
+    }
 
     private fun observerCurrentDayStatisitcs(){
         model.statisticData.observe(viewLifecycleOwner){ statisitc->

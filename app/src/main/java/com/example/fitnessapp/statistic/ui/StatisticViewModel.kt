@@ -35,7 +35,7 @@ class StatisticViewModel @Inject constructor(
 eventList.add(
     EventDay(
         TimeUtils.getCalendarFromDate(statisticModel.date),
-        R.drawable.dotsonround
+        R.drawable.star
     )
 )
             /*
