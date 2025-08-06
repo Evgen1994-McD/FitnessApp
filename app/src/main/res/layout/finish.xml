@@ -219,6 +219,7 @@
                 app:layout_constraintGuide_percent="0.4" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardView5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -246,25 +247,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
+                    <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/happy"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="10dp"
+                        android:visibility="visible"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/sda"
                         app:layout_constraintTop_toBottomOf="@+id/sda"
-                        app:srcCompat="@drawable/ic_happy" />
+                        app:lottie_rawRes="@raw/like_button" />
 
-                    <ImageView
+
+                    <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/btIsBad"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="10dp"
+                        android:rotationX="180"
+                        android:visibility="visible"
                         app:layout_constraintEnd_toStartOf="@+id/sda"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/sda"
-                        app:srcCompat="@drawable/ic_bad" />
+                        app:lottie_rawRes="@raw/like_button" />
 
                     <TextView
                         android:id="@+id/sda"
@@ -280,6 +285,35 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
+            <com.applandeo.materialcalendarview.CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/bBack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView7"
+
+
+                />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Текущая серия "
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/cardView5"
+                app:layout_constraintStart_toStartOf="@+id/cardView5"
+                app:layout_constraintTop_toBottomOf="@+id/cardView5" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

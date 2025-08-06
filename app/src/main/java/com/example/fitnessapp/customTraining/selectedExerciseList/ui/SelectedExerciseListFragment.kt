@@ -211,7 +211,6 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
              runBlocking {
                  model.saveNewExerciseAndReplace(newEx, pos)
              }
-//        adapter.submitList(tempList)
              runBlocking {
                  model.getExercises(dayId)
 
@@ -270,7 +269,6 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
         runBlocking {
             model.saveNewExerciseAndReplace( newEx, pos)
         }
-//        adapter.submitList(tempList)
         runBlocking {
             model.getExercises(dayId)
 

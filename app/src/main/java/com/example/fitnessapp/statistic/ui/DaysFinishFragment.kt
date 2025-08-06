@@ -1,6 +1,7 @@
 package com.example.fitnessapp.statistic.ui
 
 import android.animation.Animator
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.fitnessapp.databinding.FinishBinding
 import androidx.appcompat.app.ActionBar
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
@@ -25,6 +27,7 @@ class DaysFinishFragment(
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
     private val model: DaysFinishViewModel by viewModels()
     private  var difficulty = ""
+    private var likeCounter = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,8 +68,16 @@ difficulty = arguments?.getString("difficulty").toString()
 
 
 
-        binding.happy.setOnClickListener {
-            model.addTrainingHarder(difficulty)
+        binding.happy.setOnClickListener  { with(binding) {
+            if (likeCounter==0) {
+
+
+                happy.setAnimation(R.raw.like_button)
+                happy.repeatCount = 0
+                happy.playAnimation()
+                likeCounter++
+            }
+        }
         }
 
         binding.btIsBad.setOnClickListener{

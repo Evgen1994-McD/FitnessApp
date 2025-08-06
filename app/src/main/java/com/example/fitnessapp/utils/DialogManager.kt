@@ -5,9 +5,11 @@ import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.core.view.isVisible
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.AfterTrainingDialogueBinding
@@ -111,7 +113,7 @@ object DialogManager {   // Сначала сделал как класс, но 
                 btSoEasy.setText("Да, усложнить вызов!")
                 btSoEasy.setOnClickListener {
                     listener.onDifficultySelected(DIFFICULTY_UP)
-                    tvTitle.setText("Работаем над вашим запросом!\n" +
+                    tvTitle.setText("Работаем...\n" +
                             "Пожалуйста, подождите...")
                     btSoEasy.isVisible = false
                     btIsNothing.isVisible = false
@@ -128,6 +130,9 @@ object DialogManager {   // Сначала сделал как класс, но 
                         }
 
                         override fun onAnimationEnd(animation: Animator) {
+                            btIsNothing.backgroundTintList = ColorStateList.valueOf(android.graphics.Color.BLUE)
+                            btIsNothing.setTextColor(android.graphics.Color.WHITE)
+
                             tvTitle.setText("Тренер Закончил настройку!\n" +
                                     "Нагрузка увеличена!")
                             btIsNothing.isVisible = true
@@ -159,7 +164,7 @@ object DialogManager {   // Сначала сделал как класс, но 
                 btSoHard.setText("Да, сделать проще!")
                 btSoHard.setOnClickListener {
                     listener.onDifficultySelected(DIFFICULTY_DOWN)
-                    tvTitle.setText("Работаем над вашим запросом!\n" +
+                    tvTitle.setText("Работаем...\n" +
                             "Пожалуйста, подождите...")
                     btSoHard.isVisible = false
                     btIsNothing.isVisible = false
@@ -178,6 +183,9 @@ object DialogManager {   // Сначала сделал как класс, но 
                         override fun onAnimationEnd(animation: Animator) {
                             tvTitle.setText("Тренер Закончил настройку!\n" +
                                     "Нагрузка сокращена!")
+                            btIsNothing.setTextColor(android.graphics.Color.WHITE)
+
+                            btIsNothing.backgroundTintList = ColorStateList.valueOf(android.graphics.Color.BLUE)
                             btIsNothing.isVisible = true
 
                         }

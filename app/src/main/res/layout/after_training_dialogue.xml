@@ -10,18 +10,6 @@
 
     android:layout_margin="50dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginVertical="5dp"
-        android:layout_marginStart="5dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline22" />
-
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_view"
         android:layout_width="0dp"
@@ -31,7 +19,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="20dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintBottom_toTopOf="@+id/guideline20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline22"
@@ -47,13 +35,14 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/red"
         android:text="Слишком сложно"
-        android:textColor="@color/black"
+        android:textColor="@color/list_item_bg"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/btSoEasy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline23" />
+        app:layout_constraintTop_toTopOf="@+id/guideline20" />
 
     <Button
         android:id="@+id/btIsNothing"
@@ -67,7 +56,8 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btSoEasy" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -90,27 +80,29 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/secondary"
         android:text="Слишком Просто"
         android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/btIsNothing"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btSoHard" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.48259494" />
+        app:layout_constraintGuide_percent="0.64" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline21"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="156dp" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline22"
@@ -119,27 +111,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.11" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/guideline23"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline21"
-        app:layout_constraintTop_toTopOf="@+id/guideline22"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.69" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
