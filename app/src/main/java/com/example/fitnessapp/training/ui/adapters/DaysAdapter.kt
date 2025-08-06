@@ -1,4 +1,4 @@
-package com.example.fitnessapp.adapter
+package com.example.fitnessapp.training.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View

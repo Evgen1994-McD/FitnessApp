@@ -16,6 +16,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.math.roundToInt
 
 @HiltViewModel
 class DaysFinishViewModel @Inject constructor(
@@ -49,6 +50,28 @@ class DaysFinishViewModel @Inject constructor(
         }
     }
 
+    fun reduceTrainingComplexity(difficulty: String) = viewModelScope.launch {
+
+        mainDb.daysDao.getDontDonesDayByDifficulty(difficulty).forEach { day ->
+            val exerciseList = mainDb.exerciseDao.getAllExercises()
+
+            val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
+
+            // Формируем новые идентификаторы упражнений
+            val newExIds = exList.map { ex ->
+                val newEx = reduceExerciseTime(ex)
+                newEx.id.toString()
+            }.joinToString(separator = ",")
+            Log.d("finish", " Новые АйДи = $newExIds")
+
+            // Обновляем день с новыми идентификаторами упражнений
+            mainDb.daysDao.insertDay(day.copy(exercises = newExIds))
+
+        }
+    }
+
+
+
     private suspend fun addExerciseTime(exerciseModel: ExerciseModel): ExerciseModel {
         try {
             var replacerWithoutX = ""
@@ -56,13 +79,13 @@ class DaysFinishViewModel @Inject constructor(
             var stringTime = ""
             if (exerciseModel.time.startsWith("x")) {
                 replacerWithoutX = exerciseModel.time.split("x")[1]
-                upX2 = (replacerWithoutX.toInt() * 2).toString()
+                upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
                 stringTime = "x$upX2"
                 Log.d("finish", " Новое время = $stringTime")
 
             } else {
                 replacerWithoutX = exerciseModel.time
-                upX2 = (replacerWithoutX.toInt() * 2).toString()
+                upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
                 stringTime = upX2
                 Log.d("finish", " Новое время = $stringTime")
 
@@ -76,4 +99,36 @@ class DaysFinishViewModel @Inject constructor(
             return exerciseModel
         }
     }
+
+    private suspend fun reduceExerciseTime(exerciseModel: ExerciseModel): ExerciseModel {
+        try {
+            var replacerWithoutX = ""
+            var upX2 = ""
+            var stringTime = ""
+            if (exerciseModel.time.startsWith("x")) {
+                replacerWithoutX = exerciseModel.time.split("x")[1]
+                upX2 = ((replacerWithoutX.toInt() / 1.5).roundToInt()).toString()
+                stringTime = "x$upX2"
+                Log.d("finish", " Новое время = $stringTime")
+
+            } else {
+                replacerWithoutX = exerciseModel.time
+                upX2 = ((replacerWithoutX.toInt() / 1.5).roundToInt()).toString()
+                stringTime = upX2
+                Log.d("finish", " Новое время = $stringTime")
+
+            }
+
+            val newEx = exerciseModel.copy(time = stringTime)
+            val tempId = mainDb.exerciseDao.insertExercise(newEx.copy(id = null))
+            return newEx.copy(id = tempId.toInt())
+        } catch (e: IndexOutOfBoundsException) {
+            Log.d("MyLog", "Неверный Индекс")
+            return exerciseModel
+        }
+    }
+
+
+
+
 }

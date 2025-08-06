@@ -62,31 +62,14 @@ difficulty = arguments?.getString("difficulty").toString()
                     override fun onDifficultySelected(difficultyLevel: Int) {
                         if(difficultyLevel == 1){
                             model.addTrainingHarder(difficulty)
-
-
+                        } else if (difficultyLevel==2){
+                            model.reduceTrainingComplexity(difficulty)
                         }
                     }
                 })
         }
 
 
-//        binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
-//            override fun onAnimationStart(animation: Animator) {
-//
-//            }
-//
-//            override fun onAnimationEnd(animation: Animator) {
-//
-//            }
-//
-//            override fun onAnimationCancel(animation: Animator) {
-//
-//            }
-//
-//            override fun onAnimationRepeat(animation: Animator) {
-//
-//            }
-//        })
 
 
     }

@@ -11,7 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.DaysAdapter
+import com.example.fitnessapp.training.ui.adapters.DaysAdapter
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.training.ui.DaysViewModel
