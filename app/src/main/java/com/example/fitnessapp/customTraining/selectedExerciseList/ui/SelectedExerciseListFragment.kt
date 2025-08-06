@@ -20,6 +20,7 @@ import com.example.fitnessapp.db.ExerciseModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.util.Collections
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Listener {
@@ -196,11 +197,11 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
              Log.d("MyLog", "Selected id = ${selectedExercise.id}")
              if (selectedExercise.time.startsWith("x")) {
                  replacerWithoutX = ((selectedExercise.time).split("x"))[1]
-                 upX2 = (replacerWithoutX.toInt() * 2).toString()
+                 upX2 = (replacerWithoutX.toInt() * 1.5).roundToInt().toString()
                  stringTime = "x$upX2"
              } else {
                  replacerWithoutX = selectedExercise.time
-                 upX2 = (replacerWithoutX.toInt() * 2).toString()
+                 upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
                  stringTime = upX2
 
              }
@@ -247,8 +248,8 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
         Log.d("MyLog", "Selected id = ${selectedExercise.id}")
         if (selectedExercise.time.startsWith("x")) {
             replacerWithoutX = ((selectedExercise.time).split("x"))[1]
-             if (replacerWithoutX.toInt()/2 >0){
-                upX2 = (replacerWithoutX.toInt()/2).toString()
+             if (replacerWithoutX.toInt()/1.5 >0){
+                upX2 = (replacerWithoutX.toInt()/1.5).roundToInt().toString()
             } else upX2 = "1"
 
 
@@ -256,8 +257,8 @@ Log.d("MyLog", "TempListOnDelete = ${tempList}")
         } else {
             replacerWithoutX = selectedExercise.time
 
-            if (replacerWithoutX.toInt()/2 >0){
-                upX2 = (replacerWithoutX.toInt()/2).toString()
+            if (replacerWithoutX.toInt()/1.5 >0){
+                upX2 = (replacerWithoutX.toInt()/1.5).roundToInt().toString()
             } else upX2 = "1"
 
             stringTime = upX2

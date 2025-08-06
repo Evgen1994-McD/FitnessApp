@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.fitnessapp.databinding.FinishBinding
@@ -51,6 +52,18 @@ difficulty = arguments?.getString("difficulty").toString()
                 )
 
         }
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Ничего не делаем или можем закрыть activity
+                findNavController()
+                    .popBackStack(
+                        R.id.trainingFragment,
+                        inclusive = false
+                    )
+            }
+        })
+
+
 
         binding.happy.setOnClickListener {
             model.addTrainingHarder(difficulty)
