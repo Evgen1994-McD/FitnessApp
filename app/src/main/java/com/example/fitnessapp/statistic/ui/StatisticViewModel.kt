@@ -54,7 +54,8 @@ statisticData.value = mainDb.statisticDao
         null,
         date,
         0,
-        "0"
+        "0",
+        0
     )
 /*
 

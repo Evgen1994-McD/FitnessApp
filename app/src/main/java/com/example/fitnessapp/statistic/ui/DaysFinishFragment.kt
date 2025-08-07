@@ -45,8 +45,11 @@ class DaysFinishFragment(
         observerCurrentDayStatisitcs()
 difficulty = arguments?.getString("difficulty").toString()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
-        calendarDateObserver()
         model.getStatisticEvents()
+
+        calendarDateObserver()
+        workoutMonthStatisticObserver()
+//        model.getWorkoutMonthStatistic()
 
 
         binding.bBack.setOnClickListener {
@@ -100,6 +103,18 @@ difficulty = arguments?.getString("difficulty").toString()
 
     }
 
+    private fun workoutMonthStatisticObserver(){
+        model.statisticMonthData.observe(viewLifecycleOwner){ statistic->
+            with(binding){
+                tvTrainingSumm.text = statistic.trainingCounter.toString()
+                kcalSumm2.text=(statistic.kcal.toString())+" Ккал"
+                tvFatSumm.text = (statistic.kcal/7).toString()+" грамм"
+            }
+
+        }
+    }
+
+
 
     private fun calendarDateObserver() {
         model.eventListData.observe(viewLifecycleOwner) { list ->
@@ -112,9 +127,12 @@ difficulty = arguments?.getString("difficulty").toString()
 
     private fun observerCurrentDayStatisitcs(){
         model.statisticData.observe(viewLifecycleOwner){ statisitc->
-            binding.tvKcal.text = statisitc.kcal.toString()
-            binding.tvTime.text = statisitc.workoutTime
-            binding.tvExCounter.text = arguments?.getString("tec") ?: "0"
+            binding.tvKcal.text = statisitc.kcal.toString()+" кКал"
+            binding.tvTime.text = (statisitc.workoutTime.toLong()/60).toString()
+            binding.tvExCounter.text = statisitc.completedExercise.toString()
+            binding.tvFatDay.text=(statisitc.kcal/7).toString()+" грамм"
+
+//                arguments?.getString("tec") ?: "0"
         }
     }
 
