@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.LinearEasing
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.applandeo.materialcalendarview.EventDay
@@ -24,9 +25,12 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
@@ -210,23 +214,24 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
     }
 
     private fun setChartData(tempWeightList: List<WeightModel>) = with(binding) {
-        val weightList = ArrayList<BarEntry>()
+        val weightList = ArrayList<Entry>()
+        for (i in 0 until 30) {
+            val filteredList = tempWeightList.filter { it.day == i + 1 }
 
-        for (i in 0..30) {
-            val list = tempWeightList.filter {
-                i == it.day - 1
+            if (filteredList.isNotEmpty()) {
+                weightList.add(Entry(i.toFloat(), filteredList.first().weight.toFloat()))
+            } else {
+                // Оставляем пустой промежуток или используем среднее предыдущих значений
+                continue // Пропускаем запись
             }
-            weightList.add(
-                BarEntry(
-                    i.toFloat(),
-                    if (list.isEmpty()) 0f else list[0].weight.toFloat()
-                )
-            )
         }
 
-        val set: BarDataSet
+        val set: LineDataSet
+
+
         if (barChart.data != null && barChart.data.dataSetCount > 0) {
-            set = barChart.data.getDataSetByIndex(0) as BarDataSet
+            set = barChart.data.getDataSetByIndex(0) as LineDataSet
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
             set.values = weightList
             set.label = "${model.year}/${UtilsArrays.monthList[model.month].text}"
             barChart.data.notifyDataChanged() // сообщаем что данные изменились и перерисуем
@@ -240,11 +245,14 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
              */
         } else {
 
-            set = BarDataSet(weightList, "${model.year}/${UtilsArrays.monthList[model.month].text}") //Это сам график
+            set = LineDataSet(weightList, "${model.year}/${UtilsArrays.monthList[model.month].text}") //Это сам график
             set.color = android.graphics.Color.GREEN
-            val dataSets = ArrayList<IBarDataSet>() //это список с графиками ( у нас если что 1)
+            set.lineWidth = 7f
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+
+            val dataSets = ArrayList<ILineDataSet>() //это список с графиками ( у нас если что 1)
             dataSets.add(set) // тот самый один график который мы и добавляем
-            val barDate = BarData(dataSets)// Передаём всё в бар дата
+            val barDate = LineData(dataSets)// Передаём всё в бар дата
             barDate.setValueTextSize(10f) // настраиваем если надо, есть много разных функций
             barChart.data =
                 barDate // Передали данные в БарДата. В barDate есть вообще все данные, поэтому его и передаём
@@ -318,7 +326,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
         e: Entry?,
         h: Highlight?,
     ) {
-        val dayNumber =(( e as BarEntry).x + 1).toInt() // + 1 из за форматтера так как массивы и график начинается с 0
+        val dayNumber =(( e as Entry).x + 1).toInt() // + 1 из за форматтера так как массивы и график начинается с 0
         val weightModel = getWeightModelByDay(dayNumber) ?: return
 
         DialogManager.showWeightDialog(

@@ -41,10 +41,9 @@ class DaysFinishViewModel @Inject constructor(
 
     private fun getWorkoutMonthStatistic(){
         statisticList.forEach { statisticModel ->
-            val calendarFronStatistic = TimeUtils.getCalendarFromDate(statisticModel.date)
+            val calendarFronStatistic = statisticModel.date//TimeUtils.getCalendarFromDate(statisticModel.date)
             val currentCalendar = TimeUtils.getCurrentDate()
-            Log.d("finish", "statisticCalendar = $calendarFronStatistic")
-            Log.d("finish", "currentCalendar = $currentCalendar")
+
             if(calendarFronStatistic.get(Calendar.MONTH).toChar() == currentCalendar.get(Calendar.MONTH)){
                 if (statisticMonthData.value != null) {
                     val updatedValue = statisticMonthData.value!!.copy(

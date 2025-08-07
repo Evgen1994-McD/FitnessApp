@@ -107,7 +107,7 @@ difficulty = arguments?.getString("difficulty").toString()
         model.statisticMonthData.observe(viewLifecycleOwner){ statistic->
             with(binding){
                 tvTrainingSumm.text = statistic.trainingCounter.toString()
-                kcalSumm2.text=(statistic.kcal.toString())+" Ккал"
+                kcalSumm2.text=(statistic.kcal.toString())+" кКал"
                 tvFatSumm.text = (statistic.kcal/7).toString()+" грамм"
             }
 
