@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/secondary"
+        android:backgroundTint="@color/blue"
         android:text="@string/start"
         app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
