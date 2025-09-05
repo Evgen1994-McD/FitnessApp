@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface ExerciseDao {
 @Query("SELECT * FROM exercise_table WHERE id BETWEEN :from AND :to")
-suspend fun getAllExercisesFromTo(from: Int, to: Int) : List<ExerciseModel> // Здесь мы сделали суспенд потому что нет необходимости в ФЛОУ
+suspend fun getAllExercisesFromTo(from: Int, to: Int) : List<ExerciseModel> // это получение всех базовых упражнений ( не получаем дубли)
 
 
     @Query("SELECT * FROM exercise_table")

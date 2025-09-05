@@ -94,7 +94,6 @@ class DaysFinishViewModel @Inject constructor(
                     val newEx = addExerciseTime(ex)
                     newEx.id.toString()
                 }.joinToString(separator = ",")
-                Log.d("finish", " Новые АйДи = $newExIds")
 
                 // Обновляем день с новыми идентификаторами упражнений
                 mainDb.daysDao.insertDay(day.copy(exercises = newExIds))

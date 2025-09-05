@@ -1,21 +1,98 @@
 package com.example.fitnessapp.utils
 
-import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.math.roundToInt
 
-class MainViewModel : ViewModel() {  // Через класс ВьюМодел мы "Сохраняем" состояние. То есть, если повернется экран - список не пропадёт и т.д. Его надо подключить к активити и к фрагментам
-    val mutableListExercise = MutableLiveData<ArrayList<ExerciseModel>> () // Этот Mutable List - это у нас ArrayList из ExerciseModel. Он поможет нам сохранить состояние, а так же с помощью него View как бы "Подписываются на обновления" и обновляют инфу если возможно
-var pref : SharedPreferences? = null // будем сохранять количество выполненных упражнений
-var currentDay = 0 // переменная для того чтобы через DayFragment записывать текущий день в ш.преф
-     fun savePref(key : String, value : Int){
-        pref?.edit()?.putInt(key, value)?.apply()   // будем сохрянть значение количества выполненных дней
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val mainDb: MainDb,
+    private val exerciseHelper: ExerciseHelper
+) : ViewModel() {  // Через класс ВьюМодел мы "Сохраняем" состояние. То есть, если повернется экран - список не пропадёт и т.д. Его надо подключить к активити и к фрагментам
+    companion object{
+        const val PREFS_NAME = "AppPrefs"
+        const val FIRST_LAUNCH_KEY = "first_launch_completed"
+
+        const val EASY = "easy"
+        const val MIDDLE = "middle"
+        const val HARD = "hard"
+        const val CUSTOM = "custom"
+    }
+
+    suspend fun controlFirstCheck(){
+        if (FirstLaunchChecker.isFirstLaunch(context)) {
+    addTrainingHarder()
+            FirstLaunchChecker.markAsLaunched(context)
+        }
     }
 
 
-    fun getExerciseCount(): Int {
-       return pref?.getInt(currentDay.toString(), 0) ?:0   // с помощью оператора элвиса мы выведем 0, в том случае, если преф не инициализирован. (?:) - оператор выдаёт то, что находится справа, если слева null
 
+    fun addTrainingHarder() = viewModelScope.launch {
+
+        mainDb.daysDao.getAllDays().forEach { day ->
+            val exerciseList = mainDb.exerciseDao.getAllExercises()
+
+            val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
+
+            // Формируем новые идентификаторы упражнений
+            val newExIds = exList.map { ex ->
+                val newEx = addExerciseTime(ex, day.difficulty)
+                newEx.id.toString()
+            }.joinToString(separator = ",")
+
+            // Обновляем день с новыми идентификаторами упражнений
+            mainDb.daysDao.insertDay(day.copy(exercises = newExIds))
+
+        }
     }
+
+
+
+
+
+    private suspend fun addExerciseTime(exerciseModel: ExerciseModel, difficulty: String): ExerciseModel {
+        try {
+            var multiplier = 1.0
+            when(difficulty){
+                EASY -> multiplier = 1.125
+                MIDDLE -> multiplier = 1.4
+                HARD -> multiplier = 2.1
+            }
+            var replacerWithoutX = ""
+            var upX2 = ""
+            var stringTime = ""
+            if (exerciseModel.time.startsWith("x")) {
+                replacerWithoutX = exerciseModel.time.split("x")[1]
+                upX2 = ((replacerWithoutX.toInt() * multiplier).roundToInt()).toString()
+                stringTime = "x$upX2"
+
+            } else {
+                replacerWithoutX = exerciseModel.time
+                upX2 = ((replacerWithoutX.toInt() * multiplier).roundToInt()).toString()
+                stringTime = upX2
+
+            }
+
+            val newEx = exerciseModel.copy(time = stringTime)
+            val tempId = mainDb.exerciseDao.insertExercise(newEx.copy(id = null))
+            return newEx.copy(id = tempId.toInt())
+        } catch (e: IndexOutOfBoundsException) {
+            return exerciseModel
+        }
+    }
+
+
+
+
+
 }

@@ -18,7 +18,7 @@ class ChooseExercisesViewModel @Inject constructor(
     val exerciseListData = MutableLiveData<List<ExerciseModel>>()
 private var dayModel: DayModel? = null
     fun getAllExercises() = viewModelScope.launch {
-        exerciseListData.value = mainDb.exerciseDao.getAllExercisesFromTo(4,12)
+        exerciseListData.value = mainDb.exerciseDao.getAllExercisesFromTo(4,53)
     }
 
     fun getDayById(id: Int)= viewModelScope.launch {

@@ -17,6 +17,14 @@ import kotlinx.coroutines.launch
 class ExerciseListViewModel @Inject constructor( // инжект для того, чтобы передать конструктор с базой данных
     private val mainDb: MainDb  // Daggger подключил нам базу данных с помощью которой можем получать список
 ) : ViewModel() {
+    companion object{
+
+        const val EASY = "easy"
+        const val MIDDLE = "middle"
+        const val HARD = "hard"
+        const val CUSTOM = "custom"
+    }
+
     val exerciseList =
         MutableLiveData<List<ExerciseModel>>() // сюда мы с базы данных будем передавать данные, а затем получать список с помощью обсервера уже на фрагменте
     val topCardUpdate = MutableLiveData<TrainingTopCardModel>()

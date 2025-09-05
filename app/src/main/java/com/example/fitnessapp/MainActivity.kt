@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -20,11 +21,13 @@ import androidx.savedstate.SavedState
 import com.example.fitnessapp.databinding.ActivityMainBinding
 import com.example.fitnessapp.training.ui.fragments.DaysFragment
 import com.example.fitnessapp.training.ui.fragments.TrainingFragment
+import com.example.fitnessapp.utils.FirstLaunchChecker
 import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 import kotlin.getValue
 @AndroidEntryPoint  // Это точка входа для DaggerHilt, указать если нужно получать инстанции для Хилт
 class MainActivity : AppCompatActivity() {
@@ -36,6 +39,8 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
     private lateinit var navController : NavController
     private lateinit var bottomNavigationView:BottomNavigationView
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -43,6 +48,20 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         setContentView(binding.root)
         val toolbar = binding.materialToolbar
         setSupportActionBar(toolbar)
+
+        lifecycleScope.launch {
+            model.controlFirstCheck()
+        }
+
+
+        /*
+        Выше сделал проверку на первый запуск. Планирую сделать установку количества выполнений упражнений в зависимости от сложности.
+        Соответственно, действие будет выполнено только при первом запуске, далее пользователь сам будет регулировать  свою сложность.
+
+         */
+
+
+
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController =  navHostFragment.navController
         bottomNavigationView = binding.bottomNavigationView
@@ -80,4 +99,6 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
     }
 
-    }
+
+
+}
