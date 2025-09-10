@@ -38,12 +38,6 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
 
 
-        /*
-        Выше сделал проверку на первый запуск. Планирую сделать установку количества выполнений упражнений в зависимости от сложности.
-        Соответственно, действие будет выполнено только при первом запуске, далее пользователь сам будет регулировать  свою сложность.
-
-         */
-
 
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
