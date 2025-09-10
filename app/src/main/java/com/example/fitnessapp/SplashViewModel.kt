@@ -1,4 +1,4 @@
-package com.example.fitnessapp.utils
+package com.example.fitnessapp
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import com.example.fitnessapp.utils.FirstLaunchChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
@@ -13,7 +14,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class SplashViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mainDb: MainDb,
     private val exerciseHelper: ExerciseHelper
@@ -30,7 +31,7 @@ class MainViewModel @Inject constructor(
 
     suspend fun controlFirstCheck(){
         if (FirstLaunchChecker.isFirstLaunch(context)) {
-    addTrainingHarder()
+            addTrainingHarder()
             FirstLaunchChecker.markAsLaunched(context)
         }
     }

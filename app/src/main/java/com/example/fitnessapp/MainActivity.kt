@@ -3,27 +3,14 @@ package com.example.fitnessapp
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
-import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.savedstate.SavedState
 import com.example.fitnessapp.databinding.ActivityMainBinding
-import com.example.fitnessapp.training.ui.fragments.DaysFragment
-import com.example.fitnessapp.training.ui.fragments.TrainingFragment
-import com.example.fitnessapp.utils.FirstLaunchChecker
-import com.example.fitnessapp.utils.FragmentManager
-import com.example.fitnessapp.utils.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
@@ -49,9 +36,6 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         val toolbar = binding.materialToolbar
         setSupportActionBar(toolbar)
 
-        lifecycleScope.launch {
-            model.controlFirstCheck()
-        }
 
 
         /*

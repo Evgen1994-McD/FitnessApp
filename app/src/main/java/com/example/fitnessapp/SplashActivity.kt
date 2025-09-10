@@ -6,14 +6,26 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
+    private val  model: SplashViewModel by viewModels()
     private lateinit var timer: CountDownTimer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash)
+
+        lifecycleScope.launch {
+            model.controlFirstCheck()
+        }
+
+
         timer = object : CountDownTimer(2000, 1000) {
             override fun onTick(millisUntilFinished: Long) {// таймер для запуска урок 1
             }
