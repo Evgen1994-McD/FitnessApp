@@ -81,7 +81,7 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private fun createStatistic() : StatisticModel {
-        var kcal = 0
+        var kcal = 0.0
         var time = 0
 exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
     kcal += model.kcal
@@ -113,7 +113,7 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 
     private fun getTimeFromExercise(exerciseModel: ExerciseModel): Int{
         return if (exerciseModel.time.startsWith("x")){
-            exerciseModel.time.replace("x", "").toInt()*2
+            exerciseModel.time.replace("x", "").toInt()*4
         }
         else exerciseModel.time.toInt()
     }

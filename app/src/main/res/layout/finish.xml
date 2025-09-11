@@ -294,7 +294,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="5dp"
-                        android:text="Время (минут)"
+                        android:text="Время в нагрузке (минут)"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"

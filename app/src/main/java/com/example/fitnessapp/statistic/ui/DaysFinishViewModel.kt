@@ -28,6 +28,7 @@ class DaysFinishViewModel @Inject constructor(
     private val mainDb: MainDb,
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
+    private var multiplier = 1.5
     val statisticData = MutableLiveData<StatisticModel>()
     val statisticMonthData = MutableLiveData<DaysFinishStateList>()
     val eventListData = MutableLiveData<List<EventDay>>()
@@ -36,7 +37,7 @@ class DaysFinishViewModel @Inject constructor(
 
     fun getStatisticByDate(date: String) = viewModelScope.launch {
         statisticData.value = mainDb.statisticDao
-            .getStatisticByDate(date) ?: StatisticModel(null, date, 0, "0", 0)
+            .getStatisticByDate(date) ?: StatisticModel(null, date, 0.0, "0", 0)
     }
 
     private fun getWorkoutMonthStatistic(){
@@ -125,24 +126,25 @@ class DaysFinishViewModel @Inject constructor(
 
     private suspend fun addExerciseTime(exerciseModel: ExerciseModel): ExerciseModel {
         try {
+
             var replacerWithoutX = ""
             var upX2 = ""
             var stringTime = ""
             if (exerciseModel.time.startsWith("x")) {
                 replacerWithoutX = exerciseModel.time.split("x")[1]
-                upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
+                upX2 = ((replacerWithoutX.toInt() * multiplier).roundToInt()).toString()
                 stringTime = "x$upX2"
                 Log.d("finish", " Новое время = $stringTime")
 
             } else {
                 replacerWithoutX = exerciseModel.time
-                upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
+                upX2 = ((replacerWithoutX.toInt() * multiplier).roundToInt()).toString()
                 stringTime = upX2
                 Log.d("finish", " Новое время = $stringTime")
 
             }
 
-            val newEx = exerciseModel.copy(time = stringTime)
+            val newEx = exerciseModel.copy(time = stringTime, kcal = exerciseModel.kcal*multiplier)
             val tempId = mainDb.exerciseDao.insertExercise(newEx.copy(id = null))
             return newEx.copy(id = tempId.toInt())
         } catch (e: IndexOutOfBoundsException) {
@@ -152,25 +154,28 @@ class DaysFinishViewModel @Inject constructor(
     }
 
     private suspend fun reduceExerciseTime(exerciseModel: ExerciseModel): ExerciseModel {
+
         try {
+
+
             var replacerWithoutX = ""
             var upX2 = ""
             var stringTime = ""
             if (exerciseModel.time.startsWith("x")) {
                 replacerWithoutX = exerciseModel.time.split("x")[1]
-                upX2 = ((replacerWithoutX.toInt() / 1.5).roundToInt()).toString()
+                upX2 = ((replacerWithoutX.toInt() / multiplier).roundToInt()).toString()
                 stringTime = "x$upX2"
                 Log.d("finish", " Новое время = $stringTime")
 
             } else {
                 replacerWithoutX = exerciseModel.time
-                upX2 = ((replacerWithoutX.toInt() / 1.5).roundToInt()).toString()
+                upX2 = ((replacerWithoutX.toInt() / multiplier).roundToInt()).toString()
                 stringTime = upX2
                 Log.d("finish", " Новое время = $stringTime")
 
             }
 
-            val newEx = exerciseModel.copy(time = stringTime)
+            val newEx = exerciseModel.copy(time = stringTime, kcal = exerciseModel.kcal/multiplier)
             val tempId = mainDb.exerciseDao.insertExercise(newEx.copy(id = null))
             return newEx.copy(id = tempId.toInt())
         } catch (e: IndexOutOfBoundsException) {

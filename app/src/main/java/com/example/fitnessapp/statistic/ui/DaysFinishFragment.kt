@@ -107,8 +107,8 @@ difficulty = arguments?.getString("difficulty").toString()
         model.statisticMonthData.observe(viewLifecycleOwner){ statistic->
             with(binding){
                 tvTrainingSumm.text = statistic.trainingCounter.toString()
-                kcalSumm2.text=(statistic.kcal.toString())+" кКал"
-                tvFatSumm.text = (statistic.kcal/7).toString()+" грамм"
+                kcalSumm2.text=(statistic.kcal.toInt().toString())+" кКал"
+                tvFatSumm.text = (statistic.kcal/7).toInt().toString()+" грамм"
             }
 
         }
@@ -127,10 +127,10 @@ difficulty = arguments?.getString("difficulty").toString()
 
     private fun observerCurrentDayStatisitcs(){
         model.statisticData.observe(viewLifecycleOwner){ statisitc->
-            binding.tvKcal.text = statisitc.kcal.toString()+" кКал"
+            binding.tvKcal.text = statisitc.kcal.toInt().toString()+" кКал"
             binding.tvTime.text = (statisitc.workoutTime.toLong()/60).toString()
             binding.tvExCounter.text = statisitc.completedExercise.toString()
-            binding.tvFatDay.text=(statisitc.kcal/7).toString()+" грамм"
+            binding.tvFatDay.text=(statisitc.kcal/7).toInt().toString()+" грамм"
 
 //                arguments?.getString("tec") ?: "0"
         }

@@ -85,7 +85,7 @@ class SplashViewModel @Inject constructor(
             }
 
             val newEx = exerciseModel.copy(time = stringTime)
-            val tempId = mainDb.exerciseDao.insertExercise(newEx.copy(id = null))
+            val tempId = mainDb.exerciseDao.insertExercise(newEx.copy(id = null, kcal = (newEx.kcal)*multiplier))
             return newEx.copy(id = tempId.toInt())
         } catch (e: IndexOutOfBoundsException) {
             return exerciseModel
