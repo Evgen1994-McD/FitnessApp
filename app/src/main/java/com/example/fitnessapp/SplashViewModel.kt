@@ -38,7 +38,7 @@ class SplashViewModel @Inject constructor(
 
 
 
-    fun addTrainingHarder() = viewModelScope.launch {
+    suspend fun addTrainingHarder() {
 
         mainDb.daysDao.getAllDays().forEach { day ->
             val exerciseList = mainDb.exerciseDao.getAllExercises()

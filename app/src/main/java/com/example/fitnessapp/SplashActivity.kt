@@ -23,16 +23,18 @@ class SplashActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             model.controlFirstCheck()
+
+            timer = object : CountDownTimer(0, 1) {
+                override fun onTick(millisUntilFinished: Long) {// таймер для запуска урок 1
+                }
+                override fun onFinish() {
+                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                }
+            }.start()
+
         }
 
 
-        timer = object : CountDownTimer(2000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {// таймер для запуска урок 1
-            }
-            override fun onFinish() {
-                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-            }
-        }.start()
 
 
     }
