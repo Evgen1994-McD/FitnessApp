@@ -25,7 +25,7 @@ class DaysAdapter(var listener: Listener) :
                     root.context.getString(R.string.day) + " " + "${adapterPosition + 1}"   // через контекст !binding! получили доступ к ресурсам и собрали строку из
                 tvName.text = name
                 checkBoxImage.visibility = if (day.isDone) View.VISIBLE else View.INVISIBLE // заменили чек бокс и прописали условие
-                lockImage.visibility = if (day.isDone) View.INVISIBLE else View.VISIBLE
+                lockImage.visibility = if (day.isOpen) View.INVISIBLE else View.VISIBLE
 
                 val exCounter =
                     day.exercises.split(",").size.toString() // мы передали сюда day. А там есть строка exercices. Мы сейчас её разделим по символу и получим массив. c

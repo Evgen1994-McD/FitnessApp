@@ -29,6 +29,7 @@ class ExerciseViewModel @Inject constructor(
     var updateToolbar = MutableLiveData<String>()
     private var timer: CountDownTimer? = null // переменная для таймера
     var currentDay: DayModel? = null
+    var nextDay: DayModel? = null
     var statisticModel: StatisticModel? = null // глобал переменная для получения статистики
     private var exercisesOfTheDay: List<ExerciseModel> = emptyList()
     /*
@@ -44,12 +45,29 @@ class ExerciseViewModel @Inject constructor(
         mainDb.daysDao.insertDay(dayModel)
     }
 
+    fun getAndOpenNextDay()= viewModelScope.launch {
+        var nextId = ((currentDay?.id)?.plus(1)) ?: 0
+        if (nextId!=0) {
+            try {
+                nextDay = mainDb.daysDao.getDay(nextId)
+                    nextDay = nextDay!!.copy(isOpen = true)
+                    updateDay(nextDay!!)
+            }catch (e:Exception){
+
+            }
+        }
+    }
+
+
+
     private fun isDayDone() {
         if (totalExerciseNumber == doneExerciseCounterToSave - 1) {
             currentDay = currentDay?.copy(isDone = true)
             currentDay?.let {
                 updateDay(it)
             }
+            getAndOpenNextDay()
+
         }
         /*
         currentDay передаём тот же, но перезапишем параметр isDone чтобы поставить галочку
