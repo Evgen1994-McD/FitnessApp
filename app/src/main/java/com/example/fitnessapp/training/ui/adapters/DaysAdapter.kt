@@ -3,6 +3,7 @@ package com.example.fitnessapp.training.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ class DaysAdapter(var listener: Listener) :
     class DayHolder(view: View) : RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
         private val binding = DaysListItemBinding.bind(view)
 
+
         fun setData(day: DayModel, listener: Listener) =
             with(binding) {  // прикольная фича. Чтобы не писать binding.tvName А писать сразу tvName. Круто! Напрямую
 
@@ -23,6 +25,8 @@ class DaysAdapter(var listener: Listener) :
                     root.context.getString(R.string.day) + " " + "${adapterPosition + 1}"   // через контекст !binding! получили доступ к ресурсам и собрали строку из
                 tvName.text = name
                 checkBoxImage.visibility = if (day.isDone) View.VISIBLE else View.INVISIBLE // заменили чек бокс и прописали условие
+                lockImage.visibility = if (day.isDone) View.INVISIBLE else View.VISIBLE
+
                 val exCounter =
                     day.exercises.split(",").size.toString() // мы передали сюда day. А там есть строка exercices. Мы сейчас её разделим по символу и получим массив. c
                 tvCounter.text = if (day.exercises.isEmpty()) {
