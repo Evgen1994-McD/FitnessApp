@@ -29,6 +29,7 @@
     <string name="alert">Внимание! </string>
     <string name="back">Отмена</string>
 
+<!--    Тренировки-->
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>
     <string name="reset_day_message">Хотите снова повторить этот день?</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -37,6 +38,8 @@
     <string name="selected_exercise_added">Добавлено упражнение :  </string>
     <string name="custom_training_title_ab">Персональная тренировка</string>
     <string name="selected_exercise_counter">Количество упражнений: </string>
+    <string name="lock_day_toast">Сначала выполните предыдущий вызов!</string>
+    <string name="no_exercise">В данном дне нет упражнений.</string>
 
 <!--    Exercise Helper-->
     <string name="recovery">11</string>
@@ -61,6 +64,9 @@
     <string name="exercise">Упражнения</string>
     <string name="time">Время</string>
     <string name="how_your_training">Как вам тренировка?</string>
+
+
+
 
 
 </resources>
