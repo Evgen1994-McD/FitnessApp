@@ -25,7 +25,6 @@
             android:layout_marginTop="4dp"
             android:fontFamily="casual"
             android:text="TextView"
-            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/checkBoxImage"

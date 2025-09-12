@@ -34,8 +34,10 @@ android:theme="@style/Theme.FitnessApp"
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
+        style="@style/bottom_navigation_style"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:outlineAmbientShadowColor="@color/black"
         app:itemIconTint="@drawable/bottom_view_selector"
         app:itemTextColor="@drawable/bottom_view_selector"
         app:layout_constraintBottom_toBottomOf="parent"

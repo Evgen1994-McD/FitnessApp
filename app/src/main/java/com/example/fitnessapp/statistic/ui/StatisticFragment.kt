@@ -8,10 +8,12 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.LinearEasing
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
+import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter
@@ -247,7 +249,11 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
 
             set = LineDataSet(weightList, "${model.year}/${UtilsArrays.monthList[model.month].text}") //Это сам график
             set.color = android.graphics.Color.GREEN
-            set.lineWidth = 7f
+            set.valueTextColor = android.graphics.Color.RED
+            set.valueTextSize = 20f
+            set.circleRadius = 3f
+
+            set.lineWidth = 5f
             set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
 
             val dataSets = ArrayList<ILineDataSet>() //это список с графиками ( у нас если что 1)
@@ -256,7 +262,6 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
             barDate.setValueTextSize(10f) // настраиваем если надо, есть много разных функций
             barChart.data =
                 barDate // Передали данные в БарДата. В barDate есть вообще все данные, поэтому его и передаём
-
         }
         barChart.invalidate() // перересовываем, обязательно
 
@@ -268,12 +273,16 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
             barChart.description.isEnabled = false
             barChart.legend.apply {
                 horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+                textColor = android.graphics.Color.BLUE
             }
                 barChart.axisLeft.axisMinimum = 10f
                 barChart.axisRight.axisMinimum = 10f
             barChart.xAxis.apply { // настройки для оси Х ( переместим её вниз)
                 position = XAxis.XAxisPosition.BOTTOM
-                labelCount = 6
+                axisLineColor = android.graphics.Color.BLUE
+                gridColor = android.graphics.Color.BLUE
+                textColor = android.graphics.Color.BLUE
+                labelCount = barChart.size
                 valueFormatter = object : ValueFormatter(){
                     override fun getFormattedValue(value: Float): String {
                         return (value + 1).toInt().toString()
@@ -281,6 +290,16 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
 
                     }
                 }
+            }
+            barChart.axisLeft.apply {
+                textColor = android.graphics.Color.BLUE
+                gridColor = android.graphics.Color.BLUE
+
+            }
+            barChart.axisRight.apply {
+                textColor = android.graphics.Color.BLUE
+                gridColor = android.graphics.Color.BLUE
+
             }
         }
     }
