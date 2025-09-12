@@ -53,7 +53,7 @@ statisticData.value = mainDb.statisticDao
     .getStatisticByDate(date) ?: StatisticModel(
         null,
         date,
-        0,
+        0.0,
         "0",
         0
     )

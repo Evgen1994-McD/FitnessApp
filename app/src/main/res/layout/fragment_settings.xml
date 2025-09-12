@@ -6,35 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".settings.ui.SettingsFragment">
 
-    <Button
+    <TextView
         android:id="@+id/clearDataButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/blue"
-        android:text="Очистить все данные "
-        android:textColor="@color/list_item_bg"
-        app:layout_constraintBottom_toTopOf="@+id/guideline16"
+        android:layout_height="64dp"
+        android:drawableEnd="@drawable/ic_clear_24"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="20dp"
+        android:text="Очистить данные"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customTrainingSettingsButton" />
 
-    <Button
-        android:id="@+id/customTrainingSettingsButton"
+    <Switch
+        android:id="@+id/darkTheme"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/blue"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="10dp"
-        android:text="Изменить / Создать свою тренировку"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/clearDataButton"
+        android:layout_height="64dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="20dp"
+        android:text="Тёмная тема"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline15"
@@ -49,4 +47,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.98" />
+
+    <TextView
+        android:id="@+id/customTrainingSettingsButton"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:drawableEnd="@drawable/ic_custom_training_24"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="20dp"
+        android:text="Своя тренировка"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/darkTheme" />
 </androidx.constraintlayout.widget.ConstraintLayout>
