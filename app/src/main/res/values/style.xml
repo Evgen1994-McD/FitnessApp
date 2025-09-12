@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
     <resources>
-        <!-- Стиль для меню -->
+    <style name="background_style">
+        <item name="background"> @color/white</item>
+        <item name="android:textColor">@color/black</item>
 
+    </style>
+    <style name="text_color">
+        <item name="android:textColor">@color/black</item>
+    </style>
     </resources>

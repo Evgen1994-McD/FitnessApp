@@ -15,6 +15,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.AfterTrainingDialogueBinding
 import com.example.fitnessapp.databinding.WeightDialogBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Job
 
 object DialogManager {   // Сначала сделал как класс, но он работает только если обджект. Как и фрагмент менеджер. Если мы укажем обжект - сможем добраться без инициализации класса. Если как класс - сначала надо его инициализировать.
 

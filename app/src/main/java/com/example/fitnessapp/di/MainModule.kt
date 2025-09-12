@@ -1,13 +1,19 @@
 package com.example.fitnessapp.di
 
 import android.app.Application
+import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.room.Room
 import androidx.transition.Visibility
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.settings.data.SettingsRepositoryImpl
+import com.example.fitnessapp.settings.domain.SettingsInteractor
+import com.example.fitnessapp.settings.domain.SettingsRepository
+import com.example.fitnessapp.settings.domain.impl.SettingsInteractorImpl
 import com.example.fitnessapp.utils.App
 import com.example.fitnessapp.utils.MySoundPool
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,3 +68,16 @@ object MainModule {
 
 
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class SettingsModule {
+    @Binds
+    abstract fun bindSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    abstract fun bindSettingsInteractor(settingsInteractorImpl: SettingsInteractorImpl): SettingsInteractor
+}
+
+
+

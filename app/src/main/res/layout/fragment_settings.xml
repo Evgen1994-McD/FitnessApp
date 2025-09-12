@@ -4,18 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settings.ui.SettingsFragment">
+    tools:context=".settings.ui.SettingsFragment"
+
+    >
 
     <TextView
+
         android:id="@+id/clearDataButton"
         android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_clear_24"
         android:gravity="center_vertical"
         android:paddingHorizontal="15dp"
         android:paddingVertical="20dp"
         android:text="Очистить данные"
-        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -25,7 +27,7 @@
     <Switch
         android:id="@+id/darkTheme"
         android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:paddingHorizontal="15dp"
         android:paddingVertical="20dp"
         android:text="Тёмная тема"
@@ -49,15 +51,16 @@
         app:layout_constraintGuide_percent="0.98" />
 
     <TextView
+
+
         android:id="@+id/customTrainingSettingsButton"
         android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_custom_training_24"
         android:gravity="center_vertical"
         android:paddingHorizontal="15dp"
         android:paddingVertical="20dp"
         android:text="Своя тренировка"
-        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

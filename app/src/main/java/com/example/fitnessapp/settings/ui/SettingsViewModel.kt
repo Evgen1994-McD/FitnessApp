@@ -2,25 +2,21 @@ package com.example.fitnessapp.settings.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.settings.domain.SettingsInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val mainDb: MainDb
+    private val settingsInteractor: SettingsInteractor
 ): ViewModel() {
 
-    fun clearData() = viewModelScope.launch {
-val daysList = mainDb.daysDao.getAllDays()
-        daysList.forEach { day ->
-            mainDb.daysDao.insertDay(day.copy(
-                doneExerciseCounter = 0,
-                isDone = false
-            ))
+     fun clearData() = viewModelScope.launch{
+settingsInteractor.clearData()
+    }
 
-        }
-        mainDb.statisticDao.clearStatistic()
+    fun switchTheme(theme: Boolean){
+        settingsInteractor.switchTheme(theme)
     }
 }

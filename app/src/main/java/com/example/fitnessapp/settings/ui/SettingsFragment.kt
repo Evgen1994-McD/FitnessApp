@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentSettingsBinding
 import com.example.fitnessapp.utils.DialogManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -42,7 +44,7 @@ class SettingsFragment : Fragment() {
                 DialogManager.showDialog(
                     requireContext(),
                     R.string.reset_days_message, object : DialogManager.Listener {
-                        override fun onClick() {
+                        override fun onClick()  {
                             model.clearData()
                         }
                     })
@@ -52,6 +54,8 @@ class SettingsFragment : Fragment() {
 
             }
         }
+
+        controlTheme()
     }
 
     override fun onDestroyView() {
@@ -65,4 +69,11 @@ class SettingsFragment : Fragment() {
     но доступ к байдингу всё ещё есть
      */
 
+
+    private fun controlTheme(){
+        binding.darkTheme.setOnCheckedChangeListener {_, isChecked ->
+            model.switchTheme(isChecked)
+
+        }
+    }
 }
