@@ -195,17 +195,20 @@ animProgressBar(time)
     }
 
     private fun setMainColors(isExercise : Boolean)= with(binding){
+        val background = ContextCompat.getColor(requireContext(), R.color.background)
+        val textColor = ContextCompat.getColor(requireContext(), R.color.text_color)
         val white =ContextCompat.getColor(requireContext(), R.color.white)
         val blue =ContextCompat.getColor(requireContext(), R.color.blue)
         val blueDark =ContextCompat.getColor(requireContext(), R.color.blue_dark)
         val black =ContextCompat.getColor(requireContext(), R.color.black)
 
+
         if (isExercise){
 
-             bg.setBackgroundColor(white)
-            tvName.setTextColor(black)
-            subTitle.setTextColor(blueDark)
-            tvTime.setTextColor(black)
+             bg.setBackgroundColor(background)
+            tvName.setTextColor(textColor)
+            subTitle.setTextColor(textColor)
+            tvTime.setTextColor(textColor)
 
 progressBar.progressTintList = ColorStateList.valueOf(blueDark)
 progressBar.backgroundTintList = ColorStateList.valueOf(white)

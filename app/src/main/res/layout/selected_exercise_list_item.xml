@@ -23,6 +23,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/white"
 
             />
 
@@ -47,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="x30"
-            android:textColor="#E91E63"
+            android:textColor="@color/exercise_count"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvNameEx"
             app:layout_constraintTop_toBottomOf="@+id/tvNameEx"

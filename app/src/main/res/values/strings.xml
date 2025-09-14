@@ -65,6 +65,13 @@
     <string name="time">Время</string>
     <string name="how_your_training">Как вам тренировка?</string>
 
+    <string name="after_so_hard">Слишком сложно</string>
+    <string name="after_so_easy">Слишком просто</string>
+    <string name="after_nothing">Нет, всё Ок, зашел случайно</string>
+    <string name="after_question">Что вам не понравилось?</string>
+
+
+
 
 
 

@@ -18,6 +18,14 @@
     <color name="red">#B00020</color>
     <color name="blue_tint_color">#E7B1E6ED</color>
     <color name="list_item_bg">@color/black_light</color>
+    <color name="exercise_count">#94949E</color>
+
+
+
+    <!--Exercise разметка-->
+
+    <color name="background">@color/black</color>
+    <color name="text_color">@color/white</color>
 
 
 </resources>
