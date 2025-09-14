@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +22,8 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null //ЭТО сам байндинг Налл
     private val binding get() = _binding!! // а здесь мы получаем байндинг
     private val model: SettingsViewModel by viewModels()
+    private var ab: ActionBar? =
+        null // добавили переменную для ActionBar, будем показывать счетчик упражнений
 
 
     override fun onCreateView(
@@ -37,8 +40,12 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as AppCompatActivity).
-            supportActionBar?.title = "Настройки"
+
+        ab = (activity as AppCompatActivity).supportActionBar
+        ab?.title = getString(R.string.settings)
+        model.controlCheckerPosition()
+
+
         binding.apply {
             clearDataButton.setOnClickListener {
                 DialogManager.showDialog(
@@ -71,9 +78,17 @@ class SettingsFragment : Fragment() {
 
 
     private fun controlTheme(){
+        model.themeLiveData.observe(viewLifecycleOwner) { theme ->
+            binding.darkTheme.isChecked = theme
+
+
+
+        }
         binding.darkTheme.setOnCheckedChangeListener {_, isChecked ->
             model.switchTheme(isChecked)
 
         }
+        ab = (activity as AppCompatActivity).supportActionBar
+        ab?.title = getString(R.string.settings)
     }
 }

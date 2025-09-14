@@ -60,9 +60,6 @@ class ExerciseListFragment : Fragment() {
 
         ab = (activity as AppCompatActivity).supportActionBar
         ab?.title = ("День: ${dayModel?.dayNumber}. Список упражнений.")
-        ab?.setBackgroundDrawable(
-            resources.getColor(R.color.white).toDrawable()
-        )  // Задаю фон Тулбара
 
     }
 

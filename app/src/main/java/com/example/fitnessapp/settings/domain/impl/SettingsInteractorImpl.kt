@@ -12,12 +12,13 @@ class SettingsInteractorImpl @Inject constructor(
 settingsRepository.clearData()
     }
 
-    override fun controlTheme() {
-        settingsRepository.controlTheme()
+    override fun controlTheme(): Boolean {
+         return settingsRepository.controlTheme()
     }
 
-    override fun switchTheme(theme: Boolean) {
+    override suspend fun switchTheme(theme: Boolean) {
    settingsRepository.switchTheme(theme)
+        settingsRepository.saveCurrentThemeToShared(theme)
     }
 
 
