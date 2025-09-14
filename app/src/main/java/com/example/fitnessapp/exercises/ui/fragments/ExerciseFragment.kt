@@ -1,5 +1,6 @@
 package com.example.fitnessapp.exercises.ui.fragments
 
+import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -10,7 +11,6 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.media3.common.util.UnstableApi
@@ -20,8 +20,6 @@ import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.exercises.ui.ExerciseViewModel
-import com.example.fitnessapp.fragments.DaysFinishFragment
-import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.TimeUtils
 import com.example.fitnessapp.utils.getDayFromArguments
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +28,7 @@ import pl.droidsonroids.gif.GifDrawable
 class ExerciseFragment : Fragment() {
     private lateinit var binding: ExerciseBinding
     private val model: ExerciseViewModel by viewModels()
+    private var totalExerciseCounter = "0"
     /*
     если мы укажем viewModels() - то вью модел даггер хилт привяжет ко фрагменту - то есть фрагмент разрушится,
     и вью модел - тоже.
@@ -73,13 +72,38 @@ class ExerciseFragment : Fragment() {
 
 
 
+        binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(animation: Animator) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+
+            }
+
+            override fun onAnimationCancel(animation: Animator) {
+
+            }
+
+            override fun onAnimationRepeat(animation: Animator) {
+
+            }
+        })
+
+
+
+
         binding.bNext.setOnClickListener {
             if (binding.bNext.text.toString() == getString(R.string.Done)) {
-findNavController()
-    .popBackStack(
-        R.id.trainingFragment,
-        inclusive = false
-    )
+                var bundle = Bundle()
+                bundle.putString("tec", totalExerciseCounter)
+                bundle.putString("difficulty", "${currentDay?.difficulty}")
+                /*
+                В бандл передам диффикульти чтобы на финишном фрагменте, если понадобится,
+                изменить все тренировки выбранной сложности
+                 */
+findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment, bundle)
+
     /*
     возвращаемся по бекстеку назад ( стек фрагментов из навигации)
     в функции навконтроллера popBackStack можно указать аргументы
@@ -108,7 +132,11 @@ findNavController()
             tvName.text = exercise.name
             subTitle.text = exercise.subtitle
             setMainColors(
-                !subTitle.text.toString().startsWith("Отдохните")
+                !subTitle.text.toString().startsWith(getString(R.string.relax))
+            )
+            setPreFinishColors(
+                subTitle.text.toString().startsWith(getString(R.string.day_finish_subtitle))
+
             )
             changeButtonText(exercise.name)
             /*
@@ -125,7 +153,7 @@ findNavController()
     }
 
     private fun changeButtonText(title : String){
-        if (title == "Day Finish"){
+        if (title == getString(R.string.day_finish_name)){
             binding.bNext.text = getString(R.string.Done)
         }
     }
@@ -143,6 +171,7 @@ animProgressBar(time)
     private fun updateToolbar(){
         model.updateToolbar.observe(viewLifecycleOwner){ text ->
             ab?.title = text
+             totalExerciseCounter = text.split("/")[1]
 
         }
     }
@@ -154,7 +183,6 @@ animProgressBar(time)
 
     private fun showTime(exercise: ExerciseModel?) {
         if (exercise?.time!!.startsWith("x") || exercise.time.isEmpty() ) {
-//            timer?.cancel() // сбросим таймер если он есть
             binding.progressBar.visibility = View.INVISIBLE  // если количество повторений считаем, то прогрессбар не нужен, поэтому инвизибл
             binding.tvTime.text = exercise.time
         } else {
@@ -166,17 +194,20 @@ animProgressBar(time)
     }
 
     private fun setMainColors(isExercise : Boolean)= with(binding){
+        val background = ContextCompat.getColor(requireContext(), R.color.background)
+        val textColor = ContextCompat.getColor(requireContext(), R.color.text_color)
         val white =ContextCompat.getColor(requireContext(), R.color.white)
         val blue =ContextCompat.getColor(requireContext(), R.color.blue)
         val blueDark =ContextCompat.getColor(requireContext(), R.color.blue_dark)
         val black =ContextCompat.getColor(requireContext(), R.color.black)
 
+
         if (isExercise){
 
-             bg.setBackgroundColor(white)
-            tvName.setTextColor(black)
-            subTitle.setTextColor(blueDark)
-            tvTime.setTextColor(black)
+             bg.setBackgroundColor(background)
+            tvName.setTextColor(textColor)
+            subTitle.setTextColor(textColor)
+            tvTime.setTextColor(textColor)
 
 progressBar.progressTintList = ColorStateList.valueOf(blueDark)
 progressBar.backgroundTintList = ColorStateList.valueOf(white)
@@ -197,6 +228,34 @@ progressBar.backgroundTintList = ColorStateList.valueOf(white)
 
         }
     }
+
+
+    private fun setPreFinishColors(isExercise : Boolean)= with(binding){
+        val white =ContextCompat.getColor(requireContext(), R.color.white)
+        val blue =ContextCompat.getColor(requireContext(), R.color.blue)
+        val blueDark =ContextCompat.getColor(requireContext(), R.color.blue_dark)
+        val black =ContextCompat.getColor(requireContext(), R.color.black)
+
+        if (isExercise){
+            bg.setBackgroundColor(white)
+            imMine.visibility = View.INVISIBLE
+            lottieView.visibility= View.VISIBLE
+            lottieView.playAnimation()
+
+
+            tvName.setTextColor(black)
+            subTitle.setTextColor(blueDark)
+            tvTime.setTextColor(black)
+
+            bNext.backgroundTintList = ColorStateList.valueOf(blue)
+            bNext.setTextColor(white)
+
+        }
+    }
+
+
+
+
 
     private fun animProgressBar ( restTime : Long) {
        val progressTo= if (restTime>1000){

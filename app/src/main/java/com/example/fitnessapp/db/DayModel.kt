@@ -13,5 +13,6 @@ data class DayModel(
     var difficulty: String,  // Это мы добавляем сложность упражнениям. Сделаю 3 группы по сложности
     var isDone : Boolean,
     var dayNumber : Int, // будем передавать день по счетчику
-    var doneExerciseCounter:Int
+    var doneExerciseCounter:Int,
+    var isOpen:Boolean
 ) : Serializable // чтобы сделать бандл нужно подключить интерфейс сериализации

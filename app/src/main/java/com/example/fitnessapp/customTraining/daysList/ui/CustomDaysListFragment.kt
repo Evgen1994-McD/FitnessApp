@@ -49,7 +49,8 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
                         getString(R.string.custom),
                         false,
                         0,
-                        0)
+                        0,
+                        true)
                     /*
                     При нажатии на кнопку "Создать день создаём день.
                     Но не заполняем его упражнениями, это будем делать позже

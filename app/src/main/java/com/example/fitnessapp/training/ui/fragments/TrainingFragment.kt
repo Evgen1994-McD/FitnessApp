@@ -19,11 +19,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.getValue
 
 class TrainingFragment : Fragment() {
-    private val diffList = listOf(
-        "easy",
-        "middle",
-        "hard"
-    )
 
 private lateinit var binding: FragmentTrainingBinding
     private val model: DaysViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
@@ -41,6 +36,7 @@ private lateinit var binding: FragmentTrainingBinding
         topCardObserver()
         isCustomTrainingEmpty()
         model.getCustomDaysList()
+
 
     }
     private fun isCustomTrainingEmpty(){

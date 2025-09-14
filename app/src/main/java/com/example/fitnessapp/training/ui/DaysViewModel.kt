@@ -17,8 +17,13 @@ import javax.inject.Inject
 class DaysViewModel @Inject constructor(
     private val mainDb: MainDb, // получили доступ к базе данных
 ) : ViewModel() { //если БД инициализирована мы её найдём  в МейнМодуль
+    companion object {
 
-val daysList = MutableLiveData<List<DayModel>>() // список дней с тренировками
+    }
+
+
+
+    val daysList = MutableLiveData<List<DayModel>>() // список дней с тренировками
 val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
 val isCustomListEmpty = MutableLiveData<Boolean>()
 
@@ -28,7 +33,7 @@ val isCustomListEmpty = MutableLiveData<Boolean>()
             mainDb.daysDao.getAllDaysByDifficulty(trainingTopCardModel.difficulty).collect { /* collect -
             получить то что найдём в БД */
                 list ->
-                Log.d("MyLog", "Days list: ${list.size}")
+
 daysList.value = list // передали лист который нашли
                 topCardUpdate.value = trainingTopCardModel.copy(
                     maxProgress = list.size,

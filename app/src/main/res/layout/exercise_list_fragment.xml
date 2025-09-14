@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:visibility="visible">
 
     <Button
@@ -13,15 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/secondary"
+        android:backgroundTint="@color/blue"
         android:text="@string/start"
         app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
-        tools:text="Начать"
-        tools:textColor="@color/black"
+        tools:text="@string/start"
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -37,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.07" />
+        app:layout_constraintGuide_percent="0.02" />
 
 
     <androidx.core.widget.NestedScrollView
@@ -90,9 +88,9 @@
                         android:id="@+id/dif_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="36dp"
                         android:background="@drawable/top_title_shape"
                         android:backgroundTintMode="add"
+                        app:layout_constraintHeight_percent="0.7"
 
                         android:fontFamily="sans-serif-black"
                         android:gravity="center"
@@ -111,8 +109,8 @@
                     <ProgressBar
                         android:id="@+id/progressbar"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="390dp"
+                        android:layout_height="22dp"
                         android:paddingTop="2dp"
                         android:progress="0"
                         android:progressBackgroundTint="@color/design_default_color_error"
@@ -147,19 +145,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.31" />
+                app:layout_constraintGuide_percent="0.24" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
 
 
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/guideline7" />
+                app:layout_constraintTop_toBottomOf="@id/guideline7"
+                app:layout_constraintVertical_bias="0.0" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

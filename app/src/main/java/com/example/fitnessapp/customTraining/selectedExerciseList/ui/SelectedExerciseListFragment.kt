@@ -2,12 +2,14 @@ package com.example.fitnessapp.customTraining.selectedExerciseList.ui
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +19,10 @@ import com.example.fitnessapp.customTraining.selectedExerciseList.adapter.Select
 import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
 import com.example.fitnessapp.db.ExerciseModel
 import dagger.hilt.android.AndroidEntryPoint
+import debounce
+import kotlinx.coroutines.runBlocking
 import java.util.Collections
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Listener {
@@ -25,6 +30,7 @@ private var dayId = -1
     private var binding: FragmentSelectedExerciseListBinding? = null
     private val _binding get() = binding!!
     private lateinit var adapter: SelectedListExerciseAdapter
+    private lateinit var tempList: ArrayList<ExerciseModel>
 
     private val model: SelectedExerciseListViewModel by viewModels()
 
@@ -143,14 +149,156 @@ updateDay()
         adapter.currentList.forEach {
             exercises += ",${it.id}"
         }
-        model.updateDay(exercises)
+
+        Log.d("MyLog", " Update exercises = $exercises")
+            model.updateDay(exercises)
+
     }
+
+
     override fun onDelete(pos:Int) {
-        val tempList = ArrayList<ExerciseModel>(adapter.currentList)
-        tempList.removeAt(pos)
+        tempList = ArrayList<ExerciseModel>(adapter.currentList)
+        var exercises = ""
+
+
+
+tempList.removeAt(pos)
+
+Log.d("MyLog", "TempListOnDelete = ${tempList}")
+     tempList.forEach {
+         exercises += ",${it.id}"
+
+     }
+        runBlocking {
+            model.updateDay(exercises)
+
+        }
+        runBlocking {
+            model.getExercises(dayId)
+
+        }
         adapter.submitList(tempList)
+
+
+
+
         if (tempList.isEmpty()){
             _binding.textEmpty.visibility = View.VISIBLE
         }
     }
+
+     override fun addExerciseTime(pos:Int) {
+         try {
+
+
+             /*
+         функция для настройки времени упражнений ( кастом)
+          */
+             tempList = ArrayList<ExerciseModel>(adapter.currentList)
+             val selectedExercise = let { tempList[pos].copy() }
+             var replacerWithoutX = ""
+             var upX2 = ""
+             var stringTime = ""
+             Log.d("MyLog", "Selected id = ${selectedExercise.id}")
+             if (selectedExercise.time.startsWith("x")) {
+                 replacerWithoutX = ((selectedExercise.time).split("x"))[1]
+                 upX2 = (replacerWithoutX.toInt() * 1.5).roundToInt().toString()
+                 stringTime = "x$upX2"
+             } else {
+                 replacerWithoutX = selectedExercise.time
+                 upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
+                 stringTime = upX2
+
+             }
+
+             Log.d("MyLog", stringTime)
+             val newEx = selectedExercise.copy(time = stringTime)
+             runBlocking {
+                 model.saveNewExerciseAndReplace(newEx, pos)
+             }
+             runBlocking {
+                 model.getExercises(dayId)
+
+             }
+             if (tempList.isEmpty()) {
+                 _binding.textEmpty.visibility = View.VISIBLE
+             }
+         }
+         catch (e: IndexOutOfBoundsException) {
+       Log.d("MyLog", "Неверный Индекс")
+         } catch (e: NumberFormatException) {
+             Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
+         } catch (e: Exception) {
+             Toast.makeText(context, "Возникла неизвестная ошибка.", Toast.LENGTH_SHORT).show()
+         }
+    }
+
+
+
+
+    override fun decreaseExerciseTime(pos:Int) {
+        /*
+        функция для настройки времени упражнений ( кастом)
+         */
+
+        try {
+
+
+        tempList = ArrayList<ExerciseModel>(adapter.currentList)
+        val selectedExercise = let {  tempList[pos].copy()}
+        var replacerWithoutX =""
+        var upX2 =""
+        var stringTime = ""
+        Log.d("MyLog", "Selected id = ${selectedExercise.id}")
+        if (selectedExercise.time.startsWith("x")) {
+            replacerWithoutX = ((selectedExercise.time).split("x"))[1]
+             if (replacerWithoutX.toInt()/1.5 >0){
+                upX2 = (replacerWithoutX.toInt()/1.5).roundToInt().toString()
+            } else upX2 = "1"
+
+
+            stringTime = "x$upX2"
+        } else {
+            replacerWithoutX = selectedExercise.time
+
+            if (replacerWithoutX.toInt()/1.5 >0){
+                upX2 = (replacerWithoutX.toInt()/1.5).roundToInt().toString()
+            } else upX2 = "1"
+
+            stringTime = upX2
+
+        }
+
+        Log.d("MyLog", stringTime)
+        val newEx = selectedExercise.copy(time = stringTime)
+        runBlocking {
+            model.saveNewExerciseAndReplace( newEx, pos)
+        }
+        runBlocking {
+            model.getExercises(dayId)
+
+        }
+        if (tempList.isEmpty()){
+            _binding.textEmpty.visibility = View.VISIBLE
+        } }
+        catch (e: IndexOutOfBoundsException) {
+            Log.d("MyLog", "Неверный Индекс")
+        } catch (e: NumberFormatException) {
+            Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Возникла неизвестная ошибка.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+
+    /*
+    В данной функции прорабатываю изменение количества выполнений упражнений в своей
+    тренировке.
+    !
+    !
+    !
+
+     */
 }

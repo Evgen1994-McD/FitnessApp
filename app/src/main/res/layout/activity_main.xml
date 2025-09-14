@@ -5,8 +5,20 @@
     android:id="@+id/placeholder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+android:theme="@style/Theme.FitnessApp"
     tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/materialToolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleMarginStart="10dp" />
 
     <fragment
         android:id="@+id/fragmentContainerView"
@@ -17,13 +29,15 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/materialToolbar"
         app:navGraph="@navigation/main_nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
+        style="@style/bottom_navigation_style"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:outlineAmbientShadowColor="@color/black"
         app:itemIconTint="@drawable/bottom_view_selector"
         app:itemTextColor="@drawable/bottom_view_selector"
         app:layout_constraintBottom_toBottomOf="parent"

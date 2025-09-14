@@ -4,7 +4,7 @@
     <string name="easy">Easy</string>
     <string name="middle">Middle</string>
     <string name="hard">Hard</string>
-    <string name="custom">Custom</string>
+    <string name="custom">custom</string>
 
 
 
@@ -17,9 +17,9 @@
     <string name="waiting_message">Начало упражнений через :</string>
     <string name="start">Начать</string>
     <string name="Next">Следующее</string>
-    <string name="GoodDone">Поздраляю!!! Ты молодец!</string>
+    <string name="GoodDone">Отлично,\nвы закончили\n тренировку!</string>
     <string name="Back">Назад в Меню</string>
-    <string name="Done">Готово</string>
+    <string name="Done">Статистика</string>
     <string name="Waiting">Приготовьтесь</string>
     <string name="listExercise">Список упражнений</string>
     <string name="PrefForDoing">main</string>
@@ -29,6 +29,7 @@
     <string name="alert">Внимание! </string>
     <string name="back">Отмена</string>
 
+<!--    Тренировки-->
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>
     <string name="reset_day_message">Хотите снова повторить этот день?</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -37,20 +38,45 @@
     <string name="selected_exercise_added">Добавлено упражнение :  </string>
     <string name="custom_training_title_ab">Персональная тренировка</string>
     <string name="selected_exercise_counter">Количество упражнений: </string>
+    <string name="lock_day_toast">Сначала выполните предыдущий вызов!</string>
+    <string name="no_exercise">В данном дне нет упражнений.</string>
+    <string name="relax">Отдохните</string>
+    <string name="selected_empty">Упражнений пока нет...</string>
 
 <!--    Exercise Helper-->
-    <string name="recovery">11</string>
+    <string name="recovery">40</string>
     <string name="subtitle">Отдохните. Следующее упражнение:</string>
     <string name="subtitle_start">Приготовьтесь. Следующее упражнение:</string>
 
-    <string name="day_finish_name">Готово</string>
+    <string name="day_finish_name">Так держать!</string>
     <string name="day_finish_subtitle">Отличная тренировка!</string>
 
 
 
     <!--  Картинки для упражнений-->
 
-    <string name="day_finish_gif">congrats.gif</string>
+    <string name="day_finish_gif">finish_gif.gif</string>
+    <string name="day_finish_fire">finish_fire.gif</string>
+
+
+
+
+    <!--  Финишный фрагмент статистики-->
+    <string name="kcal">Калории</string>
+    <string name="exercise">Упражнения</string>
+    <string name="time">Время</string>
+    <string name="how_your_training">Как вам тренировка?</string>
+
+    <string name="after_so_hard">Слишком сложно</string>
+    <string name="after_so_easy">Слишком просто</string>
+    <string name="after_nothing">Нет, всё Ок, зашел случайно</string>
+    <string name="after_question">Что вам не понравилось?</string>
+
+
+<!--ActionBars-->
+
+    <string name="settings">Настройки</string>
+
 
 
 </resources>

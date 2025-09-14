@@ -6,16 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.Snackbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.adapter.DaysAdapter
+import com.example.fitnessapp.training.ui.adapters.DaysAdapter
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.training.ui.DaysViewModel
 import com.example.fitnessapp.utils.DialogManager
+import com.google.android.material.snackbar.Snackbar
+
 
 @Suppress("DEPRECATION")
 class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
@@ -99,9 +102,18 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
                 })
 
 
-        }else if(day.exercises.isEmpty()) {
+        } else if (!day.isOpen) {
             Toast.makeText(requireContext(),
-                "В данном дне нет упражнений.",
+                R.string.lock_day_toast,
+                Toast.LENGTH_SHORT).show()
+/*
+закрываем дни если предыдущий день не пройден
+ */
+        }
+
+        else if(day.exercises.isEmpty()) {
+            Toast.makeText(requireContext(),
+                R.string.no_exercise,
                 Toast.LENGTH_SHORT).show()
 
         } else {
