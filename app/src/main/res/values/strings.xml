@@ -40,9 +40,10 @@
     <string name="selected_exercise_counter">Количество упражнений: </string>
     <string name="lock_day_toast">Сначала выполните предыдущий вызов!</string>
     <string name="no_exercise">В данном дне нет упражнений.</string>
+    <string name="relax">Отдохните</string>
 
 <!--    Exercise Helper-->
-    <string name="recovery">11</string>
+    <string name="recovery">46</string>
     <string name="subtitle">Отдохните. Следующее упражнение:</string>
     <string name="subtitle_start">Приготовьтесь. Следующее упражнение:</string>
 

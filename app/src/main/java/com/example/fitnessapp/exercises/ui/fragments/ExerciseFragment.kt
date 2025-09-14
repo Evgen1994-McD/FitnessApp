@@ -132,7 +132,7 @@ findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment,
             tvName.text = exercise.name
             subTitle.text = exercise.subtitle
             setMainColors(
-                !subTitle.text.toString().startsWith("Отдохните")
+                !subTitle.text.toString().startsWith(getString(R.string.relax))
             )
             setPreFinishColors(
                 subTitle.text.toString().startsWith(getString(R.string.day_finish_subtitle))
@@ -183,7 +183,6 @@ animProgressBar(time)
 
     private fun showTime(exercise: ExerciseModel?) {
         if (exercise?.time!!.startsWith("x") || exercise.time.isEmpty() ) {
-//            timer?.cancel() // сбросим таймер если он есть
             binding.progressBar.visibility = View.INVISIBLE  // если количество повторений считаем, то прогрессбар не нужен, поэтому инвизибл
             binding.tvTime.text = exercise.time
         } else {

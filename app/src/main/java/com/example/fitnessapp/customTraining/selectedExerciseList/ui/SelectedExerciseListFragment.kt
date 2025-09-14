@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,7 @@ import com.example.fitnessapp.customTraining.selectedExerciseList.adapter.Select
 import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
 import com.example.fitnessapp.db.ExerciseModel
 import dagger.hilt.android.AndroidEntryPoint
+import debounce
 import kotlinx.coroutines.runBlocking
 import java.util.Collections
 import kotlin.math.roundToInt
@@ -158,7 +160,10 @@ updateDay()
         tempList = ArrayList<ExerciseModel>(adapter.currentList)
         var exercises = ""
 
-        tempList.removeAt(pos)
+
+
+tempList.removeAt(pos)
+
 Log.d("MyLog", "TempListOnDelete = ${tempList}")
      tempList.forEach {
          exercises += ",${it.id}"
