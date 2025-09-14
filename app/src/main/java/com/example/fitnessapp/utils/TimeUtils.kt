@@ -2,14 +2,18 @@ package com.example.fitnessapp.utils
 
 import android.annotation.SuppressLint
 import android.icu.util.Calendar
+import androidx.compose.ui.text.intl.Locale
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.GregorianCalendar
+import java.util.TimeZone
 
 @SuppressLint("SimpleDateFormat")
 
 object TimeUtils {
     val formatter = SimpleDateFormat("mm:ss")
     val workoutFormatter = SimpleDateFormat("HH'h':mm'm'")
+
     val cvFormatter = SimpleDateFormat("dd/MM/yyyy")
 
 
@@ -19,12 +23,12 @@ object TimeUtils {
         return formatter.format(cv.time)
     }  // Собственно, это функция для перевода времени в МС, урок 17.
 
-    fun getWorkoutTime(time:Long): String{
-        val cv = Calendar.getInstance()
+    fun getWorkoutTime(time: Long): String {
+        val cv = GregorianCalendar(TimeZone.getTimeZone("UTC"))
         cv.timeInMillis = time
+        workoutFormatter.timeZone = TimeZone.getTimeZone("UTC")
         return workoutFormatter.format(cv.time)
-    }  // Собственно, это функция для перевода времени в МС, урок 17.
-
+    }
 
 
     fun getCurrentDate(): String{

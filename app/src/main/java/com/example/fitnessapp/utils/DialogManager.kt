@@ -1,14 +1,21 @@
 package com.example.fitnessapp.utils
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.core.view.isVisible
 import com.example.fitnessapp.R
+import com.example.fitnessapp.databinding.AfterTrainingDialogueBinding
 import com.example.fitnessapp.databinding.WeightDialogBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Job
 
 object DialogManager {   // Сначала сделал как класс, но он работает только если обджект. Как и фрагмент менеджер. Если мы укажем обжект - сможем добраться без инициализации класса. Если как класс - сначала надо его инициализировать.
 
@@ -77,5 +84,141 @@ object DialogManager {   // Сначала сделал как класс, но 
     interface WeightListener {
         fun onClick(weight: String)  // мы создали Интерфейс с функцией Он клик, это будет наш кликер :D
     }
+
+
+
+    interface OnDifficultySelectedListener {
+        fun onDifficultySelected(difficultyLevel: Int)
+    }
+
+    fun showAfterTrainingDialog(
+        context: Context,
+        listener: OnDifficultySelectedListener
+    ) {
+        val builder = MaterialAlertDialogBuilder(context)
+        val dialog = builder.create()
+        val binding = AfterTrainingDialogueBinding.inflate(LayoutInflater.from(context))
+        dialog.setView(binding.root)
+
+
+
+        binding.apply {
+            // Установим обработку кликов отдельно для каждой кнопки
+            btSoEasy.setOnClickListener {
+                lottieView.setAnimation(R.raw.down_arrow)
+                lottieView.rotationX = 180f
+                lottieView.repeatCount = ValueAnimator.INFINITE
+                lottieView.playAnimation()
+                btSoHard.isVisible = false
+                tvTitle.setText("Усложнить тренировку?")
+                btSoEasy.setText("Да, усложнить вызов!")
+                btSoEasy.setOnClickListener {
+                    listener.onDifficultySelected(DIFFICULTY_UP)
+                    tvTitle.setText("Работаем...\n" +
+                            "Пожалуйста, подождите...")
+                    btSoEasy.isVisible = false
+                    btIsNothing.isVisible = false
+                    btIsNothing.setText("Отлично!")
+
+                    lottieView.setAnimation(R.raw.place_holder_question)
+                    lottieView.speed = 0.75F
+                    lottieView.repeatCount = 0
+                    lottieView.playAnimation()
+
+                    lottieView.addAnimatorListener(object : Animator.AnimatorListener{
+                        override fun onAnimationStart(animation: Animator) {
+
+                        }
+
+                        override fun onAnimationEnd(animation: Animator) {
+                            btIsNothing.backgroundTintList = ColorStateList.valueOf(android.graphics.Color.BLUE)
+                            btIsNothing.setTextColor(android.graphics.Color.WHITE)
+
+                            tvTitle.setText("Тренер Закончил настройку!\n" +
+                                    "Нагрузка увеличена!")
+                            btIsNothing.isVisible = true
+
+                        }
+
+                        override fun onAnimationCancel(animation: Animator) {
+
+                        }
+
+                        override fun onAnimationRepeat(animation: Animator) {
+
+                        }
+                    })
+
+
+
+                }
+
+
+            }
+
+            btSoHard.setOnClickListener {
+                lottieView.setAnimation(R.raw.down_arrow)
+                lottieView.repeatCount = ValueAnimator.INFINITE
+                lottieView.playAnimation()
+                btSoEasy.isVisible = false
+                tvTitle.setText("Упростить тренировку?")
+                btSoHard.setText("Да, сделать проще!")
+                btSoHard.setOnClickListener {
+                    listener.onDifficultySelected(DIFFICULTY_DOWN)
+                    tvTitle.setText("Работаем...\n" +
+                            "Пожалуйста, подождите...")
+                    btSoHard.isVisible = false
+                    btIsNothing.isVisible = false
+                    btIsNothing.setText("Отлично!")
+
+                    lottieView.setAnimation(R.raw.place_holder_question)
+                    lottieView.speed = 0.75F
+                    lottieView.repeatCount = 0
+                    lottieView.playAnimation()
+
+                    lottieView.addAnimatorListener(object : Animator.AnimatorListener{
+                        override fun onAnimationStart(animation: Animator) {
+
+                        }
+
+                        override fun onAnimationEnd(animation: Animator) {
+                            tvTitle.setText("Тренер Закончил настройку!\n" +
+                                    "Нагрузка сокращена!")
+                            btIsNothing.setTextColor(android.graphics.Color.WHITE)
+
+                            btIsNothing.backgroundTintList = ColorStateList.valueOf(android.graphics.Color.BLUE)
+                            btIsNothing.isVisible = true
+
+                        }
+
+                        override fun onAnimationCancel(animation: Animator) {
+
+                        }
+
+                        override fun onAnimationRepeat(animation: Animator) {
+
+                        }
+                    })
+
+                }
+            }
+            btIsNothing.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+        binding.lottieView.isVisible = true
+        binding.lottieView.playAnimation()
+    }
+
+    // Константы уровней сложности
+    const val DIFFICULTY_UP = 1
+    const val DIFFICULTY_DOWN = 2
+
+
+
+
+
+
 
 }

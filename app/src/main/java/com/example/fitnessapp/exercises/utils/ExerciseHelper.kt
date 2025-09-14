@@ -45,8 +45,8 @@ val templist = ArrayList<ExerciseModel>()
             context.getString(R.string.day_finish_subtitle),
             "", // это финиш тут заполнили просто так, тут не важно
             true, // это финиш тут заполнили просто так, тут не важно
-            context.getString(R.string.day_finish_gif), // из папки ассетс
-            0
+            context.getString(R.string.day_finish_fire), // из папки ассетс
+            0.0
         )
     )
         /*

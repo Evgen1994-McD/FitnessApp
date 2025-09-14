@@ -40,10 +40,9 @@
                 android:id="@+id/dif_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
                 android:background="@drawable/top_title_shape"
                 android:backgroundTintMode="add"
-
+                app:layout_constraintHeight_percent="0.7"
                 android:fontFamily="sans-serif-black"
                 android:gravity="center"
                 android:paddingStart="10dp"
@@ -135,7 +134,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.1"
+        app:layout_constraintGuide_percent="0.02"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -144,6 +143,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.23119015" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

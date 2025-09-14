@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.LinearEasing
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
+import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter
@@ -24,9 +27,12 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
@@ -74,7 +80,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
                         return
                     } else {
                         try {
-                            model.saveWeight(weight.toDouble().toInt())
+                            model.saveWeight(weight.toDouble())
                         } catch (e: NumberFormatException) {
                             Toast.makeText(requireContext(), "Неверный формат", Toast.LENGTH_SHORT)
                                 .show()
@@ -97,10 +103,11 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
         statisitcObserver()
         onCalendarClick()
         model.getYearList()
-
+        model.getMonthList()
         model.getStatisticEvents()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
         observeYearList()
+        observeMonthList()
 
     }
 
@@ -117,6 +124,31 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
 
 }
 
+    private fun observeMonthList(){
+        model.monthListData.observe(viewLifecycleOwner){ list ->
+            val monthTemp = ArrayList<DateSelectorModel>(list)
+            monthTemp[monthTemp.size - 1] =
+                monthTemp[monthTemp.size - 1].copy(isSelected = true)
+            model.month = monthTemp[monthTemp.size - 1].text.toInt()
+            val monthToText = monthTemp.map { currentItem ->
+                val index = currentItem.text.toIntOrNull()
+                if (index != null && index >= 0 && index < UtilsArrays.monthList.size) {
+                    currentItem.copy(text = UtilsArrays.monthList[index].text)
+                } else {
+                    currentItem // Оставляем текущий элемент неизменённым, если индекс вышел за диапазон
+                }
+            }
+            monthAdapter.submitList(monthToText)
+            model.getWeightByYearAndMonth()
+
+          }
+
+
+        }
+
+
+
+
     private fun initRcViews() = with(binding) {
 
         yearAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
@@ -128,7 +160,9 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
         })
         monthAdapter = DateSelectorAdapter(object : DateSelectorAdapter.Listener {
             override fun onItemClick(index: Int) {
-                model.month = index
+                val monthName = monthAdapter.currentList[index].text
+                val findMonthIndex = UtilsArrays.monthList.indexOfFirst { it.text == monthName }
+                model.month = findMonthIndex
                 setSelectedDateForWeight(index, monthAdapter)
 
             }
@@ -182,23 +216,24 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
     }
 
     private fun setChartData(tempWeightList: List<WeightModel>) = with(binding) {
-        val weightList = ArrayList<BarEntry>()
+        val weightList = ArrayList<Entry>()
+        for (i in 0 until 30) {
+            val filteredList = tempWeightList.filter { it.day == i + 1 }
 
-        for (i in 0..30) {
-            val list = tempWeightList.filter {
-                i == it.day - 1
+            if (filteredList.isNotEmpty()) {
+                weightList.add(Entry(i.toFloat(), filteredList.first().weight.toFloat()))
+            } else {
+                // Оставляем пустой промежуток или используем среднее предыдущих значений
+                continue // Пропускаем запись
             }
-            weightList.add(
-                BarEntry(
-                    i.toFloat(),
-                    if (list.isEmpty()) 0f else list[0].weight.toFloat()
-                )
-            )
         }
 
-        val set: BarDataSet
+        val set: LineDataSet
+
+
         if (barChart.data != null && barChart.data.dataSetCount > 0) {
-            set = barChart.data.getDataSetByIndex(0) as BarDataSet
+            set = barChart.data.getDataSetByIndex(0) as LineDataSet
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
             set.values = weightList
             set.label = "${model.year}/${UtilsArrays.monthList[model.month].text}"
             barChart.data.notifyDataChanged() // сообщаем что данные изменились и перерисуем
@@ -212,15 +247,21 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
              */
         } else {
 
-            set = BarDataSet(weightList, "${model.year}/${UtilsArrays.monthList[model.month].text}") //Это сам график
+            set = LineDataSet(weightList, "${model.year}/${UtilsArrays.monthList[model.month].text}") //Это сам график
             set.color = android.graphics.Color.GREEN
-            val dataSets = ArrayList<IBarDataSet>() //это список с графиками ( у нас если что 1)
+            set.valueTextColor = android.graphics.Color.RED
+            set.valueTextSize = 20f
+            set.circleRadius = 3f
+
+            set.lineWidth = 5f
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+
+            val dataSets = ArrayList<ILineDataSet>() //это список с графиками ( у нас если что 1)
             dataSets.add(set) // тот самый один график который мы и добавляем
-            val barDate = BarData(dataSets)// Передаём всё в бар дата
+            val barDate = LineData(dataSets)// Передаём всё в бар дата
             barDate.setValueTextSize(10f) // настраиваем если надо, есть много разных функций
             barChart.data =
                 barDate // Передали данные в БарДата. В barDate есть вообще все данные, поэтому его и передаём
-
         }
         barChart.invalidate() // перересовываем, обязательно
 
@@ -232,12 +273,16 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
             barChart.description.isEnabled = false
             barChart.legend.apply {
                 horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+                textColor = android.graphics.Color.BLUE
             }
                 barChart.axisLeft.axisMinimum = 10f
                 barChart.axisRight.axisMinimum = 10f
             barChart.xAxis.apply { // настройки для оси Х ( переместим её вниз)
                 position = XAxis.XAxisPosition.BOTTOM
-                labelCount = 6
+                axisLineColor = android.graphics.Color.BLUE
+                gridColor = android.graphics.Color.BLUE
+                textColor = android.graphics.Color.BLUE
+                labelCount = barChart.size
                 valueFormatter = object : ValueFormatter(){
                     override fun getFormattedValue(value: Float): String {
                         return (value + 1).toInt().toString()
@@ -246,6 +291,16 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
                     }
                 }
             }
+            barChart.axisLeft.apply {
+                textColor = android.graphics.Color.BLUE
+                gridColor = android.graphics.Color.BLUE
+
+            }
+            barChart.axisRight.apply {
+                textColor = android.graphics.Color.BLUE
+                gridColor = android.graphics.Color.BLUE
+
+            }
         }
     }
 
@@ -253,7 +308,8 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
     private fun statisitcObserver() {
         model.statisticData.observe(viewLifecycleOwner) { statisticModel ->
             binding.apply {
-                time.text = TimeUtils.getWorkoutTime(
+                time.text =
+                    TimeUtils.getWorkoutTime(
                     statisticModel.workoutTime.toLong() * 1000
                 ) //умножили на 1000 потому что время надо в МС
                 kcal.text = statisticModel.kcal.toString()
@@ -289,7 +345,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
         e: Entry?,
         h: Highlight?,
     ) {
-        val dayNumber =(( e as BarEntry).x + 1).toInt() // + 1 из за форматтера так как массивы и график начинается с 0
+        val dayNumber =(( e as Entry).x + 1).toInt() // + 1 из за форматтера так как массивы и график начинается с 0
         val weightModel = getWeightModelByDay(dayNumber) ?: return
 
         DialogManager.showWeightDialog(
@@ -297,7 +353,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
             object : DialogManager.WeightListener{
                 override fun onClick(weight: String) {
                     model.updateWeight(weightModel.copy(
-                        weight = weight.toInt()
+                        weight = weight.toDouble()
                     ))
 
                 }

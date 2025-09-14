@@ -47,6 +47,8 @@ class ChooseExercisesAdapter(val listener: Listener) :
         fun setData(exercise: ExerciseModel) = with(binding) {
 
 delete.visibility = View.INVISIBLE
+up.visibility = View.INVISIBLE
+down.visibility = View.INVISIBLE
             tvNameEx.text = exercise.name //Название упражнения
             tvcount.text =
                 getTime(exercise.time)

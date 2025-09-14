@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
-import com.example.fitnessapp.databinding.ExerciseListItemBinding
 import com.example.fitnessapp.databinding.SelectedExerciseListItemBinding
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.utils.TimeUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
@@ -34,8 +35,19 @@ class SelectedListExerciseAdapter( val listener: Listener) :
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
 delete.setOnClickListener {
+
     listener.onDelete(adapterPosition)
 }
+            up.setOnClickListener{
+
+                    listener.addExerciseTime(adapterPosition)
+
+            }
+            down.setOnClickListener {
+
+                    listener.decreaseExerciseTime(adapterPosition)
+
+            }
         }
 
         private fun getTime(time: String): String {
@@ -61,13 +73,13 @@ delete.setOnClickListener {
 
     class MyComporator : DiffUtil.ItemCallback<ExerciseModel>() {
         override fun areItemsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
-            return oldItem == newItem
-
+            return oldItem == newItem && oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
 
-            return oldItem == newItem
+            return oldItem.time == newItem.time && oldItem.id == newItem.id
+
         }
 
 
@@ -76,5 +88,7 @@ delete.setOnClickListener {
 
     interface Listener{
         fun onDelete(pos: Int)
+       fun addExerciseTime(pos:Int)
+        fun decreaseExerciseTime(pos:Int)
     }
 }

@@ -4,54 +4,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="115dp"
-    tools:context=".settings.ui.SettingsFragment">
+    tools:context=".settings.ui.SettingsFragment"
 
-    <Button
+    >
+
+    <TextView
+
         android:id="@+id/clearDataButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/blue"
-        android:text="Очистить данные "
-        android:textColor="@color/list_item_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:drawableEnd="@drawable/ic_clear_24"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="20dp"
+        android:text="Очистить данные"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customTrainingSettingsButton" />
 
-    <TextView
-        android:id="@+id/textView5"
+    <Switch
+        android:id="@+id/darkTheme"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="20dp"
+        android:text="Тёмная тема"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Custom Settings"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.98" />
 
     <TextView
+
+
         android:id="@+id/customTrainingSettingsButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="10dp"
-        android:text="Изменить / Создать тренировку"
-        android:textStyle="bold"
+        android:drawableEnd="@drawable/ic_custom_training_24"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="20dp"
+        android:text="Своя тренировка"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/black"
-        android:backgroundTint="@color/black"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customTrainingSettingsButton"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/darkTheme" />
 </androidx.constraintlayout.widget.ConstraintLayout>

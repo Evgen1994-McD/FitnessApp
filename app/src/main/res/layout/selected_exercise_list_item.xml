@@ -23,6 +23,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/white"
 
             />
 
@@ -32,13 +33,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="TextView"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/delete"
+            app:layout_constraintEnd_toStartOf="@+id/up"
             app:layout_constraintStart_toEndOf="@+id/imExercise"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="x30"
-            android:textColor="#E91E63"
+            android:textColor="@color/exercise_count"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvNameEx"
             app:layout_constraintTop_toBottomOf="@+id/tvNameEx"
@@ -78,6 +78,23 @@
             app:lottie_autoPlay="false"
             app:lottie_loop="false"
             app:lottie_rawRes="@raw/success" />
+
+        <ImageView
+            android:id="@+id/up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/lottie_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_up_24" />
+
+        <ImageView
+            android:id="@+id/down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/up"
+            app:layout_constraintStart_toStartOf="@+id/up"
+            app:srcCompat="@drawable/ic_down_24" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

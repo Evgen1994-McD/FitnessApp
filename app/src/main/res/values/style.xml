@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
     <resources>
-        <!-- Стиль для меню -->
+    <style name="background_style">
+        <item name="background"> @color/white</item>
+        <item name="android:textColor">@color/black</item>
 
-    </resources>
+    </style>
+    <style name="text_color">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="bottom_navigation_style" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint"> @color/white</item>
+        <item name="titleTextColor">@color/black</item>
+    </style>
+
+    <style name="calendar_style" >
+        <item name="pagesColor">@color/list_item_bg</item>
+        <item name="selectionColor">@color/blue</item>
+        <item name="selectionLabelColor">@color/blue</item>
+        <item name="todayLabelColor">@color/orange</item>
+        <item name="abbreviationsBarColor">@color/white</item>
+        <item name="daysLabelsColor">@color/blue</item>
+        <item name="abbreviationsLabelsColor">@color/black</item>
+        <item name="headerLabelColor">@color/white</item>
+<item name="headerColor">@color/blue</item>
+    </style>
+
+
+
+</resources>
