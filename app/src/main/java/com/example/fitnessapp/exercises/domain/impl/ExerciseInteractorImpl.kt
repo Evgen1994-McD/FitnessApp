@@ -27,6 +27,10 @@ class ExerciseInteractorImpl @Inject constructor(
         return exerciseRepository.getCurrentDay(dayModel)
     }
 
+    override suspend fun getDayById(dayId: Int): DayModel? {
+      return exerciseRepository.getDayById(dayId)
+    }
+
     override suspend fun insertStatistic(statisticModel: StatisticModel) {
        exerciseRepository.insertStatistic(statisticModel)
     }

@@ -10,6 +10,7 @@ import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
+import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
 import com.example.fitnessapp.utils.MySoundPool
 import com.example.fitnessapp.utils.TimeUtils
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
-    private val mainDb: MainDb,
+    private val execiseInteractor: ExerciseInteractor,
     private val exerciseHelper: ExerciseHelper,
     private val tts: TextToSpeech,
     private val soundPool: MySoundPool
@@ -42,14 +43,14 @@ class ExerciseViewModel @Inject constructor(
     private var totalExerciseNumber = 0
 
     private fun updateDay(dayModel: DayModel) = viewModelScope.launch {
-        mainDb.daysDao.insertDay(dayModel)
+       execiseInteractor.updateDay(dayModel)
     }
 
     fun getAndOpenNextDay()= viewModelScope.launch {
         var nextId = ((currentDay?.id)?.plus(1)) ?: 0
         if (nextId!=0) {
             try {
-                nextDay = mainDb.daysDao.getDay(nextId)
+                nextDay = execiseInteractor.getDayById(nextId)
                     nextDay = nextDay!!.copy(isOpen = true)
                     updateDay(nextDay!!)
             }catch (e:Exception){
@@ -76,7 +77,7 @@ class ExerciseViewModel @Inject constructor(
 
     private fun getStatistic() = viewModelScope.launch {
         val currentDate = TimeUtils.getCurrentDate()
-        statisticModel = mainDb.statisticDao.getStatisticByDate(currentDate) // Если статистика есть выдаст, если нет - то выдаст null
+        statisticModel = execiseInteractor.getStatisticByDate(currentDate) // Если статистика есть выдаст, если нет - то выдаст null
 
     }
 
@@ -122,9 +123,9 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
     }
 
     fun getExercises(dayModel: DayModel) = viewModelScope.launch {
-        currentDay = dayModel.id?.let { mainDb.daysDao.getDay(it) }
+        currentDay = execiseInteractor.getCurrentDay(dayModel)
 
-        val exerciseList = mainDb.exerciseDao.getAllExercises()
+        val exerciseList = execiseInteractor.getAllExerciseList()
         exercisesOfTheDay = exerciseHelper.getExercisesOfTheDay(
             dayModel.exercises,
             exerciseList
@@ -259,7 +260,7 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         )
 
         viewModelScope.launch {
-            mainDb.statisticDao.insertDayStatistic(createStatistic())
+          execiseInteractor.insertStatistic(createStatistic())
         }
     }
     /*
