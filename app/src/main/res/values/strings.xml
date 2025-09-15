@@ -45,6 +45,7 @@
 
 <!--    Exercise Helper-->
     <string name="recovery">40</string>
+    <string name="pre">10</string>
     <string name="subtitle">Отдохните. Следующее упражнение:</string>
     <string name="subtitle_start">Приготовьтесь. Следующее упражнение:</string>
 
