@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SelectedExerciseListViewModel @Inject constructor(
-    private val mainDb: MainDb,
+   private val customInteractor: CustomInteractor,
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
     val exerciseData = MutableLiveData<List<ExerciseModel>>()
@@ -23,8 +24,8 @@ class SelectedExerciseListViewModel @Inject constructor(
 
     fun getExercises(id: Int) = viewModelScope.launch {
         delay(200)
-        dayModel = mainDb.daysDao.getDay(id)
-        val exerciseList = mainDb.exerciseDao.getAllExercises()
+        dayModel = customInteractor.getDayById(id)
+        val exerciseList = customInteractor.getAllExercise()
         exerciseData.value = exerciseHelper.getExercisesOfTheDay(
             dayModel?.exercises!!,
             exerciseList
@@ -41,7 +42,7 @@ class SelectedExerciseListViewModel @Inject constructor(
 
         var input = dayModel?.exercises
 
-        tempId = mainDb.exerciseDao.insertExercise(newExercise.copy(id = null))
+        tempId = customInteractor.insertExercise(newExercise.copy(id = null))
         Log.d("MyLog", "input = $input")
         val numbers = input?.split(",")?.map {
             it.trim().toIntOrNull() ?: throw IllegalArgumentException("Invalid number format")
@@ -66,7 +67,7 @@ class SelectedExerciseListViewModel @Inject constructor(
     fun updateDay(exercises: String) = viewModelScope.launch {
         val cleanedString = exercises.takeIf { it.startsWith(',') }?.removePrefix(",") ?: exercises
         Log.d("MyLog", "updateDayExercise = $cleanedString")
-        mainDb.daysDao.insertDay(
+        customInteractor.insertDay(
             dayModel?.copy(
                 doneExerciseCounter = 0,
                 isDone = false,

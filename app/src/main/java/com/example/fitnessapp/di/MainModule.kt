@@ -6,6 +6,10 @@ import android.speech.tts.TextToSpeech
 import androidx.room.Room
 import androidx.transition.Visibility
 import com.example.fitnessapp.R
+import com.example.fitnessapp.customTraining.data.CustomRepositoryImpl
+import com.example.fitnessapp.customTraining.domain.CustomInteractor
+import com.example.fitnessapp.customTraining.domain.CustomRepository
+import com.example.fitnessapp.customTraining.domain.impl.CustomInteractorImpl
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.data.ExerciseRepositoryImpl
 import com.example.fitnessapp.exercises.domain.ExerciseInteractor
@@ -91,6 +95,17 @@ abstract class ExerciseModule {
 
     @Binds
     abstract fun bindExerciseInteractor(exerciseInteractorImpl: ExerciseInteractorImpl): ExerciseInteractor
+}
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class CustomExerciseModule {
+    @Binds
+    abstract fun bindCustomRepository(customRepositoryImpl: CustomRepositoryImpl): CustomRepository
+
+    @Binds
+    abstract fun bindCustomInteractor(customInteractorImpl: CustomInteractorImpl): CustomInteractor
 }
 
 

@@ -3,6 +3,7 @@ package com.example.fitnessapp.customTraining.ui.customDaysList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.MainDb
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,16 +13,19 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CustomDaysListViewModel @Inject constructor(
-    private val mainDb: MainDb
+    private val customInteractor: CustomInteractor
 ):ViewModel() {
+    companion object{
+        const val customDifficulty = "custom"
+    }
 
-    val daysListData = mainDb.daysDao.getAllDaysByDifficulty("custom").asLiveData(Dispatchers.Main)
+    val daysListData = customInteractor.getAllDaysByDifficulty(customDifficulty).asLiveData(Dispatchers.Main)
 
     fun insertDay(dayModel: DayModel) = viewModelScope.launch {
-        mainDb.daysDao.insertDay(dayModel)
+       customInteractor.insertDay(dayModel)
     }
 
     fun deleteDay(day:DayModel)= viewModelScope.launch {
-        mainDb.daysDao.deleteDay(day)
+        customInteractor.deleteDay(day)
     }
 }
