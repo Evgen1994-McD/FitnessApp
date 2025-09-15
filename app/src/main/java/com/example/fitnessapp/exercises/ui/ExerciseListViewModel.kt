@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.training.data.TrainingTopCardModel
 import com.example.fitnessapp.training.utils.TrainingUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 /* для каждого объекта будет свой вью модел */
 @HiltViewModel //анннотация Хилт вьюмодел
 class ExerciseListViewModel @Inject constructor( // инжект для того, чтобы передать конструктор с базой данных
-    private val mainDb: MainDb  // Daggger подключил нам базу данных с помощью которой можем получать список
+    private val exerciseInteractor: ExerciseInteractor  // Daggger подключил нам базу данных с помощью которой можем получать список
 ) : ViewModel() {
     companion object{
 
@@ -32,12 +33,12 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
     fun getDayExerciseList(dayModel: DayModel?) =
         viewModelScope.launch { // запускаем в корутине, потому что сложная операция
             val day =
-                dayModel?.id?.let { mainDb.daysDao.getDay(it) } // выбарается самый свежий день из базы данных по id
+                dayModel?.id?.let { exerciseInteractor.getDayById(it) } // выбарается самый свежий день из базы данных по id
             if (day != null) {
                 getTopCardData(day)
             }
             val allExerciseList =
-                mainDb.exerciseDao.getAllExercises() // получаем список со всеми упражнениями который будем потом перебирать
+               exerciseInteractor.getAllExerciseList() // получаем список со всеми упражнениями который будем потом перебирать
             val tempExerciseList = ArrayList<ExerciseModel>()
             day?.let { dayModel ->
                 dayModel.exercises.split(",").forEach { id ->

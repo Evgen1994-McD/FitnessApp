@@ -1,7 +1,6 @@
 package com.example.fitnessapp.exercises.ui.fragments
 
 import android.animation.ObjectAnimator
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,8 +17,6 @@ import com.example.fitnessapp.exercises.ui.ExerciseAdapter
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.exercises.ui.ExerciseListViewModel
-import com.example.fitnessapp.fragments.WaitingFragment
-import com.example.fitnessapp.utils.FragmentManager
 import com.example.fitnessapp.utils.getDayFromArguments
 
 class ExerciseListFragment : Fragment() {
@@ -36,7 +32,6 @@ class ExerciseListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = ExerciseListFragmentBinding.inflate(inflater, container, false)
-        // Inflate the layout for this fragment
         return binding.root
     }
 
