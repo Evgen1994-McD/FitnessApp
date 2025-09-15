@@ -84,7 +84,10 @@ class ExerciseViewModel @Inject constructor(
         var kcal = 0.0
         var time = 0
 exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
-    kcal += model.kcal
+    kcal += (model.kcal)/2
+    /*
+    поделю статистику на 3( слишком много калорий считает)
+     */
     time += getTimeFromExercise(model)
 
 }
