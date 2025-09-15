@@ -1,4 +1,4 @@
-package com.example.fitnessapp.customTraining.chooseExercises.ui
+package com.example.fitnessapp.customTraining.ui.chooseExercises
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +18,7 @@ class ChooseExercisesViewModel @Inject constructor(
     val exerciseListData = MutableLiveData<List<ExerciseModel>>()
 private var dayModel: DayModel? = null
     fun getAllExercises() = viewModelScope.launch {
-        exerciseListData.value = mainDb.exerciseDao.getAllExercisesFromTo(4,53)
+        exerciseListData.value = mainDb.exerciseDao.getAllExercisesFromTo(4,74)
     }
 
     fun getDayById(id: Int)= viewModelScope.launch {

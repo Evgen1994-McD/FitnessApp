@@ -46,17 +46,17 @@
         tools:layout="@layout/fragment_statistic" />
     <fragment
         android:id="@+id/customDaysListFragment"
-        android:name="com.example.fitnessapp.customTraining.daysList.ui.CustomDaysListFragment"
+        android:name="com.example.fitnessapp.customTraining.ui.customDaysList.CustomDaysListFragment"
         android:label="fragment_custom_days_list"
         tools:layout="@layout/fragment_custom_days_list" />
     <fragment
         android:id="@+id/selectedExerciseListFragment"
-        android:name="com.example.fitnessapp.customTraining.selectedExerciseList.ui.SelectedExerciseListFragment"
+        android:name="com.example.fitnessapp.customTraining.ui.selectedExerciseList.SelectedExerciseListFragment"
         android:label="fragment_selected_exercise_list"
         tools:layout="@layout/fragment_selected_exercise_list" />
     <fragment
         android:id="@+id/chooseExercisesFragment"
-        android:name="com.example.fitnessapp.customTraining.chooseExercises.ui.ChooseExercisesFragment"
+        android:name="com.example.fitnessapp.customTraining.ui.chooseExercises.ChooseExercisesFragment"
         android:label="fragment_choose_exercises"
         tools:layout="@layout/fragment_choose_exercises"
         />
