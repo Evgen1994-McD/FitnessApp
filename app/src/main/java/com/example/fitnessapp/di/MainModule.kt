@@ -7,6 +7,10 @@ import androidx.room.Room
 import androidx.transition.Visibility
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.exercises.data.ExerciseRepositoryImpl
+import com.example.fitnessapp.exercises.domain.ExerciseInteractor
+import com.example.fitnessapp.exercises.domain.ExerciseRepository
+import com.example.fitnessapp.exercises.domain.impl.ExerciseInteractorImpl
 import com.example.fitnessapp.settings.data.SettingsRepositoryImpl
 import com.example.fitnessapp.settings.domain.SettingsInteractor
 import com.example.fitnessapp.settings.domain.SettingsRepository
@@ -78,6 +82,17 @@ abstract class SettingsModule {
     @Binds
     abstract fun bindSettingsInteractor(settingsInteractorImpl: SettingsInteractorImpl): SettingsInteractor
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class ExerciseModule {
+    @Binds
+    abstract fun bindExerciseRepository(exerciseRepositoryImpl: ExerciseRepositoryImpl): ExerciseRepository
+
+    @Binds
+    abstract fun bindExerciseInteractor(exerciseInteractorImpl: ExerciseInteractorImpl): ExerciseInteractor
+}
+
 
 
 

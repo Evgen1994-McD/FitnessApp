@@ -11,4 +11,6 @@ interface ExerciseRepository{
     suspend fun getCurrentDay(dayModel: DayModel):DayModel?
     suspend  fun insertStatistic(statisticModel: StatisticModel)
     suspend fun getAllExerciseList():List<ExerciseModel>
+    suspend fun getDayById(dayId:Int): DayModel?
+
 }

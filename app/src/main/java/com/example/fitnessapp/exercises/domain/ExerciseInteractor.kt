@@ -9,6 +9,7 @@ interface ExerciseInteractor {
     suspend fun getAndOpenNextDay(dayModel: DayModel)
     suspend fun getStatisticByDate(date:String): StatisticModel?
     suspend fun getCurrentDay(dayModel: DayModel): DayModel?
+    suspend fun getDayById(dayId:Int): DayModel?
     suspend  fun insertStatistic(statisticModel: StatisticModel)
     suspend fun getAllExerciseList():List<ExerciseModel>
 }
