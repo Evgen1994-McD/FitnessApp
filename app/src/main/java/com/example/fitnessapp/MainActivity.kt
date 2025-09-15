@@ -35,7 +35,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         setContentView(binding.root)
         val toolbar = binding.materialToolbar
         setSupportActionBar(toolbar)
-
+model.controlTheme()
 
 
 
