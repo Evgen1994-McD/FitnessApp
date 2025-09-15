@@ -312,7 +312,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
                     TimeUtils.getWorkoutTime(
                     statisticModel.workoutTime.toLong() * 1000
                 ) //умножили на 1000 потому что время надо в МС
-                kcal.text = statisticModel.kcal.toString()
+                kcal.text = statisticModel.kcal.toInt().toString()
                 date.text = if (TimeUtils.getCurrentDate() == statisticModel.date) {
                     "Сегодня"
                 } else {
