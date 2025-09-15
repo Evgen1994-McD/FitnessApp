@@ -1,4 +1,4 @@
-package com.example.fitnessapp.customTraining.selectedExerciseList.ui
+package com.example.fitnessapp.customTraining.ui.selectedExerciseList
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -9,17 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
-import com.example.fitnessapp.customTraining.selectedExerciseList.adapter.SelectedListExerciseAdapter
 import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
 import com.example.fitnessapp.db.ExerciseModel
 import dagger.hilt.android.AndroidEntryPoint
-import debounce
 import kotlinx.coroutines.runBlocking
 import java.util.Collections
 import kotlin.math.roundToInt

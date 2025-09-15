@@ -1,4 +1,4 @@
-package com.example.fitnessapp.customTraining.adapter
+package com.example.fitnessapp.customTraining.ui.customDaysList
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.CustomDaysListItemBinding
-import com.example.fitnessapp.databinding.DaysListItemBinding
 import com.example.fitnessapp.db.DayModel
 
 class CustomDaysAdapter(var listener: Listener) :

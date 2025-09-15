@@ -1,4 +1,4 @@
-package com.example.fitnessapp.customTraining.daysList.ui
+package com.example.fitnessapp.customTraining.ui.customDaysList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData

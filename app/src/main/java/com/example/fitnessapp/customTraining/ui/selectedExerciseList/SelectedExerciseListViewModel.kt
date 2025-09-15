@@ -1,4 +1,4 @@
-package com.example.fitnessapp.customTraining.selectedExerciseList.ui
+package com.example.fitnessapp.customTraining.ui.selectedExerciseList
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

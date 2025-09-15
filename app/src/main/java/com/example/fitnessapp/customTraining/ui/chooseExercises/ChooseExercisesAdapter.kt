@@ -1,5 +1,6 @@
-package com.example.fitnessapp.customTraining.selectedExerciseList.adapter
+package com.example.fitnessapp.customTraining.ui.chooseExercises
 
+import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,21 +11,42 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.SelectedExerciseListItemBinding
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.utils.TimeUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
-class SelectedListExerciseAdapter( val listener: Listener) :
-    ListAdapter<ExerciseModel, SelectedListExerciseAdapter.ExerciseHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
+class ChooseExercisesAdapter(val listener: Listener) :
+    ListAdapter<ExerciseModel, ChooseExercisesAdapter.ExerciseHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
 
     class ExerciseHolder(view: View, val listener: Listener) :
         RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
         private val binding = SelectedExerciseListItemBinding.bind(view)
 
+        init {
+            binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
+                override fun onAnimationStart(animation: Animator) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    binding.lottieView.visibility = View.INVISIBLE
+
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+
+                }
+            })
+        }
+
         fun setData(exercise: ExerciseModel) = with(binding) {
 
-
+delete.visibility = View.INVISIBLE
+up.visibility = View.INVISIBLE
+down.visibility = View.INVISIBLE
             tvNameEx.text = exercise.name //Название упражнения
             tvcount.text =
                 getTime(exercise.time)
@@ -34,20 +56,13 @@ class SelectedListExerciseAdapter( val listener: Listener) :
                     exercise.image
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
-delete.setOnClickListener {
+            itemView.setOnClickListener {
+                listener.onClick(exercise)
+                binding.lottieView.visibility = View.VISIBLE
 
-    listener.onDelete(adapterPosition)
-}
-            up.setOnClickListener{
-
-                    listener.addExerciseTime(adapterPosition)
-
+                lottieView.playAnimation()
             }
-            down.setOnClickListener {
 
-                    listener.decreaseExerciseTime(adapterPosition)
-
-            }
         }
 
         private fun getTime(time: String): String {
@@ -73,13 +88,13 @@ delete.setOnClickListener {
 
     class MyComporator : DiffUtil.ItemCallback<ExerciseModel>() {
         override fun areItemsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
-            return oldItem == newItem && oldItem.id == newItem.id
+            return oldItem == newItem
+
         }
 
         override fun areContentsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
 
-            return oldItem.time == newItem.time && oldItem.id == newItem.id
-
+            return oldItem == newItem
         }
 
 
@@ -87,8 +102,6 @@ delete.setOnClickListener {
     }
 
     interface Listener{
-        fun onDelete(pos: Int)
-       fun addExerciseTime(pos:Int)
-        fun decreaseExerciseTime(pos:Int)
+        fun onClick(exercise: ExerciseModel)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.fitnessapp.customTraining.chooseExercises.ui
+package com.example.fitnessapp.customTraining.ui.chooseExercises
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.customTraining.chooseExercises.ui.adapter.ChooseExercisesAdapter
 import com.example.fitnessapp.databinding.FragmentChooseExercisesBinding
 import com.example.fitnessapp.db.ExerciseModel
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
