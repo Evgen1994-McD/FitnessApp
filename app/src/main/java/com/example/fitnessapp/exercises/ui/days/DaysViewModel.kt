@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.exercises.domain.DaysInteractor
 import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel //пометили аннотацией что это модел Хилт
 // будем вызывать БД из МейнМодел
 class DaysViewModel @Inject constructor(
-    private val mainDb: MainDb, // получили доступ к базе данных
+    private val daysInteractor: DaysInteractor, // получили доступ к базе данных
 ) : ViewModel() { //если БД инициализирована мы её найдём  в МейнМодуль
     companion object {
 const val CUSTOM ="custom"
@@ -28,7 +29,7 @@ val isCustomListEmpty = MutableLiveData<Boolean>()
     fun getExerciseDaysByDifficulty ( trainingTopCardModel: TrainingTopCardModel) {
         viewModelScope.launch {  /* это трудоёмкая операция, поэтому делаем
         в корутинах */
-            mainDb.daysDao.getAllDaysByDifficulty(trainingTopCardModel.difficulty).collect { /* collect -
+            daysInteractor.getExerciseDaysByDifficulty(trainingTopCardModel.difficulty).collect { /* collect -
             получить то что найдём в БД */
                 list ->
 
@@ -44,7 +45,7 @@ daysList.value = list // передали лист который нашли
     }
 
     fun getCustomDaysList() = viewModelScope.launch {
-mainDb.daysDao.getAllDaysByDifficulty("custom").collect {
+daysInteractor.getExerciseDaysByDifficulty(CUSTOM).collect {
 isCustomListEmpty.value = it.isEmpty()
 }
         /*
@@ -63,9 +64,11 @@ isCustomListEmpty.value = it.isEmpty()
     }
 
      fun resetSelectedDay(day: DayModel) = viewModelScope.launch {
-        mainDb.daysDao.insertDay(day.copy(
-            doneExerciseCounter = 0,
-            isDone = false))
+         var tempDay = day.copy(
+             doneExerciseCounter = 0,
+             isDone = false
+         )
+     daysInteractor.insertDay(tempDay)
 
     }
 }

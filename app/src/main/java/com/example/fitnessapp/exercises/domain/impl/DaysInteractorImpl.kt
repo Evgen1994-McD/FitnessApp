@@ -15,7 +15,11 @@ class DaysInteractorImpl @Inject constructor(
     }
 
 
-    override fun resetSelectedDay(day: DayModel) {
-   exerciseRepository.
+    override suspend fun resetSelectedDay(day: DayModel) {
+   exerciseRepository.insertDay(day)
+    }
+
+    override suspend fun insertDay(day: DayModel) {
+       exerciseRepository.insertDay(day)
     }
 }

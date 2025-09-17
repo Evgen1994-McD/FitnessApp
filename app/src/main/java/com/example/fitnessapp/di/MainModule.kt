@@ -12,13 +12,19 @@ import com.example.fitnessapp.customTraining.domain.CustomRepository
 import com.example.fitnessapp.customTraining.domain.impl.CustomInteractorImpl
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.data.ExerciseRepositoryImpl
+import com.example.fitnessapp.exercises.domain.DaysInteractor
 import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.exercises.domain.ExerciseRepository
+import com.example.fitnessapp.exercises.domain.impl.DaysInteractorImpl
 import com.example.fitnessapp.exercises.domain.impl.ExerciseInteractorImpl
 import com.example.fitnessapp.settings.data.SettingsRepositoryImpl
 import com.example.fitnessapp.settings.domain.SettingsInteractor
 import com.example.fitnessapp.settings.domain.SettingsRepository
 import com.example.fitnessapp.settings.domain.impl.SettingsInteractorImpl
+import com.example.fitnessapp.statistic.data.StatisticRepositoryImpl
+import com.example.fitnessapp.statistic.domain.StatisticInteractor
+import com.example.fitnessapp.statistic.domain.StatisticRepository
+import com.example.fitnessapp.statistic.domain.impl.StatisticInteractorImpl
 import com.example.fitnessapp.utils.App
 import com.example.fitnessapp.utils.MySoundPool
 import dagger.Binds
@@ -95,6 +101,9 @@ abstract class ExerciseModule {
 
     @Binds
     abstract fun bindExerciseInteractor(exerciseInteractorImpl: ExerciseInteractorImpl): ExerciseInteractor
+
+    @Binds
+    abstract fun bindDaysInteractor(daysInteractorImpl: DaysInteractorImpl): DaysInteractor
 }
 
 
@@ -106,6 +115,17 @@ abstract class CustomExerciseModule {
 
     @Binds
     abstract fun bindCustomInteractor(customInteractorImpl: CustomInteractorImpl): CustomInteractor
+}
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class StatisticModule {
+    @Binds
+    abstract fun bindStatisticRepository(statisticRepositoryImpl: StatisticRepositoryImpl): StatisticRepository
+
+    @Binds
+    abstract fun bindStatisticInteractor(statisticInteractorImpl: StatisticInteractorImpl): StatisticInteractor
 }
 
 

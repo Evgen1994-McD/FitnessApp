@@ -15,4 +15,5 @@ interface ExerciseRepository{
     suspend fun getDayById(dayId:Int): DayModel?
 
  suspend fun getAllDaysByDifficulty(diffculty: String): Flow<List<DayModel>>
+ suspend fun insertDay(dayModel: DayModel)
 }

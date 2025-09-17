@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface DaysInteractor {
     suspend fun getExerciseDaysByDifficulty (difficulty: String): Flow<List<DayModel>>
 
-    fun resetSelectedDay(day: DayModel)
-
+    suspend fun resetSelectedDay(day: DayModel)
+    suspend fun insertDay(day: DayModel)
 }
