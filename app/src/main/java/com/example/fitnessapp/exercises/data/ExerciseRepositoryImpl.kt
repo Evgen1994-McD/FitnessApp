@@ -6,6 +6,7 @@ import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.exercises.domain.ExerciseRepository
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class ExerciseRepositoryImpl @Inject constructor(
     private val mainDb: MainDb
@@ -47,4 +48,12 @@ class ExerciseRepositoryImpl @Inject constructor(
     override suspend fun getDayById(dayId: Int): DayModel? {
         return mainDb.daysDao.getDay(dayId)
     }
+
+    override suspend fun getAllDaysByDifficulty(diffculty:String): Flow<List<DayModel>> {
+        return mainDb.daysDao.getAllDaysByDifficulty(diffculty)
+    }
+
+    override suspend fun insertDay(dayModel: DayModel){{
+
+    }}
 }

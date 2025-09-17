@@ -1,4 +1,4 @@
-package com.example.fitnessapp.exercises.ui.fragments
+package com.example.fitnessapp.exercises.ui.exercise
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -19,7 +19,6 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
-import com.example.fitnessapp.exercises.ui.ExerciseViewModel
 import com.example.fitnessapp.utils.TimeUtils
 import com.example.fitnessapp.utils.getDayFromArguments
 import dagger.hilt.android.AndroidEntryPoint

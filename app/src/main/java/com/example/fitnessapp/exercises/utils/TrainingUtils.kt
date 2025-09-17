@@ -1,8 +1,7 @@
-package com.example.fitnessapp.training.utils
+package com.example.fitnessapp.exercises.utils
 
-import androidx.collection.intListOf
 import com.example.fitnessapp.R
-import com.example.fitnessapp.training.data.TrainingTopCardModel
+import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 
 object TrainingUtils { //здесь будут константы которые будут определять уровень сложности. У нас будет 3 уровня сложности
 

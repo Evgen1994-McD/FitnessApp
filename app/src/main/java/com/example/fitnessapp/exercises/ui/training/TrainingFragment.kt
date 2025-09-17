@@ -1,4 +1,4 @@
-package com.example.fitnessapp.training.ui.fragments
+package com.example.fitnessapp.exercises.ui.training
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
@@ -12,9 +12,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentTrainingBinding
-import com.example.fitnessapp.training.ui.DaysViewModel
-import com.example.fitnessapp.training.ui.adapters.VpAdapter
-import com.example.fitnessapp.training.utils.TrainingUtils
+import com.example.fitnessapp.exercises.ui.days.DaysViewModel
+import com.example.fitnessapp.exercises.ui.adapters.VpAdapter
+import com.example.fitnessapp.exercises.utils.TrainingUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.getValue
 
@@ -27,7 +27,7 @@ private lateinit var binding: FragmentTrainingBinding
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = FragmentTrainingBinding.inflate(inflater, container, false) //ТУТ ХЗ что, точно не понял
+        binding = FragmentTrainingBinding.inflate(inflater, container, false)
         return binding.root
     }
 

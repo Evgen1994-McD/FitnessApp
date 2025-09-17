@@ -1,14 +1,12 @@
-package com.example.fitnessapp.exercises.ui
+package com.example.fitnessapp.exercises.ui.exercise
 
 import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.util.Log
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
-import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
