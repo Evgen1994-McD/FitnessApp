@@ -7,35 +7,28 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.LinearEasing
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
-import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentStatisticBinding
 import com.example.fitnessapp.db.WeightModel
-import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter
+import com.example.fitnessapp.statistic.ui.adapters.DateSelectorAdapter
 import com.example.fitnessapp.statistic.data.DateSelectorModel
 import com.example.fitnessapp.statistic.utils.UtilsArrays
 import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.TimeUtils
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
 
 
 @AndroidEntryPoint
@@ -312,7 +305,7 @@ class StatisticFragment : Fragment(), OnChartValueSelectedListener {
                     TimeUtils.getWorkoutTime(
                     statisticModel.workoutTime.toLong() * 1000
                 ) //умножили на 1000 потому что время надо в МС
-                kcal.text = statisticModel.kcal.toString()
+                kcal.text = statisticModel.kcal.toInt().toString()
                 date.text = if (TimeUtils.getCurrentDate() == statisticModel.date) {
                     "Сегодня"
                 } else {

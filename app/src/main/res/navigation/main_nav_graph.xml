@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/trainingFragment"
-        android:name="com.example.fitnessapp.training.ui.fragments.TrainingFragment"
+        android:name="com.example.fitnessapp.exercises.ui.training.TrainingFragment"
         android:label="fragment_training"
         tools:layout="@layout/fragment_training">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/exerciseFragment"
-        android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseFragment"
+        android:name="com.example.fitnessapp.exercises.ui.exercise.ExerciseFragment"
         android:label="ExerciseFragment"
         tools:layout="@layout/exercise"
         >
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/exListFragment"
-        android:name="com.example.fitnessapp.exercises.ui.fragments.ExerciseListFragment"
+        android:name="com.example.fitnessapp.exercises.ui.exerciseList.ExerciseListFragment"
         android:label="ExListFragment"
         tools:layout="@layout/exercise_list_fragment"
         >
@@ -46,17 +46,17 @@
         tools:layout="@layout/fragment_statistic" />
     <fragment
         android:id="@+id/customDaysListFragment"
-        android:name="com.example.fitnessapp.customTraining.daysList.ui.CustomDaysListFragment"
+        android:name="com.example.fitnessapp.customTraining.ui.customDaysList.CustomDaysListFragment"
         android:label="fragment_custom_days_list"
         tools:layout="@layout/fragment_custom_days_list" />
     <fragment
         android:id="@+id/selectedExerciseListFragment"
-        android:name="com.example.fitnessapp.customTraining.selectedExerciseList.ui.SelectedExerciseListFragment"
+        android:name="com.example.fitnessapp.customTraining.ui.selectedExerciseList.SelectedExerciseListFragment"
         android:label="fragment_selected_exercise_list"
         tools:layout="@layout/fragment_selected_exercise_list" />
     <fragment
         android:id="@+id/chooseExercisesFragment"
-        android:name="com.example.fitnessapp.customTraining.chooseExercises.ui.ChooseExercisesFragment"
+        android:name="com.example.fitnessapp.customTraining.ui.chooseExercises.ChooseExercisesFragment"
         android:label="fragment_choose_exercises"
         tools:layout="@layout/fragment_choose_exercises"
         />

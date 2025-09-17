@@ -1,0 +1,79 @@
+package com.example.fitnessapp.customTraining.ui.selectedExerciseList
+
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.customTraining.domain.CustomInteractor
+import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.db.MainDb
+import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+@HiltViewModel
+class SelectedExerciseListViewModel @Inject constructor(
+   private val customInteractor: CustomInteractor,
+    private val exerciseHelper: ExerciseHelper
+) : ViewModel() {
+    val exerciseData = MutableLiveData<List<ExerciseModel>>()
+    private var dayModel: DayModel? = null
+
+    fun getExercises(id: Int) = viewModelScope.launch {
+        delay(200)
+        dayModel = customInteractor.getDayById(id)
+        val exerciseList = customInteractor.getAllExercise()
+        exerciseData.value = exerciseHelper.getExercisesOfTheDay(
+            dayModel?.exercises!!,
+            exerciseList
+        )
+    }
+
+
+    fun saveNewExerciseAndReplace(
+        newExercise: ExerciseModel,
+        pos: Int
+    ) = viewModelScope.launch {
+        var tempId: Long? = null
+         var tempListExercise = ""
+
+        var input = dayModel?.exercises
+
+        tempId = customInteractor.insertExercise(newExercise.copy(id = null))
+        Log.d("MyLog", "input = $input")
+        val numbers = input?.split(",")?.map {
+            it.trim().toIntOrNull() ?: throw IllegalArgumentException("Invalid number format")
+        }
+            ?.toMutableList()
+        Log.d("MyLog", "numbers = $numbers")
+        // Проходим по списку и ищем заданное число
+        numbers?.set(pos, tempId!!.toInt())
+
+        tempListExercise  = numbers!!.joinToString(separator = ",")
+        Log.d("MyLog", "tempList = $tempListExercise")
+        updateDay(tempListExercise)
+        delay(100L)
+    }
+
+
+
+
+
+
+
+    fun updateDay(exercises: String) = viewModelScope.launch {
+        val cleanedString = exercises.takeIf { it.startsWith(',') }?.removePrefix(",") ?: exercises
+        Log.d("MyLog", "updateDayExercise = $cleanedString")
+        customInteractor.insertDay(
+            dayModel?.copy(
+                doneExerciseCounter = 0,
+                isDone = false,
+                exercises = cleanedString
+            )!!)
+        delay(200L)
+
+    }
+}

@@ -9,6 +9,7 @@ import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.statistic.data.DateSelectorModel
+import com.example.fitnessapp.statistic.domain.StatisticInteractor
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,20 +18,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StatisticViewModel @Inject constructor(
-    private val mainDb: MainDb
+    private val statisticInteractor: StatisticInteractor
 ) : ViewModel() {
     var year = -1
     var month = Calendar.getInstance().get(Calendar.MONTH)
+
     val eventListData = MutableLiveData<List<EventDay>>()
     val statisticData = MutableLiveData<StatisticModel>()
     val yearListData = MutableLiveData<List<DateSelectorModel>>()
     val monthListData = MutableLiveData<List<DateSelectorModel>>()
-
     val weightListData = MutableLiveData<List<WeightModel>>()
 
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
-        val statisticList = mainDb.statisticDao.getStatistic()
+        val statisticList = statisticInteractor.getStatistic()
         statisticList.forEach { statisticModel ->
 eventList.add(
     EventDay(
@@ -49,14 +50,8 @@ eventListData.value = eventList
 
 
     fun getStatisticByDate(date: String) = viewModelScope.launch {
-statisticData.value = mainDb.statisticDao
-    .getStatisticByDate(date) ?: StatisticModel(
-        null,
-        date,
-        0.0,
-        "0",
-        0
-    )
+statisticData.value = statisticInteractor.getStatisticByDate(date)
+
 /*
 
 Получить статистику по дате.
@@ -68,7 +63,7 @@ statisticData.value = mainDb.statisticDao
 
     fun getYearList() = viewModelScope.launch {
         val tempYearList = ArrayList<DateSelectorModel>()
-        val weightList = mainDb.weightDao.getAllWeightList()
+        val weightList = statisticInteractor.getYearWeightList()
        weightList.forEach { weightModel ->
 
            if(!tempYearList.any{ it.text.toInt() == weightModel.year }){
@@ -97,7 +92,7 @@ yearListData.value = tempYearList
 
     fun getMonthList() = viewModelScope.launch {
         val tempMonthList = ArrayList<DateSelectorModel>()
-        val weightList = mainDb.weightDao.getAllWeightList()
+        val weightList = statisticInteractor.getYearWeightList()
         weightList.forEach { weightModel ->
 
             if(!tempMonthList.any{ it.text.toInt() == weightModel.month }){
@@ -126,7 +121,7 @@ yearListData.value = tempYearList
 
 
     fun getWeightByYearAndMonth() = viewModelScope.launch {
-        weightListData.value = mainDb.weightDao.getMonthWeightList(
+        weightListData.value = statisticInteractor.getWeightByYearAndMonth(
             year,
             month
         )
@@ -134,7 +129,7 @@ yearListData.value = tempYearList
 
     fun saveWeight(weight: Double) = viewModelScope.launch {
         val cv =Calendar.getInstance()
-        mainDb.weightDao.insertWeight(
+        statisticInteractor.insertWeight(
             WeightModel(
                 null,
                 weight,
@@ -147,7 +142,7 @@ yearListData.value = tempYearList
     }
 
     fun updateWeight(weightModel: WeightModel) = viewModelScope.launch {
-        mainDb.weightDao.insertWeight(weightModel)
+       statisticInteractor.insertWeight(weightModel)
         getWeightByYearAndMonth()
 
     }
