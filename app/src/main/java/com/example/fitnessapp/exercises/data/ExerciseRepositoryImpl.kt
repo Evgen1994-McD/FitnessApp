@@ -53,7 +53,7 @@ class ExerciseRepositoryImpl @Inject constructor(
         return mainDb.daysDao.getAllDaysByDifficulty(diffculty)
     }
 
-    override suspend fun insertDay(dayModel: DayModel){{
-
-    }}
+    override suspend fun insertDay(dayModel: DayModel){
+mainDb.daysDao.insertDay(dayModel)
+    }
 }

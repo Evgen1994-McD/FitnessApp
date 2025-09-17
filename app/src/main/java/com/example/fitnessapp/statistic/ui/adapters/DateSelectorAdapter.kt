@@ -1,4 +1,4 @@
-package com.example.fitnessapp.statistic.adapters
+package com.example.fitnessapp.statistic.ui.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.DateSelectedListItemBinding
-import com.example.fitnessapp.statistic.adapters.DateSelectorAdapter.Holder
+import com.example.fitnessapp.statistic.ui.adapters.DateSelectorAdapter.Holder
 import com.example.fitnessapp.statistic.data.DateSelectorModel
 
-class DateSelectorAdapter(private val listener: Listener): ListAdapter<DateSelectorModel, Holder>(Comparator()) {
+class DateSelectorAdapter(private val listener: Listener): ListAdapter<DateSelectorModel, Holder>(
+    Comparator()
+) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,

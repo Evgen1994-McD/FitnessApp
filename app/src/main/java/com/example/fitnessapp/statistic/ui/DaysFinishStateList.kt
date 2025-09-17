@@ -1,4 +1,4 @@
-package com.example.fitnessapp.statistic.data
+package com.example.fitnessapp.statistic.ui
 
 data class DaysFinishStateList(
     var trainingCounter : Int = 0,
