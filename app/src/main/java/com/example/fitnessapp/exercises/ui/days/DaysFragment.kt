@@ -1,4 +1,4 @@
-package com.example.fitnessapp.training.ui.fragments
+package com.example.fitnessapp.exercises.ui.days
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,18 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.Snackbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
-import com.example.fitnessapp.training.ui.adapters.DaysAdapter
+import com.example.fitnessapp.exercises.ui.adapters.DaysAdapter
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.db.DayModel
-import com.example.fitnessapp.training.ui.DaysViewModel
 import com.example.fitnessapp.utils.DialogManager
-import com.google.android.material.snackbar.Snackbar
 
 
 @Suppress("DEPRECATION")

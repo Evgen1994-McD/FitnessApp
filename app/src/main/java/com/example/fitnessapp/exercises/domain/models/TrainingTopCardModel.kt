@@ -1,4 +1,4 @@
-package com.example.fitnessapp.training.data
+package com.example.fitnessapp.exercises.domain.models
 
 data class TrainingTopCardModel(
     val imageId : Int,

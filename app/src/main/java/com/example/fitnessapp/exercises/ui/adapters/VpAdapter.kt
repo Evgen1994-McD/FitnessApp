@@ -1,9 +1,9 @@
-package com.example.fitnessapp.training.ui.adapters
+package com.example.fitnessapp.exercises.ui.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.fitnessapp.training.ui.fragments.DaysFragment
-import com.example.fitnessapp.training.utils.TrainingUtils
+import com.example.fitnessapp.exercises.ui.days.DaysFragment
+import com.example.fitnessapp.exercises.utils.TrainingUtils
 
 class VpAdapter(fragment: Fragment, private val custom : Int): FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {

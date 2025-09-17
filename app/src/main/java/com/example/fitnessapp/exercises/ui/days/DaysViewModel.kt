@@ -1,13 +1,11 @@
-package com.example.fitnessapp.training.ui
+package com.example.fitnessapp.exercises.ui.days
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dotlottie.dlplayer.Event
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.MainDb
-import com.example.fitnessapp.training.data.TrainingTopCardModel
+import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +16,7 @@ class DaysViewModel @Inject constructor(
     private val mainDb: MainDb, // получили доступ к базе данных
 ) : ViewModel() { //если БД инициализирована мы её найдём  в МейнМодуль
     companion object {
-
+const val CUSTOM ="custom"
     }
 
 

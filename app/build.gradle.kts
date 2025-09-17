@@ -53,23 +53,23 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     // Графики MPAndroidChart
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.mpandroidchart)
 
     // Календарь
-    implementation("com.applandeo:material-calendar-view:1.9.2")
+    implementation(libs.material.calendar.view)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Room
     val roomVersion = "2.5.0"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     // Dagger Hilt
     val daggerVersion = "2.56.1"
-    implementation("com.google.dagger:hilt-android:$daggerVersion")
-    ksp("com.google.dagger:hilt-compiler:$daggerVersion")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Core dependencies for Composable UI
     implementation(libs.androidx.core.ktx)
@@ -108,5 +108,5 @@ dependencies {
     implementation("com.airbnb.android:lottie:3.4.0")
 
 
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
+    implementation(libs.android.gif.drawable)  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
 }

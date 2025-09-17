@@ -1,14 +1,13 @@
-package com.example.fitnessapp.exercises.ui
+package com.example.fitnessapp.exercises.ui.exerciseList
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
-import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.domain.ExerciseInteractor
-import com.example.fitnessapp.training.data.TrainingTopCardModel
-import com.example.fitnessapp.training.utils.TrainingUtils
+import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
+import com.example.fitnessapp.exercises.utils.TrainingUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
