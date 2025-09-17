@@ -17,7 +17,14 @@ val templist = ArrayList<ExerciseModel>()
         list.forEachIndexed {index, exercise ->
             templist.add(
                 exercise.copy(
-                    time = context.getString(R.string.recovery), // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
+                    time = if (index==0){
+                        context.getString(R.string.pre)
+                    }
+                            else{
+                        context.getString(R.string.recovery) // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
+
+                    },
+
                     subtitle = if (index == 0) {
                         context.getString(R.string.subtitle_start)
                     } else {
