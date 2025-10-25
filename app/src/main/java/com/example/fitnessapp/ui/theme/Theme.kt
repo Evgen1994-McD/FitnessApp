@@ -69,6 +69,7 @@ fun FitnessAppTheme(
         shouldUseDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+    Log.d("theme", "shouldUseDarkTheme: $shouldUseDarkTheme")
 
     MaterialTheme(
         colorScheme = colorScheme,

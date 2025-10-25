@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
@@ -22,15 +24,16 @@ import kotlinx.coroutines.launch
 class SettingsFragment : Fragment() {
 
     private val model: SettingsViewModel by viewModels()
-    private var ab: ActionBar? =
-        null // добавили переменную для ActionBar, будем показывать счетчик упражнений
-
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return ComposeView(requireContext()).apply {
+            // Обязательно: стратегия уничтожения композиции
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed(lifecycleOwner = this@SettingsFragment))
+
             setContent {
                 FitnessAppTheme {
                     SettingsScreen(model)
@@ -39,12 +42,9 @@ class SettingsFragment : Fragment() {
         }
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//
-//        ab = (activity as AppCompatActivity).supportActionBar
-//        ab?.title = getString(R.string.settings)
-//        model.controlCheckerPosition()
 
 
 //        binding.apply {
@@ -65,31 +65,8 @@ class SettingsFragment : Fragment() {
 //
 //        controlTheme()
     }
-//
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        _binding = null
-//    }
-
-    /*
-    В onDestroyView наш байндинг приравниваем обратно к null
-    Данная фича помогает избежать некоторых ошибок когда вью уже разрушено
-    но доступ к байдингу всё ещё есть
-     */
 
 
-//    private fun controlTheme(){
-//        model.themeLiveData.observe(viewLifecycleOwner) { theme ->
-//            binding.darkTheme.isChecked = theme
-//
-//
-//
-//        }
-//        binding.darkTheme.setOnCheckedChangeListener {_, isChecked ->
-//            model.switchTheme(isChecked)
-//
-//        }
-//        ab = (activity as AppCompatActivity).supportActionBar
-//        ab?.title = getString(R.string.settings)
-//    }
+
+
 }
