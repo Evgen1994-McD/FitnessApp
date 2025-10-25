@@ -39,8 +39,25 @@ class SettingsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setThemeMode(mode: ThemeMode) {
+        android.util.Log.d("theme", "Setting theme mode to: $mode")
         prefs.edit().putString(themeKey, mode.name).apply()
         _themeMode.value = mode
+        
+        // Применяем тему к системным элементам
+        when (mode) {
+            ThemeMode.LIGHT -> {
+                android.util.Log.d("theme", "Applying LIGHT theme")
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            ThemeMode.DARK -> {
+                android.util.Log.d("theme", "Applying DARK theme")
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            ThemeMode.SYSTEM -> {
+                android.util.Log.d("theme", "Applying SYSTEM theme")
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        }
     }
 
 //

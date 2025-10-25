@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
@@ -37,10 +38,6 @@ import com.example.fitnessapp.exercises.domain.models.ThemeMode
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
     val themeMode by viewModel.themeMode.collectAsState()
-    var isEnabled by remember { mutableStateOf(false) }
-    if (themeMode == ThemeMode.DARK) {
-        isEnabled = true
-    } else isEnabled = false
 
 
     Column(
