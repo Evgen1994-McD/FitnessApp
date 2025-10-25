@@ -9,15 +9,17 @@ plugins {
 
 android {
     namespace = "com.example.fitnessapp"
-    compileSdk = 35
-
+    compileSdk = 36
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.9"
+    }
 
 
 
     defaultConfig {
         applicationId = "com.example.fitnessapp"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 3
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
@@ -81,6 +83,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+        implementation("androidx.compose.runtime:runtime:1.5.9")
+
+
+
+
+
+
     // Other libraries
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -106,6 +115,7 @@ dependencies {
     implementation(libs.dotlottie.android)
     implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
     implementation("com.airbnb.android:lottie:3.4.0")
+
 
 
     implementation(libs.android.gif.drawable)  // GIF-библиотека (не рекомендуется использовать такую старую версию!)

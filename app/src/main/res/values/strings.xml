@@ -80,4 +80,11 @@
 
 
 
+
+    <!--Настройки-->
+    <string name="dark_theme">Тёмная тема</string>
+    <string name="custom_training">Своя тренировка</string>
+    <string name="clean_data">Очистить данные</string>
+
+
 </resources>
