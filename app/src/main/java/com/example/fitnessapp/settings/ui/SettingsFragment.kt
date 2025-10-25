@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentSettingsBinding
+import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import com.example.fitnessapp.utils.DialogManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -19,8 +21,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
-    private var _binding: FragmentSettingsBinding? = null //ЭТО сам байндинг Налл
-    private val binding get() = _binding!! // а здесь мы получаем байндинг
     private val model: SettingsViewModel by viewModels()
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
@@ -30,45 +30,46 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        _binding = FragmentSettingsBinding.inflate(
-            inflater,
-            container,
-            false
-        )
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                FitnessAppTheme {
+                    SettingsScreen(model)
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//
+//        ab = (activity as AppCompatActivity).supportActionBar
+//        ab?.title = getString(R.string.settings)
+//        model.controlCheckerPosition()
 
-        ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = getString(R.string.settings)
-        model.controlCheckerPosition()
 
-
-        binding.apply {
-            clearDataButton.setOnClickListener {
-                DialogManager.showDialog(
-                    requireContext(),
-                    R.string.reset_days_message, object : DialogManager.Listener {
-                        override fun onClick()  {
-                            model.clearData()
-                        }
-                    })
-            }
-            customTrainingSettingsButton.setOnClickListener {
-                findNavController().navigate(R.id.customDaysListFragment)
-
-            }
-        }
-
-        controlTheme()
+//        binding.apply {
+//            clearDataButton.setOnClickListener {
+//                DialogManager.showDialog(
+//                    requireContext(),
+//                    R.string.reset_days_message, object : DialogManager.Listener {
+//                        override fun onClick()  {
+//                            model.clearData()
+//                        }
+//                    })
+//            }
+//            customTrainingSettingsButton.setOnClickListener {
+//                findNavController().navigate(R.id.customDaysListFragment)
+//
+//            }
+//        }
+//
+//        controlTheme()
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+//
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
 
     /*
     В onDestroyView наш байндинг приравниваем обратно к null
@@ -77,18 +78,18 @@ class SettingsFragment : Fragment() {
      */
 
 
-    private fun controlTheme(){
-        model.themeLiveData.observe(viewLifecycleOwner) { theme ->
-            binding.darkTheme.isChecked = theme
-
-
-
-        }
-        binding.darkTheme.setOnCheckedChangeListener {_, isChecked ->
-            model.switchTheme(isChecked)
-
-        }
-        ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = getString(R.string.settings)
-    }
+//    private fun controlTheme(){
+//        model.themeLiveData.observe(viewLifecycleOwner) { theme ->
+//            binding.darkTheme.isChecked = theme
+//
+//
+//
+//        }
+//        binding.darkTheme.setOnCheckedChangeListener {_, isChecked ->
+//            model.switchTheme(isChecked)
+//
+//        }
+//        ab = (activity as AppCompatActivity).supportActionBar
+//        ab?.title = getString(R.string.settings)
+//    }
 }

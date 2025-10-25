@@ -1,5 +1,6 @@
 package com.example.fitnessapp.settings.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,16 +31,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnessapp.R
+import com.example.fitnessapp.exercises.domain.models.ThemeMode
 
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(viewModel: SettingsViewModel) {
+    val themeMode by viewModel.themeMode.collectAsState()
     var isEnabled by remember { mutableStateOf(false) }
+    if (themeMode == ThemeMode.DARK) {
+        isEnabled = true
+    } else isEnabled = false
+
+
     Column(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.SpaceBetween,
+
     ) {
         Text(
             text = stringResource(R.string.settings),
@@ -55,19 +64,25 @@ fun SettingsScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+
+
         ) {
             Text(
                 text = stringResource(R.string.dark_theme),
                 fontSize = 16.sp
             )
             Switch(
-                checked = isEnabled,
-                onCheckedChange = { isEnabled = it },
+                checked = themeMode==ThemeMode.DARK,
+                onCheckedChange = {isChecked ->
+                    val theme = if (isChecked) ThemeMode.DARK else ThemeMode.LIGHT
+                    viewModel.switchTheme(theme)
+
+                                  },
                 colors = SwitchDefaults.colors(
                     checkedIconColor = Color.Blue,
                     checkedThumbColor = Color.Blue,
-                    checkedTrackColor = Color.Blue
+
                 )
             )
         }
@@ -116,9 +131,3 @@ fun SettingsScreen() {
 
 
 
-
-@Preview(showSystemUi = true)
-@Composable
-private fun SettingsPreview() {
-    SettingsScreen()
-}

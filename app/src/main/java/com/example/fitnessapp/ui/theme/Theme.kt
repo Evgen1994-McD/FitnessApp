@@ -1,7 +1,7 @@
 package com.example.fitnessapp.ui.theme
 
-import android.app.Activity
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -9,7 +9,12 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import com.example.fitnessapp.exercises.domain.models.ThemeMode
+import com.example.fitnessapp.settings.domain.SettingsInteractor
+import dagger.hilt.EntryPoints
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -40,13 +45,28 @@ fun FitnessAppTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    Log.d("theme", "theme in THEME $darkTheme")
+    val context = LocalContext.current
+    val themeUseCase = EntryPoints.get(
+        context.applicationContext,
+        ThemeEntryPoint::class.java
+    ).themeInteractor()
+
+    val themeMode by themeUseCase.getThemeMode().collectAsState(initial = ThemeMode.SYSTEM)
+    Log.d("theme", "theme in mode $themeMode")
+
+    val shouldUseDarkTheme = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> darkTheme
+    }
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (shouldUseDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        shouldUseDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
@@ -55,4 +75,10 @@ fun FitnessAppTheme(
         typography = Typography,
         content = content
     )
+}
+
+@dagger.hilt.EntryPoint
+@dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)
+interface ThemeEntryPoint {
+    fun themeInteractor(): SettingsInteractor
 }
