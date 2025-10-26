@@ -5,20 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
-import com.example.fitnessapp.databinding.FragmentSettingsBinding
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
-import com.example.fitnessapp.utils.DialogManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -36,7 +33,23 @@ class SettingsFragment : Fragment() {
 
             setContent {
                 FitnessAppTheme {
-                    SettingsScreen(model)
+                    var dialogState by remember { mutableStateOf(false) }
+
+                    SettingsScreen(model,
+                        onCustomClick = { findNavController().navigate(R.id.customDaysListFragment) },
+                        onClearedDataClick = {
+                            dialogState = true
+                        })
+                    if (dialogState){
+                        ClearDataDialogue(dialogState = remember { mutableStateOf(dialogState) },
+                            onSubmit ={
+                                model.clearData()
+                                dialogState = false
+                            },
+                            onDismiss = {
+                                dialogState = false
+                            })
+                    }
                 }
             }
         }

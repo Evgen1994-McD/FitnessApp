@@ -1,6 +1,7 @@
 package com.example.fitnessapp.settings.ui
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,9 @@ import com.example.fitnessapp.exercises.domain.models.ThemeMode
 
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel) {
+fun SettingsScreen(viewModel: SettingsViewModel,
+                   onCustomClick:()->Unit,
+                   onClearedDataClick: () -> Unit) {
     val themeMode by viewModel.themeMode.collectAsState()
 
 
@@ -89,11 +92,12 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
+                            modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 40.dp
-
-                )
+                .padding(top = 40.dp)
+                .clickable {
+                    onCustomClick()
+                }
         ) {
             Text(
                 text = stringResource(R.string.custom_training),
@@ -116,6 +120,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                 .fillMaxWidth()
                 .padding(top = 40.dp
                 )
+                .clickable { onClearedDataClick() }
         ) {
             Text(
                 text = stringResource(R.string.clean_data),
