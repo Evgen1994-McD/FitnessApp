@@ -24,7 +24,6 @@ fun MpAndroidChart(
     weightList: List<WeightModel>,
     onWeightClick: (WeightModel) -> Unit
 ) {
-    AndroidView(
     AndroidView(modifier = Modifier
         .height(300.dp),
         factory = {
@@ -88,7 +87,6 @@ fun MpAndroidChart(
                     continue
                 }
             }
-
             if (chartEntries.isNotEmpty()) {
                 val minWeight = chartEntries.minOfOrNull { it.y } ?: 0f
                 val maxWeight = chartEntries.maxOfOrNull { it.y } ?: 100f
