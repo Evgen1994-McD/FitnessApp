@@ -17,8 +17,6 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val settingsInteractor: SettingsInteractor
 ): ViewModel() {
-//    val themeMutableLiveData = MutableLiveData<Boolean>()
-//    val themeLiveData : LiveData<Boolean> get() = themeMutableLiveData
 
     val themeMode: StateFlow<ThemeMode> = settingsInteractor.getThemeMode().stateIn(
         scope = viewModelScope,
@@ -36,10 +34,5 @@ class SettingsViewModel @Inject constructor(
         settingsInteractor.setThemeMode(mode)
     }
 
-//    fun controlCheckerPosition()=viewModelScope.launch{
-//        val theme = settingsInteractor.controlTheme()
-//       themeMutableLiveData.value = theme
-//    }
-//}
 
 }
