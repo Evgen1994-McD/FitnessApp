@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -73,7 +74,7 @@ TopAppBar(
 
 Column(modifier = Modifier
     .padding(paddingValues)
-    .fillMaxWidth()
+    .fillMaxSize()
     .verticalScroll(scrollState)
 ) {
 
@@ -131,9 +132,41 @@ Column(modifier = Modifier
         eventList,
         onDayClick)
 
+
     Spacer(modifier = Modifier
         .height(20.dp))
     
+    Row(
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        IconButton(  modifier = Modifier
+            .size(52.dp)
+            .padding(end = 10.dp),
+            onClick = {
+            addWeightClick(WeightModel(
+                null,
+                weight = 81.0,
+                10,
+                11,
+                2025
+            ))
+
+        },
+          ){
+           Icon(painter = painterResource(R.drawable.ic_add_weight_24),
+               contentDescription = null,
+               modifier = Modifier
+                   .fillMaxSize())
+        }
+    }
+
+    Spacer(modifier = Modifier
+        .height(10.dp))
+
+
     // Добавляем DateSelector перед графиком
     DateSelector(
         selectedYear = selectedYear,
@@ -141,32 +174,7 @@ Column(modifier = Modifier
         onYearChange = onYearChange,
         onMonthChange = onMonthChange
     )
-    
-    Spacer(modifier = Modifier
-        .height(20.dp))
-    
-    Row(
-        modifier = Modifier
-            .padding(top = 10.dp, bottom = 10.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        IconButton(onClick = {
-            addWeightClick(WeightModel(
-                null,
-                weight = 81.0,
-                26,
-                11,
-                2025
-            ))
 
-        },
-            modifier = Modifier
-                .size(64.dp)){
-           Icon(painter = painterResource(R.drawable.ic_add_weight_24),
-               contentDescription = null)
-        }
-    }
     MpAndroidChart(
         weightList = weightList,
         onWeightClick = onWeightClick

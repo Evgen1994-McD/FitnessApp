@@ -2,7 +2,10 @@ package com.example.fitnessapp.statistic.ui.components
 
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.fitnessapp.db.WeightModel
 import com.github.mikephil.charting.charts.LineChart
@@ -22,6 +25,8 @@ fun MpAndroidChart(
     onWeightClick: (WeightModel) -> Unit
 ) {
     AndroidView(
+    AndroidView(modifier = Modifier
+        .height(300.dp),
         factory = {
             LineChart(it).apply {
                 layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -48,6 +53,9 @@ fun MpAndroidChart(
                 axisLeft.axisMinimum = 10f
                 axisRight.axisMinimum = 10f
                 xAxis.apply {
+                    axisMaximum = 30f
+                    axisMinimum = 1f
+                    labelCount = 6
                     position = XAxis.XAxisPosition.BOTTOM
                     axisLineColor = android.graphics.Color.BLUE
                     gridColor = android.graphics.Color.BLUE
@@ -81,6 +89,22 @@ fun MpAndroidChart(
                 }
             }
 
+            if (chartEntries.isNotEmpty()) {
+                val minWeight = chartEntries.minOfOrNull { it.y } ?: 0f
+                val maxWeight = chartEntries.maxOfOrNull { it.y } ?: 100f
+
+                chart.axisLeft.axisMinimum = minWeight - 5f
+                chart.axisLeft.axisMaximum = maxWeight + 5f
+                chart.axisRight.axisMinimum = minWeight - 5f
+                chart.axisRight.axisMaximum = maxWeight + 5f
+            } else {
+                // Если нет данных, установить стандартные значения
+                chart.axisLeft.axisMinimum = 50f
+                chart.axisLeft.axisMaximum = 100f
+                chart.axisRight.axisMinimum = 50f
+                chart.axisRight.axisMaximum = 100f
+            }
+       
             val set: LineDataSet
             if (chart.data != null && chart.data.dataSetCount > 0) {
                 set = chart.data.getDataSetByIndex(0) as LineDataSet
