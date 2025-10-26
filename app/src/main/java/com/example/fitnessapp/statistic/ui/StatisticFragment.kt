@@ -64,7 +64,8 @@ class StatisticFragment : Fragment() {
                                 },
                                 weightModel.weight.toString()
                             )
-                        }
+                        },
+                        addWeightClick = {it-> viewModel.saveWeight(it.weight)}
                     )
                 }
             }

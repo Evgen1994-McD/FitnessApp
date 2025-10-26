@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -20,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,7 +49,8 @@ fun StatisticScreen(
     weightList: List<WeightModel>,
     statisticData: StatisticModel?,
     onDayClick: () -> Unit,
-    onWeightClick: (WeightModel) -> Unit
+    onWeightClick: (WeightModel) -> Unit,
+    addWeightClick: (WeightModel) -> Unit
 ){
 
 
@@ -120,8 +127,29 @@ Column(modifier = Modifier
         onDayClick)
 
     Spacer(modifier = Modifier
-        .height(50.dp))
+        .height(70.dp))
+    Row(
+        modifier = Modifier
+            .padding(top = 10.dp, bottom = 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        IconButton(onClick = {
+            addWeightClick(WeightModel(
+                null,
+                weight = 81.0,
+                26,
+                11,
+                2025
+            ))
 
+        },
+            modifier = Modifier
+                .size(64.dp)){
+           Icon(painter = painterResource(R.drawable.ic_add_weight_24),
+               contentDescription = null)
+        }
+    }
     MpAndroidChart(
         weightList = weightList,
         onWeightClick = onWeightClick
