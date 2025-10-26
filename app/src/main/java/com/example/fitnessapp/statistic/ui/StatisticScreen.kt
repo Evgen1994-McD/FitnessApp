@@ -29,18 +29,21 @@ import androidx.compose.ui.unit.sp
 import com.applandeo.materialcalendarview.CalendarView
 import com.applandeo.materialcalendarview.EventDay
 import com.example.fitnessapp.R
+import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.statistic.ui.components.CalendarView
 import com.example.fitnessapp.statistic.ui.components.MpAndroidChart
+import com.example.fitnessapp.utils.TimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticScreen(
-    date:String,
-    eventList:List<EventDay>,
-    onDayClick:()->Unit,
-//    tempWeightList:List<WeightModel>,
-    label:String
+    date: String,
+    eventList: List<EventDay>,
+    weightList: List<WeightModel>,
+    statisticData: StatisticModel?,
+    onDayClick: () -> Unit,
+    onWeightClick: (WeightModel) -> Unit
 ){
 
 
@@ -62,7 +65,7 @@ Column(modifier = Modifier
     .verticalScroll(scrollState)
 ) {
 
-    Text(text = date,
+    Text(text = if (date == TimeUtils.getCurrentDate()) "Сегодня" else date,
         fontSize = 26.sp,
         modifier = Modifier
             .padding(start = 15.dp,
@@ -74,13 +77,15 @@ Column(modifier = Modifier
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ){
         Column (modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "00h:00m",
+                text = statisticData?.let { 
+                    TimeUtils.getWorkoutTime(it.workoutTime.toLong() * 1000)
+                } ?: "00h:00m",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -92,7 +97,7 @@ Column(modifier = Modifier
         Column (modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "0",
+                text = statisticData?.kcal?.toInt()?.toString() ?: "0",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -118,9 +123,8 @@ Column(modifier = Modifier
         .height(50.dp))
 
     MpAndroidChart(
-//        tempWeightList,
-        label
-
+        weightList = weightList,
+        onWeightClick = onWeightClick
     )
 
 

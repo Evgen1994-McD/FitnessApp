@@ -1,14 +1,15 @@
 package com.example.fitnessapp.statistic.ui
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import com.applandeo.materialcalendarview.EventDay
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
-import com.example.fitnessapp.statistic.data.DateSelectorModel
 import com.example.fitnessapp.statistic.domain.StatisticInteractor
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +24,14 @@ class StatisticViewModel @Inject constructor(
     var year = -1
     var month = Calendar.getInstance().get(Calendar.MONTH)
 
-    val eventListData = MutableLiveData<List<EventDay>>()
-    val statisticData = MutableLiveData<StatisticModel>()
-    val yearListData = MutableLiveData<List<DateSelectorModel>>()
-    val monthListData = MutableLiveData<List<DateSelectorModel>>()
-    val weightListData = MutableLiveData<List<WeightModel>>()
+    private val _eventListData = MutableStateFlow<List<EventDay>>(emptyList())
+    val eventListData: StateFlow<List<EventDay>> = _eventListData.asStateFlow()
+    
+    private val _statisticData = MutableStateFlow<StatisticModel?>(null)
+    val statisticData: StateFlow<StatisticModel?> = _statisticData.asStateFlow()
+    
+    private val _weightListData = MutableStateFlow<List<WeightModel>>(emptyList())
+    val weightListData: StateFlow<List<WeightModel>> = _weightListData.asStateFlow()
 
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
@@ -43,14 +47,14 @@ eventList.add(
             Здесь получаем статистику и она уходит по обсерверу на фрагмент
              */
         }
-eventListData.value = eventList
+_eventListData.value = eventList
 
     }
 
 
 
     fun getStatisticByDate(date: String) = viewModelScope.launch {
-statisticData.value = statisticInteractor.getStatisticByDate(date)
+_statisticData.value = statisticInteractor.getStatisticByDate(date)
 
 /*
 
@@ -61,67 +65,11 @@ statisticData.value = statisticInteractor.getStatisticByDate(date)
  */
     }
 
-    fun getYearList() = viewModelScope.launch {
-        val tempYearList = ArrayList<DateSelectorModel>()
-        val weightList = statisticInteractor.getYearWeightList()
-       weightList.forEach { weightModel ->
-
-           if(!tempYearList.any{ it.text.toInt() == weightModel.year }){
-               tempYearList.add(DateSelectorModel(
-                   weightModel.year.toString()
-               ))
-           }
-
-
-/*
-Будем перебирать все записи. Как только наткнемся на год например 2020 -
-записываем, остальные года 2020 пропускаем пока не дойдём до 2021 и так далее
-!tempYearList.any{ it.text.toInt() == weightModel.year } - с помощью any проверяем содержится данный год или нет
- */
-       }
-        if(!tempYearList.isNullOrEmpty()){
-yearListData.value = tempYearList
-       } else {
-           tempYearList.add(DateSelectorModel(Calendar.getInstance().get(Calendar.YEAR).toString()
-           ))
-           yearListData.value = tempYearList
-
-    }
-    }
-
-
-    fun getMonthList() = viewModelScope.launch {
-        val tempMonthList = ArrayList<DateSelectorModel>()
-        val weightList = statisticInteractor.getYearWeightList()
-        weightList.forEach { weightModel ->
-
-            if(!tempMonthList.any{ it.text.toInt() == weightModel.month }){
-                tempMonthList.add(DateSelectorModel(
-                    weightModel.month.toString()
-                ))
-            }
-
-
-            /*
-            Будем перебирать все записи. Как только наткнемся на год например 2020 -
-            записываем, остальные года 2020 пропускаем пока не дойдём до 2021 и так далее
-            !tempYearList.any{ it.text.toInt() == weightModel.year } - с помощью any проверяем содержится данный год или нет
-             */
-        }
-        if(!tempMonthList.isNullOrEmpty()){
-            monthListData.value = tempMonthList
-        } else {
-            tempMonthList.add(DateSelectorModel(Calendar.getInstance().get(Calendar.MONTH).toString()
-            ))
-            monthListData.value = tempMonthList
-
-        }
-    }
 
 
 
     fun getWeightByYearAndMonth() = viewModelScope.launch {
-        weightListData.value = statisticInteractor.getWeightByYearAndMonth(
+_weightListData.value = statisticInteractor.getWeightByYearAndMonth(
             year,
             month
         )
