@@ -38,6 +38,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.statistic.ui.components.CalendarView
+import com.example.fitnessapp.statistic.ui.components.DateSelector
 import com.example.fitnessapp.statistic.ui.components.MpAndroidChart
 import com.example.fitnessapp.utils.TimeUtils
 
@@ -48,9 +49,13 @@ fun StatisticScreen(
     eventList: List<EventDay>,
     weightList: List<WeightModel>,
     statisticData: StatisticModel?,
+    selectedYear: Int,
+    selectedMonth: Int,
     onDayClick: () -> Unit,
     onWeightClick: (WeightModel) -> Unit,
-    addWeightClick: (WeightModel) -> Unit
+    addWeightClick: (WeightModel) -> Unit,
+    onYearChange: (Int) -> Unit,
+    onMonthChange: (Int) -> Unit
 ){
 
 
@@ -127,7 +132,19 @@ Column(modifier = Modifier
         onDayClick)
 
     Spacer(modifier = Modifier
-        .height(70.dp))
+        .height(20.dp))
+    
+    // Добавляем DateSelector перед графиком
+    DateSelector(
+        selectedYear = selectedYear,
+        selectedMonth = selectedMonth,
+        onYearChange = onYearChange,
+        onMonthChange = onMonthChange
+    )
+    
+    Spacer(modifier = Modifier
+        .height(20.dp))
+    
     Row(
         modifier = Modifier
             .padding(top = 10.dp, bottom = 10.dp)

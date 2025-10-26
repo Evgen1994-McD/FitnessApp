@@ -21,7 +21,7 @@ import javax.inject.Inject
 class StatisticViewModel @Inject constructor(
     private val statisticInteractor: StatisticInteractor
 ) : ViewModel() {
-    var year = -1
+    var year = Calendar.getInstance().get(Calendar.YEAR)
     var month = Calendar.getInstance().get(Calendar.MONTH)
 
     private val _eventListData = MutableStateFlow<List<EventDay>>(emptyList())
@@ -32,6 +32,12 @@ class StatisticViewModel @Inject constructor(
     
     private val _weightListData = MutableStateFlow<List<WeightModel>>(emptyList())
     val weightListData: StateFlow<List<WeightModel>> = _weightListData.asStateFlow()
+    
+    private val _selectedYear = MutableStateFlow(Calendar.getInstance().get(Calendar.YEAR))
+    val selectedYear: StateFlow<Int> = _selectedYear.asStateFlow()
+
+    private val _selectedMonth = MutableStateFlow(Calendar.getInstance().get(Calendar.MONTH))
+    val selectedMonth: StateFlow<Int> = _selectedMonth.asStateFlow()
 
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
@@ -92,7 +98,18 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     fun updateWeight(weightModel: WeightModel) = viewModelScope.launch {
        statisticInteractor.insertWeight(weightModel)
         getWeightByYearAndMonth()
+    }
 
+    fun updateYear(newYear: Int) {
+        year = newYear
+        _selectedYear.value = newYear
+        getWeightByYearAndMonth()
+    }
+
+    fun updateMonth(newMonth: Int) {
+        month = newMonth
+        _selectedMonth.value = newMonth
+        getWeightByYearAndMonth()
     }
 
 }

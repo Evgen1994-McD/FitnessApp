@@ -38,6 +38,8 @@ class StatisticFragment : Fragment() {
                     val eventList by viewModel.eventListData.collectAsState()
                     val weightList by viewModel.weightListData.collectAsState()
                     val statisticData by viewModel.statisticData.collectAsState()
+                    val selectedYear by viewModel.selectedYear.collectAsState()
+                    val selectedMonth by viewModel.selectedMonth.collectAsState()
 
                     // Передача данных в экран статистики
                     StatisticScreen(
@@ -45,6 +47,8 @@ class StatisticFragment : Fragment() {
                         eventList = eventList,
                         weightList = weightList,
                         statisticData = statisticData,
+                        selectedYear = selectedYear,
+                        selectedMonth = selectedMonth,
                         onDayClick = { viewModel.getStatisticByDate(TimeUtils.getCurrentDate()) },
                         onWeightClick = { weightModel ->
                             DialogManager.showWeightDialog(
@@ -65,7 +69,9 @@ class StatisticFragment : Fragment() {
                                 weightModel.weight.toString()
                             )
                         },
-                        addWeightClick = {it-> viewModel.saveWeight(it.weight)}
+                        addWeightClick = { weightModel -> viewModel.saveWeight(weightModel.weight) },
+                        onYearChange = { year -> viewModel.updateYear(year) },
+                        onMonthChange = { month -> viewModel.updateMonth(month) }
                     )
                 }
             }
