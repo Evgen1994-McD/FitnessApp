@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
@@ -49,7 +50,8 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         Text(
             text = stringResource(R.string.settings),
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(
@@ -67,7 +69,8 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         ) {
             Text(
                 text = stringResource(R.string.dark_theme),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Switch(
                 checked = themeMode==ThemeMode.DARK,
@@ -89,16 +92,20 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp
+
                 )
         ) {
             Text(
                 text = stringResource(R.string.custom_training),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Icon(painter = painterResource(R.drawable.ic_custom_training_24),
+            Icon(
+                painter = painterResource(R.drawable.ic_custom_training_24),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp))
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
 
 
@@ -112,19 +119,18 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         ) {
             Text(
                 text = stringResource(R.string.clean_data),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Icon(painter = painterResource(R.drawable.ic_clear_24),
+            Icon(
+                painter = painterResource(R.drawable.ic_clear_24),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp))
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
-
-
     }
-
-
-    }
+}
 
 
 
