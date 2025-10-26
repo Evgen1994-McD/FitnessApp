@@ -19,7 +19,7 @@
     <string name="Next">Следующее</string>
     <string name="GoodDone">Отлично,\nвы закончили\n тренировку!</string>
     <string name="Back">Назад в Меню</string>
-    <string name="Done">Статистика</string>
+    <string name="statistic">Статистика</string>
     <string name="Waiting">Приготовьтесь</string>
     <string name="listExercise">Список упражнений</string>
     <string name="PrefForDoing">main</string>
@@ -28,6 +28,8 @@
     <string name="reset">Сбросить </string>
     <string name="alert">Внимание! </string>
     <string name="back">Отмена</string>
+    <string name="today">Сегодня</string>
+    <string name="history">История</string>
 
 <!--    Тренировки-->
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>

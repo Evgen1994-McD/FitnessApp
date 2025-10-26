@@ -106,7 +106,7 @@ adapter.submitList(list) // передали этот список
                 val daysRest = card.maxProgress - card.progress
 val tvRestText = getString(R.string.rest) + " " + daysRest
 tvRestDays.text = if(daysRest == 0) {
-getString(R.string.Done)
+getString(R.string.statistic)
 } else tvRestText
                 tvRestDays.visibility = View.VISIBLE
                 tvRestDays.startAnimation(alphaAnimationText2)

@@ -21,7 +21,8 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 @Composable
-fun MpAndroidChart(tempWeightList:List<WeightModel>,
+fun MpAndroidChart(
+//    tempWeightList:List<WeightModel>,
                    label:String){
 AndroidView(factory = {
     LineChart(it).apply {
@@ -40,7 +41,7 @@ AndroidView(factory = {
                 axisLineColor = android.graphics.Color.BLUE
                 gridColor = android.graphics.Color.BLUE
                 textColor = android.graphics.Color.BLUE
-                labelCount = tempWeightList.size
+//                labelCount = tempWeightList.size
                 valueFormatter = object : ValueFormatter(){
                     override fun getFormattedValue(value: Float): String {
                         return (value + 1).toInt().toString()
@@ -62,16 +63,16 @@ AndroidView(factory = {
 
 
         val weightList = ArrayList<Entry>()
-        for (i in 0 until 30) {
-            val filteredList = tempWeightList.filter { it.day == i + 1 }
-
-            if (filteredList.isNotEmpty()) {
-                weightList.add(Entry(i.toFloat(), filteredList.first().weight.toFloat()))
-            } else {
-                // Оставляем пустой промежуток или используем среднее предыдущих значений
-                continue // Пропускаем запись
-            }
-        }
+//        for (i in 0 until 30) {
+//            val filteredList = tempWeightList.filter { it.day == i + 1 }
+//
+//            if (filteredList.isNotEmpty()) {
+//                weightList.add(Entry(i.toFloat(), filteredList.first().weight.toFloat()))
+//            } else {
+//                // Оставляем пустой промежуток или используем среднее предыдущих значений
+//                continue // Пропускаем запись
+//            }
+//        }
 
         val set: LineDataSet
 
@@ -124,24 +125,24 @@ AndroidView(factory = {
 
 
 
-@Preview(showSystemUi = true)
-@Composable
-fun ChartPreview(){
-MpAndroidChart(tempWeightList = listOf(
-    WeightModel(
-        null,
-        80.0,
-        2,
-        1,
-        2025
-    ),
-    WeightModel(
-        null,
-        60.0,
-        5,
-        1,
-        2025
-    )
-),
-    label = "2025")
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun ChartPreview(){
+//MpAndroidChart(tempWeightList = listOf(
+//    WeightModel(
+//        null,
+//        80.0,
+//        2,
+//        1,
+//        2025
+//    ),
+//    WeightModel(
+//        null,
+//        60.0,
+//        5,
+//        1,
+//        2025
+//    )
+//),
+//    label = "2025")
+//}

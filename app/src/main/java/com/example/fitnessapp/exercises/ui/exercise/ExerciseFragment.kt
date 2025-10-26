@@ -93,7 +93,7 @@ class ExerciseFragment : Fragment() {
 
 
         binding.bNext.setOnClickListener {
-            if (binding.bNext.text.toString() == getString(R.string.Done)) {
+            if (binding.bNext.text.toString() == getString(R.string.statistic)) {
                 var bundle = Bundle()
                 bundle.putString("tec", totalExerciseCounter)
                 bundle.putString("difficulty", "${currentDay?.difficulty}")
@@ -153,7 +153,7 @@ findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment,
 
     private fun changeButtonText(title : String){
         if (title == getString(R.string.day_finish_name)){
-            binding.bNext.text = getString(R.string.Done)
+            binding.bNext.text = getString(R.string.statistic)
         }
     }
 

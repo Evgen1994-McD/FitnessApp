@@ -1,7 +1,5 @@
 package com.example.fitnessapp.statistic.ui
 
-import android.animation.Animator
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.fitnessapp.databinding.FinishBinding
 import androidx.appcompat.app.ActionBar
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
@@ -41,7 +38,7 @@ class DaysFinishFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = getString(R.string.Done)
+        ab?.title = getString(R.string.statistic)
         observerCurrentDayStatisitcs()
 difficulty = arguments?.getString("difficulty").toString()
         model.getStatisticByDate(TimeUtils.getCurrentDate())
