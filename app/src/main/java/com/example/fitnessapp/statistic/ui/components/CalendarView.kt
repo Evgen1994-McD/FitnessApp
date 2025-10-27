@@ -24,12 +24,3 @@ fun CalendarView(
 
 }
 
-
-
-
-//
-//@Preview(showSystemUi = true)
-//@Composable
-//fun CalendarPreview(){
-//    CalendarView()
-//}

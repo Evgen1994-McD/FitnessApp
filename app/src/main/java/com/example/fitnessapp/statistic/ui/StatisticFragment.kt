@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -34,6 +36,7 @@ class StatisticFragment : Fragment() {
             )
             setContent {
                 FitnessAppTheme {
+                    val weigthDialogueState by remember { mutableStateOf(false) }
                     // Получаем данные из StateFlow
                     val eventList by viewModel.eventListData.collectAsState()
                     val weightList by viewModel.weightListData.collectAsState()

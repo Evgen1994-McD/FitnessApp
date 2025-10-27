@@ -63,7 +63,7 @@ fun DateSelector(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-                    val years = (currentYear - 5..currentYear + 1).toList()
+                    val years = (currentYear - 1..currentYear + 2).toList()
                     
                     items(years) { year ->
                         YearMonthItem(
@@ -118,7 +118,7 @@ private fun YearMonthItem(
             text = text,
             fontSize = 14.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = if (isSelected) Color.White else Color.Black,
+            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         )
     }

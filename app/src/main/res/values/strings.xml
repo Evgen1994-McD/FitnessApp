@@ -64,7 +64,7 @@
 
 
 
-    <!--  Финишный фрагмент статистики-->
+    <!--  Финишный фрагмент + статистики-->
     <string name="kcal">Калории</string>
     <string name="exercise">Упражнения</string>
     <string name="time">Время</string>
@@ -74,6 +74,9 @@
     <string name="after_so_easy">Слишком просто</string>
     <string name="after_nothing">Нет, всё Ок, зашел случайно</string>
     <string name="after_question">Что вам не понравилось?</string>
+    <string name="weight_input_title">Введите текущий вес.</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
 
 
 <!--ActionBars-->

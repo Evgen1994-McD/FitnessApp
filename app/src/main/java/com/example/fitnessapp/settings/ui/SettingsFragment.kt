@@ -60,23 +60,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-//        binding.apply {
-//            clearDataButton.setOnClickListener {
-//                DialogManager.showDialog(
-//                    requireContext(),
-//                    R.string.reset_days_message, object : DialogManager.Listener {
-//                        override fun onClick()  {
-//                            model.clearData()
-//                        }
-//                    })
-//            }
-//            customTrainingSettingsButton.setOnClickListener {
-//                findNavController().navigate(R.id.customDaysListFragment)
-//
-//            }
-//        }
-//
-//        controlTheme()
+
     }
 
 
