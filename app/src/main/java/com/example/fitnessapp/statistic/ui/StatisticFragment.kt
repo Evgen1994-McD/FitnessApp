@@ -52,7 +52,9 @@ class StatisticFragment : Fragment() {
                         statisticData = statisticData,
                         selectedYear = selectedYear,
                         selectedMonth = selectedMonth,
-                        onDayClick = { viewModel.getStatisticByDate(TimeUtils.getCurrentDate()) },
+                        onDayClick = { selectedDate -> 
+                            viewModel.getStatisticByDate(selectedDate)
+                        },
                         onWeightClick = { weightModel ->
                             DialogManager.showWeightDialog(
                                 requireContext(),
@@ -69,10 +71,10 @@ class StatisticFragment : Fragment() {
                                         }
                                     }
                                 },
-                                weightModel.weight.toString()
+                                String.format("%.1f", weightModel.weight)
                             )
                         },
-                        addWeightClick = { weightModel -> viewModel.saveWeight(weightModel.weight) },
+                        addWeightClick = { weight -> viewModel.saveWeight(weight) },
                         onYearChange = { year -> viewModel.updateYear(year) },
                         onMonthChange = { month -> viewModel.updateMonth(month) }
                     )

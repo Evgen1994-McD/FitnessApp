@@ -82,16 +82,31 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     }
 
     fun saveWeight(weight: Double) = viewModelScope.launch {
-        val cv =Calendar.getInstance()
-        statisticInteractor.insertWeight(
-            WeightModel(
-                null,
-                weight,
-                cv.get(Calendar.DAY_OF_MONTH),
-                cv.get(Calendar.MONTH),
-                cv.get(Calendar.YEAR)
+        val cv = Calendar.getInstance()
+        val day = cv.get(Calendar.DAY_OF_MONTH)
+        val month = cv.get(Calendar.MONTH)
+        val year = cv.get(Calendar.YEAR)
+        
+        // Проверяем, есть ли уже запись веса на сегодня
+        val existingWeight = statisticInteractor.getWeightToday(year, month, day)
+        
+        if (existingWeight != null) {
+            // Если запись существует, обновляем её
+            statisticInteractor.insertWeight(
+                existingWeight.copy(weight = weight)
             )
-        )
+        } else {
+            // Если записи нет, создаём новую
+            statisticInteractor.insertWeight(
+                WeightModel(
+                    null,
+                    weight,
+                    day,
+                    month,
+                    year
+                )
+            )
+        }
         getWeightByYearAndMonth()
     }
 

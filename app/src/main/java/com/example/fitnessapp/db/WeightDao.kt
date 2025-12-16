@@ -21,7 +21,7 @@ interface WeightDao {
 
 
     @Query("SELECT * FROM weight_table WHERE year = :year AND month =:month AND day =:day") // Сдесь мы хотим получить вес дня еслли он есть, либо Налл если нет
-    suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel // чтобы пользователь не записывал много раз в один день
+    suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel? // чтобы пользователь не записывал много раз в один день
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)  // опять же с помощью онконфликст стратегии можем с помощью одной функции и записывать и обновлять данные
     suspend fun insertWeight(weightModel: WeightModel)

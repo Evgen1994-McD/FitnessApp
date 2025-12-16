@@ -22,6 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +40,7 @@ import com.applandeo.materialcalendarview.EventDay
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
+import com.example.fitnessapp.statistic.ui.components.AddWeightDialogue
 import com.example.fitnessapp.statistic.ui.components.CalendarView
 import com.example.fitnessapp.statistic.ui.components.DateSelector
 import com.example.fitnessapp.statistic.ui.components.MpAndroidChart
@@ -52,9 +55,9 @@ fun StatisticScreen(
     statisticData: StatisticModel?,
     selectedYear: Int,
     selectedMonth: Int,
-    onDayClick: () -> Unit,
+    onDayClick: (String) -> Unit,
     onWeightClick: (WeightModel) -> Unit,
-    addWeightClick: (WeightModel) -> Unit,
+    addWeightClick: (Double) -> Unit,
     onYearChange: (Int) -> Unit,
     onMonthChange: (Int) -> Unit
 ){
@@ -71,6 +74,7 @@ TopAppBar(
 
 ) {paddingValues ->
     val scrollState = rememberScrollState()
+    val showWeightDialog = remember { mutableStateOf(false) }
 
 Column(modifier = Modifier
     .padding(paddingValues)
@@ -146,14 +150,7 @@ Column(modifier = Modifier
             .size(52.dp)
             .padding(end = 10.dp),
             onClick = {
-            addWeightClick(WeightModel(
-                null,
-                weight = 81.0,
-                10,
-                11,
-                2025
-            ))
-
+            showWeightDialog.value = true
         },
           ){
            Icon(painter = painterResource(R.drawable.ic_add_weight_24),
@@ -180,6 +177,13 @@ Column(modifier = Modifier
         onWeightClick = onWeightClick
     )
 
+    AddWeightDialogue(
+        dialogState = showWeightDialog,
+        onSubmit = { weight ->
+            addWeightClick(weight)
+        },
+        onDismiss = {}
+    )
 
 }
 

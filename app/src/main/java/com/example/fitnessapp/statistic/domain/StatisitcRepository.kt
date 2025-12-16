@@ -10,6 +10,7 @@ interface StatisticRepository {
     suspend fun getStatisticByDate(date: String): StatisticModel
     suspend fun getYearWeightList(): List<WeightModel>
     suspend fun getWeightByYearAndMonth(year: Int, month: Int): List<WeightModel>
+    suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel?
     suspend fun insertWeight(weightModel: WeightModel)
     suspend fun getDontDoesDaysByDifficulty(difficulty: String): List<DayModel>
     suspend fun getAllExercise(): List<ExerciseModel>

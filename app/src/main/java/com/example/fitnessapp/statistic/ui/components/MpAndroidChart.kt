@@ -68,10 +68,20 @@ fun MpAndroidChart(
                 axisLeft.apply {
                     textColor = android.graphics.Color.BLUE
                     gridColor = android.graphics.Color.BLUE
+                    valueFormatter = object : ValueFormatter() {
+                        override fun getFormattedValue(value: Float): String {
+                            return String.format("%.1f", value)
+                        }
+                    }
                 }
                 axisRight.apply {
                     textColor = android.graphics.Color.BLUE
                     gridColor = android.graphics.Color.BLUE
+                    valueFormatter = object : ValueFormatter() {
+                        override fun getFormattedValue(value: Float): String {
+                            return String.format("%.1f", value)
+                        }
+                    }
                 }
             }
         },
@@ -124,6 +134,11 @@ fun MpAndroidChart(
                 dataSets.add(set)
                 val lineData = LineData(dataSets)
                 lineData.setValueTextSize(10f)
+                lineData.setValueFormatter(object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return String.format("%.1f", value)
+                    }
+                })
                 chart.data = lineData
             }
             chart.invalidate()

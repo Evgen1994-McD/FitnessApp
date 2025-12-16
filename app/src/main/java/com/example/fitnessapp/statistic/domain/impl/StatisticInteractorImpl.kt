@@ -23,6 +23,9 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun getWeightByYearAndMonth(year: Int, month: Int): List<WeightModel>{
         return statisticRepository.getWeightByYearAndMonth(year,month)
     }
+    override suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel? {
+        return statisticRepository.getWeightToday(year, month, day)
+    }
     override suspend fun insertWeight(weightModel: WeightModel){
         statisticRepository.insertWeight(weightModel)
     }

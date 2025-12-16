@@ -25,45 +25,64 @@ fun AddWeightDialogue(
 ) {
     val inputWeight = remember { mutableStateOf("") }
 
-
-    AlertDialog(
-        onDismissRequest = { dialogState.value = false },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onSubmit(inputWeight.value.toDouble())
-                    dialogState.value = false
-                }
-            ) {
-                Text(text = stringResource(R.string.ok))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismiss()
-                    dialogState.value = false
-                }
-            ) {
-                Text(text = stringResource(R.string.cancel))
-            }
-        },
-        title = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.weight_input_title))
-
-                TextField(value = inputWeight.value, onValueChange = { newValue ->
-                    if (newValue.all { it.isDigit() }) {
-                        inputWeight.value = newValue
+    if (dialogState.value) {
+        AlertDialog(
+            onDismissRequest = { 
+                dialogState.value = false
+                inputWeight.value = ""
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val weightText = inputWeight.value.trim()
+                        if (weightText.isNotEmpty()) {
+                            try {
+                                val weight = weightText.replace(',', '.').toDouble()
+                                if (weight > 0) {
+                                    onSubmit(weight)
+                                    dialogState.value = false
+                                    inputWeight.value = ""
+                                }
+                            } catch (e: NumberFormatException) {
+                                // Не закрываем диалог при ошибке формата
+                            }
+                        }
                     }
-                },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
+                ) {
+                    Text(text = stringResource(R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        onDismiss()
+                        dialogState.value = false
+                        inputWeight.value = ""
+                    }
+                ) {
+                    Text(text = stringResource(R.string.cancel))
+                }
+            },
+            title = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.weight_input_title))
 
+                    TextField(
+                        value = inputWeight.value, 
+                        onValueChange = { newValue ->
+                            // Разрешаем цифры, точку и запятую
+                            if (newValue.isEmpty() || newValue.matches(Regex("^\\d+([.,]\\d*)?$"))) {
+                                inputWeight.value = newValue
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                    )
+
+                }
             }
-        }
-    )
+        )
+    }
 }

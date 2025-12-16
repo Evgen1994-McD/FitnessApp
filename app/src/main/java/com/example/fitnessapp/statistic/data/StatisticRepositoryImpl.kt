@@ -35,6 +35,10 @@ class StatisticRepositoryImpl @Inject constructor(
         return mainDb.weightDao.getMonthWeightList(year,month)
     }
 
+    override suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel? {
+        return mainDb.weightDao.getWeightToday(year, month, day)
+    }
+
     override suspend fun insertWeight(weightModel: WeightModel){
         mainDb.weightDao.insertWeight(weightModel)
     }
