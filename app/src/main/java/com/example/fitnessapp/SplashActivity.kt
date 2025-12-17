@@ -53,8 +53,8 @@ class SplashActivity : ComponentActivity() {
     override fun onDestroy() { // это остановит таймер и закроет приложение если пользователь зашел и сразу вышел
         super.onDestroy()
         timer.cancel()
-        // Очищаем текущую активность
-        App.getAppOpenAdManager(application).setCurrentActivity(null)
+        // Не очищаем активность здесь - MainActivity установит свою активность
+        // Очистка произойдет автоматически когда MainActivity установит свою активность
     }
 }
 
