@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnessapp.databinding.ActivityMainBinding
+import com.example.fitnessapp.utils.App
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
@@ -37,8 +38,8 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         setSupportActionBar(toolbar)
 //model.controlTheme()
 
-
-
+        // Устанавливаем текущую активность для менеджера рекламы
+        App.getAppOpenAdManager(application).setCurrentActivity(this)
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController =  navHostFragment.navController
@@ -75,6 +76,18 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 мы можем указывать нижнее подчеркивание, если не используем некоторые переменные методов, например
  */
 
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // Обновляем текущую активность при возврате на экран
+        App.getAppOpenAdManager(application).setCurrentActivity(this)
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        // Очищаем текущую активность при уходе с экрана
+        App.getAppOpenAdManager(application).setCurrentActivity(null)
     }
 
 

@@ -20,7 +20,7 @@ android {
         applicationId = "com.example.fitnessapp"
         minSdk = 29
         targetSdk = 36
-        versionCode = 3
+        versionCode = 4
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -121,6 +121,8 @@ dependencies {
 
     //live data
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
+    // Lifecycle Process для отслеживания состояния приложения
+    implementation("androidx.lifecycle:lifecycle-process:2.9.1")
     //Lottie Animation
     implementation(libs.dotlottie.android)
     implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
@@ -129,4 +131,7 @@ dependencies {
 
 
     implementation(libs.android.gif.drawable)  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
+
+    // Yandex Mobile Ads SDK
+    implementation("com.yandex.android:mobileads:7.18.0")
 }
