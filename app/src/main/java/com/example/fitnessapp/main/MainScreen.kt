@@ -21,10 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitnessapp.R
 import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.exercises.utils.TrainingUtils
+import com.example.fitnessapp.main.AllBodyCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -114,12 +118,29 @@ fun MainScreen(
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(allBodyTrainingDays) { day ->
-                    AllBodyCard()
-
+                val difficulties = listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD)
+                
+                items(difficulties) { difficulty ->
+                    val daysForDifficulty = allBodyTrainingDays.filter { 
+                        it.zone == null && it.difficulty == difficulty 
+                    }
+                    val progress = calculateProgress(daysForDifficulty)
+                    val progressPercent = (progress * 100).toInt()
+                    
+                    AllBodyCard(
+                        programName = { stringResource(R.string.all_body) },
+                        difficulty = { 
+                            when (difficulty) {
+                                TrainingUtils.EASY -> stringResource(R.string.easy)
+                                TrainingUtils.MIDDLE -> stringResource(R.string.middle)
+                                TrainingUtils.HARD -> stringResource(R.string.hard)
+                                else -> difficulty
+                            }
+                        },
+                        progressText = { "Прогресс: $progressPercent%" },
+                        progress = progress
+                    )
                 }
-
-
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -143,6 +164,12 @@ fun MainScreen(
     }
 }
 
+// Функция для вычисления прогресса
+private fun calculateProgress(days: List<DayModel>): Float {
+    if (days.isEmpty()) return 0f
+    val completed = days.count { it.isDone }
+    return completed.toFloat() / days.size
+}
 
 @Composable
 fun TrainingCard(

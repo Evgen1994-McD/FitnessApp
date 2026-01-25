@@ -38,8 +38,8 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
 fun AllBodyCard(
-    programName: () -> String,
-    difficulty: () -> String,
+    programName: @Composable () -> String,
+    difficulty: @Composable () -> String,
     progressText: () -> String,
     progress: Float
 ) {
