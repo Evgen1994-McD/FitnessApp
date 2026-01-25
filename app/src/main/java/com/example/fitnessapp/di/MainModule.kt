@@ -1,11 +1,8 @@
 package com.example.fitnessapp.di
 
 import android.app.Application
-import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.room.Room
-import androidx.transition.Visibility
-import com.example.fitnessapp.R
 import com.example.fitnessapp.customTraining.data.CustomRepositoryImpl
 import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.customTraining.domain.CustomRepository
@@ -25,7 +22,6 @@ import com.example.fitnessapp.statistic.data.StatisticRepositoryImpl
 import com.example.fitnessapp.statistic.domain.StatisticInteractor
 import com.example.fitnessapp.statistic.domain.StatisticRepository
 import com.example.fitnessapp.statistic.domain.impl.StatisticInteractorImpl
-import com.example.fitnessapp.utils.App
 import com.example.fitnessapp.utils.MySoundPool
 import dagger.Binds
 import dagger.Module
@@ -45,7 +41,9 @@ object MainModule {
             app,//Контекст
             MainDb::class.java, //Класс
             "fitness.db" //Имя
-        ).createFromAsset("db/fitness.db").build() // Мы создаем БД не с 0, а возьмем её из Ассетс.
+        )
+         .createFromAsset("db/fitness.db") // Временно отключено - файл базы имеет старую схему
+        .build() // Room создаст новую базу с правильной схемой
         //Поэтому сначала возьмём из ассетс, потом вызовем Билд
     //здесь требуется передать контекст. Но у нас это App, а он уже есть в даггер
 //если нужен другой класс, то так просто не получится
