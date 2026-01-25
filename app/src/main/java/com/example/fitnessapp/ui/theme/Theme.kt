@@ -11,11 +11,16 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.fitnessapp.exercises.domain.models.ThemeMode
 import com.example.fitnessapp.settings.domain.SettingsInteractor
 import dagger.hilt.EntryPoints
+
+
+
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -40,6 +45,42 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F)
 )
 
+
+@Composable
+private fun getThemeModeFromHilt(
+    context: android.content.Context,
+    defaultDarkTheme: Boolean
+): Boolean {
+    // Проверяем доступность Hilt до вызова composable функций
+    val hiltAvailable = remember {
+        try {
+            EntryPoints.get(context.applicationContext, ThemeEntryPoint::class.java)
+            true
+        } catch (e: IllegalStateException) {
+            false
+        }
+    }
+    
+    return if (hiltAvailable) {
+        val themeUseCase = EntryPoints.get(
+            context.applicationContext,
+            ThemeEntryPoint::class.java
+        ).themeInteractor()
+        
+        val themeMode by themeUseCase.getThemeMode().collectAsState(initial = ThemeMode.SYSTEM)
+        Log.d("theme", "theme in mode $themeMode")
+
+        when (themeMode) {
+            ThemeMode.LIGHT -> false
+            ThemeMode.DARK -> true
+            ThemeMode.SYSTEM -> defaultDarkTheme
+        }
+    } else {
+        Log.d("theme", "Hilt not available, using darkTheme parameter: $defaultDarkTheme")
+        defaultDarkTheme
+    }
+}
+
 @Composable
 fun FitnessAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -47,28 +88,21 @@ fun FitnessAppTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    val mainScreenBgColor = if (darkTheme){
+        mainDarkBgColor
+    }else mainLightBgColor
+
     Log.d("theme", "theme in THEME $darkTheme")
+    
     val context = LocalContext.current
-    val themeUseCase = EntryPoints.get(
-        context.applicationContext,
-        ThemeEntryPoint::class.java
-    ).themeInteractor()
+    val shouldUseDarkTheme = getThemeModeFromHilt(context, darkTheme)
 
-    val themeMode by themeUseCase.getThemeMode().collectAsState(initial = ThemeMode.SYSTEM)
-    Log.d("theme", "theme in mode $themeMode")
-
-    val shouldUseDarkTheme = when (themeMode) {
-        ThemeMode.LIGHT -> false
-        ThemeMode.DARK -> true
-        ThemeMode.SYSTEM -> darkTheme
-    }
-    Log.d("theme", "shouldUseDarkTheme: $shouldUseDarkTheme, themeMode: $themeMode")
+    Log.d("theme", "shouldUseDarkTheme: $shouldUseDarkTheme")
 
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             if (shouldUseDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         shouldUseDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -79,6 +113,37 @@ fun FitnessAppTheme(
         typography = Typography,
         content = content
     )
+}
+
+
+@Composable
+fun AllBodyCardBgColor(): Color{
+    val isDark = MaterialTheme.colorScheme.background == DarkColorScheme.background
+    return if (isDark) {
+        allBodyDarkBgColor
+    } else {
+        allBodyLightBgColor
+    }
+}
+
+@Composable
+fun AllBodyCardTextColor(): Color{
+    val isDark = MaterialTheme.colorScheme.background == DarkColorScheme.background
+    return if (isDark) {
+        Color.White
+    } else {
+        Color.Black
+    }
+}
+
+@Composable
+fun AllBodyCardProgressTrackColor(): Color{
+    val isDark = MaterialTheme.colorScheme.background == DarkColorScheme.background
+    return if (isDark) {
+        allBodyLightBgColor // светлый цвет для темной темы
+    } else {
+        allBodyDarkBgColor // темный цвет для светлой темы
+    }
 }
 
 @dagger.hilt.EntryPoint
