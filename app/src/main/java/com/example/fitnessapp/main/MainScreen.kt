@@ -1,5 +1,6 @@
 package com.example.fitnessapp.main
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import com.example.fitnessapp.exercises.utils.TrainingUtils
 import com.example.fitnessapp.main.AllBodyCard
 
@@ -34,20 +36,10 @@ import com.example.fitnessapp.main.AllBodyCard
 @Composable
 fun MainScreen(
     trainingDays: List<DayModel> = emptyList<DayModel>(),
-    allBodyTrainingDays: List<DayModel> = emptyList()
+    progressMap: Map<String, TrainingTopCardModel> = emptyMap(),
+    onStartTrainingClick: (String) -> Unit = {}
 ) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Главное меню",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            )
-        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -126,10 +118,14 @@ fun MainScreen(
                 )
                 
                 items(difficulties) { difficulty ->
-                    val daysForDifficulty = allBodyTrainingDays.filter { 
-                        it.difficulty == difficulty 
+                    // Получаем прогресс из Map (используем тот же механизм, что и в TrainingFragment)
+                    val topCard = progressMap[difficulty]
+                    Log.d("top", "Topcard =$topCard")
+                    val progress: Float = if (topCard != null && topCard.maxProgress > 0) {
+                        topCard.progress.toFloat() / topCard.maxProgress
+                    } else {
+                        0f
                     }
-                    val progress = calculateProgress(daysForDifficulty)
                     val progressPercent = (progress * 100).toInt()
                     
                     AllBodyCard(
@@ -144,7 +140,8 @@ fun MainScreen(
                             }
                         },
                         progressText = { "Прогресс: $progressPercent%" },
-                        progress = progress
+                        progress = progress,
+                        onStartClick = { onStartTrainingClick(difficulty) }
                     )
                 }
             }
@@ -209,9 +206,3 @@ fun TrainingCard(
 
 
 
-
-//@Composable
-//@Preview(showSystemUi = true, showBackground = true)
-//private fun MainPreview(){
-//    MainScreen()
-//}

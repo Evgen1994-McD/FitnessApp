@@ -3,6 +3,7 @@ package com.example.fitnessapp.main
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,8 @@ fun AllBodyCard(
     programName: @Composable () -> String,
     difficulty: @Composable () -> String,
     progressText: () -> String,
-    progress: Float
+    progress: Float,
+    onStartClick: () -> Unit = {}
 ) {
     // Третья карточка
     Card(
@@ -115,7 +117,8 @@ fun AllBodyCard(
                 .padding(bottom = 10.dp)
                 .height(40.dp)
                 .clip(shape = RoundedCornerShape(25.dp))
-                .background(color = Color.Blue),
+                .background(color = Color.Blue)
+                .clickable(onClick = onStartClick),
                 contentAlignment = Alignment.Center
             ){
                 Text(text = "Начать",

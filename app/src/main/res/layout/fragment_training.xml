@@ -90,43 +90,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.tabs.TabLayout
-        app:tabTextColor="@drawable/tab_bar_state_list"
-        android:id="@+id/tabLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView3"
-        app:tabIndicatorColor="@color/purple_700">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Monday" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tuesday" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wednesday" />
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/daysFragmentContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout" >
-
-    </androidx.viewpager2.widget.ViewPager2>
+        app:layout_constraintTop_toBottomOf="@+id/cardView3" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

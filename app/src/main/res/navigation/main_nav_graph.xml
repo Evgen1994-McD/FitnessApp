@@ -19,6 +19,10 @@
         android:name="com.example.fitnessapp.exercises.ui.training.TrainingFragment"
         android:label="fragment_training"
         tools:layout="@layout/fragment_training">
+        <argument
+            android:name="difficulty"
+            app:argType="string"
+            android:defaultValue="easy" />
         <action
             android:id="@+id/action_trainingFragment_to_exListFragment"
             app:destination="@id/exListFragment" />
