@@ -111,18 +111,23 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            // Row с тремя квадратными карточками (прокручиваемые)
+            // Row с квадратными карточками (прокручиваемые)
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                val difficulties = listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD)
+                val difficulties = listOf(
+                    TrainingUtils.EASY, 
+                    TrainingUtils.MIDDLE, 
+                    TrainingUtils.HARD,
+                    TrainingUtils.CUSTOM
+                )
                 
                 items(difficulties) { difficulty ->
                     val daysForDifficulty = allBodyTrainingDays.filter { 
-                        it.zone == null && it.difficulty == difficulty 
+                        it.difficulty == difficulty 
                     }
                     val progress = calculateProgress(daysForDifficulty)
                     val progressPercent = (progress * 100).toInt()
@@ -134,6 +139,7 @@ fun MainScreen(
                                 TrainingUtils.EASY -> stringResource(R.string.easy)
                                 TrainingUtils.MIDDLE -> stringResource(R.string.middle)
                                 TrainingUtils.HARD -> stringResource(R.string.hard)
+                                TrainingUtils.CUSTOM -> stringResource(R.string.custom)
                                 else -> difficulty
                             }
                         },

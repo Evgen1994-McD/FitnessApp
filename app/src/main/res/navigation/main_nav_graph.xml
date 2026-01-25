@@ -7,6 +7,15 @@
 
     <fragment
         android:id="@+id/trainingFragment"
+        android:name="com.example.fitnessapp.main.MainFragment"
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_trainingFragment_to_exListFragment"
+            app:destination="@id/exListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/trainingListFragment"
         android:name="com.example.fitnessapp.exercises.ui.training.TrainingFragment"
         android:label="fragment_training"
         tools:layout="@layout/fragment_training">

@@ -7,6 +7,7 @@ import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.domain.DaysInteractor
 import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
+import com.example.fitnessapp.exercises.utils.TrainingUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,8 +24,9 @@ const val CUSTOM ="custom"
 
 
     val daysList = MutableLiveData<List<DayModel>>() // список дней с тренировками
-val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
-val isCustomListEmpty = MutableLiveData<Boolean>()
+    val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
+    val isCustomListEmpty = MutableLiveData<Boolean>()
+    val allBodyTrainingDays = MutableLiveData<List<DayModel>>(emptyList())
 
     fun getExerciseDaysByDifficulty ( trainingTopCardModel: TrainingTopCardModel) {
         viewModelScope.launch {  /* это трудоёмкая операция, поэтому делаем
@@ -45,12 +47,34 @@ daysList.value = list // передали лист который нашли
     }
 
     fun getCustomDaysList() = viewModelScope.launch {
-daysInteractor.getExerciseDaysByDifficulty(CUSTOM).collect {
-isCustomListEmpty.value = it.isEmpty()
-}
+        daysInteractor.getExerciseDaysByDifficulty(CUSTOM).collect {
+            isCustomListEmpty.value = it.isEmpty()
+        }
         /*
         у нас Flow - поэтому мы делаем collect ( это не просто список)
          */
+    }
+
+    fun getAllBodyTrainingDays() {
+        viewModelScope.launch {
+            val difficulties = listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD, CUSTOM)
+            val difficultyMap = mutableMapOf<String, List<DayModel>>()
+            
+            // Запускаем сбор данных для каждой сложности параллельно
+            difficulties.forEach { difficulty ->
+                launch {
+                    daysInteractor.getExerciseDaysByDifficulty(difficulty).collect { list ->
+                        // Фильтруем только тренировки на всё тело (zone == null)
+                        val allBodyDays = list.filter { it.zone == null }
+                        difficultyMap[difficulty] = allBodyDays
+                        
+                        // Объединяем все тренировки на всё тело из всех сложностей
+                        val allDays = difficultyMap.values.flatten()
+                        allBodyTrainingDays.postValue(allDays)
+                    }
+                }
+            }
+        }
     }
 
     private fun getProgress(list:List<DayModel>): Int {
