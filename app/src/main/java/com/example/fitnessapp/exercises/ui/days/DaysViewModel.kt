@@ -19,17 +19,17 @@ import javax.inject.Inject
 class DaysViewModel @Inject constructor(
     private val daysInteractor: DaysInteractor, // получили доступ к базе данных
 ) : ViewModel() { //если БД инициализирована мы её найдём  в МейнМодуль
+
     companion object {
-const val CUSTOM ="custom"
+
+        val difficulties = listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD, TrainingUtils.CUSTOM)
     }
 
 
+    val zoneTrainingList = MutableLiveData<List<DayModel>>() // список дней с тренировками
 
     val daysList = MutableLiveData<List<DayModel>>() // список дней с тренировками
     val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
-    val isCustomListEmpty = MutableLiveData<Boolean>()
-    val allBodyTrainingDays = MutableLiveData<List<DayModel>>(emptyList())
-    val difficultyProgressMap = MutableLiveData<Map<String, Pair<Int, Int>>>(emptyMap()) // Map<difficulty, Pair<progress, maxProgress>>
     val allBodyProgressMap = MutableLiveData<Map<String, TrainingTopCardModel>>(emptyMap()) // Map<difficulty, TrainingTopCardModel>
 
     fun getExerciseDaysByDifficulty ( trainingTopCardModel: TrainingTopCardModel) {
@@ -50,94 +50,70 @@ daysList.value = list // передали лист который нашли
         }
     }
 
-    fun getCustomDaysList() = viewModelScope.launch {
-        daysInteractor.getExerciseDaysByDifficulty(CUSTOM).collect {
-            isCustomListEmpty.value = it.isEmpty()
-        }
-        /*
-        у нас Flow - поэтому мы делаем collect ( это не просто список)
-         */
-    }
-
-    fun getAllBodyTrainingDays() {
-        viewModelScope.launch {
-            val difficulties = listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD, CUSTOM)
-            val difficultyMap = mutableMapOf<String, List<DayModel>>()
-            val progressMap = mutableMapOf<String, Pair<Int, Int>>()
-            val mutex = Mutex()
-            
-            // Запускаем сбор данных для каждой сложности параллельно
-            difficulties.forEach { difficulty ->
-                launch {
-                    // Используем тот же метод, что и в getExerciseDaysByDifficulty
-                    val topCardModel = TrainingUtils.topCardList.find { it.difficulty == difficulty }
-                        ?: TrainingUtils.topCardList[0]
-                    
-                    daysInteractor.getExerciseDaysByDifficulty(difficulty).collect { list ->
-                        // Фильтруем только тренировки на всё тело (zone == null)
-                        val allBodyDays = list.filter { it.zone == null }
-                        
-                        // Используем тот же метод подсчета, что и в getExerciseDaysByDifficulty
-                        // Берем готовый прогресс из topCardUpdate (как в строке 42-44)
-                        val progress = getProgress(allBodyDays) // тот же метод, что в getExerciseDaysByDifficulty
-                        val maxProgress = allBodyDays.size
-                        
-                        // Синхронизируем доступ к Map
-                        mutex.withLock {
-                            difficultyMap[difficulty] = allBodyDays
-                            // Сохраняем прогресс (используем тот же метод подсчета, что и в topCardUpdate)
-                            progressMap[difficulty] = Pair(progress, maxProgress)
-                            
-                            // Объединяем все тренировки на всё тело из всех сложностей
-                            val allDays = difficultyMap.values.flatten()
-                            allBodyTrainingDays.postValue(allDays)
-                            
-                            // Обновляем статистику (создаем новую копию Map для thread-safety)
-                            difficultyProgressMap.postValue(HashMap(progressMap))
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     fun loadAllBodyProgress() {
         viewModelScope.launch {
-            val difficulties = listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD, TrainingUtils.CUSTOM)
             val progressMap = mutableMapOf<String, TrainingTopCardModel>()
             val mutex = Mutex()
-            
-            // Инициализируем Map начальными значениями для каждой сложности
+
+            // Определяем все зоны
+            val zones = listOf(
+                "",  // Для всех зон вместе
+                TrainingUtils.HANDS,
+                TrainingUtils.BODY,
+                TrainingUtils.BACK,
+                TrainingUtils.LEGS
+            )
+
+            // Инициализируем Map для каждой сложности и каждой зоны
             difficulties.forEach { difficulty ->
-                val topCardModel = TrainingUtils.topCardList.find { it.difficulty == difficulty }
-                    ?: TrainingUtils.topCardList[0]
-                progressMap[difficulty] = topCardModel.copy(progress = 0, maxProgress = 0)
-            }
-            // Сразу отправляем начальные значения
-            allBodyProgressMap.postValue(HashMap(progressMap))
-            
-            // Запускаем сбор данных для каждой сложности параллельно
-            difficulties.forEach { difficulty ->
-                launch {
+                zones.forEach { zone ->
                     val topCardModel = TrainingUtils.topCardList.find { it.difficulty == difficulty }
                         ?: TrainingUtils.topCardList[0]
-                    
+                    val key = if (zone == "") difficulty else "${difficulty}_$zone"
+                    progressMap[key] = topCardModel.copy(
+                        progress = 0,
+                        maxProgress = 0,
+                        title = if (zone == "") topCardModel.title else "${zone} ${topCardModel.title}"
+                    )
+                }
+            }
+
+            // Сразу отправляем начальные значения
+            allBodyProgressMap.postValue(HashMap(progressMap))
+
+            // Запускаем сбор данных для каждой сложности
+            difficulties.forEach { difficulty ->
+                launch {
                     daysInteractor.getExerciseDaysByDifficulty(difficulty).collect { list ->
-                        // Фильтруем только тренировки на всё тело (zone == null)
-                        val allBodyDays = list.filter { it.zone.isNullOrEmpty() }
-                        
-                        // Используем тот же метод подсчета, что и в getExerciseDaysByDifficulty
-                        val progress = getProgress(allBodyDays)
-                        val maxProgress = allBodyDays.size
-                        
-                        // Синхронизируем доступ к Map
-                        mutex.withLock {
-                            progressMap[difficulty] = topCardModel.copy(
+                        zones.forEach { zone ->
+                            // Фильтруем по зоне
+                            val filteredList = when (zone) {
+                                "" -> list.filter { it.zone.isNullOrEmpty() }
+                                else -> list.filter { it.zone == zone }
+                            }
+
+                            val progress = getProgress(filteredList)
+                            val maxProgress = filteredList.size
+
+                            // Создаем обновленную модель
+                            val topCardModel = TrainingUtils.topCardList.find { it.difficulty == difficulty }
+                                ?: TrainingUtils.topCardList[0]
+
+                            val updatedModel = topCardModel.copy(
                                 progress = progress,
-                                maxProgress = maxProgress
+                                maxProgress = maxProgress,
+                                title = if (zone.isNullOrEmpty()) topCardModel.title else "${zone} ${topCardModel.title}"
                             )
-                            // Обновляем Map (создаем новую копию для thread-safety)
-                            allBodyProgressMap.postValue(HashMap(progressMap))
+
+                            // Формируем ключ
+                            val key = if (zone.isNullOrEmpty()) difficulty else "${difficulty}_$zone"
+
+                            // Обновляем Map
+                            mutex.withLock {
+                                progressMap[key] = updatedModel
+                                allBodyProgressMap.postValue(HashMap(progressMap))
+                            }
                         }
                     }
                 }

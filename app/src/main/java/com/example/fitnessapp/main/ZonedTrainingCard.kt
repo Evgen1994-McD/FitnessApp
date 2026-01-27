@@ -38,10 +38,11 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
 fun ZonedTrainingCard(
-    programName: () -> String,
-    difficulty: () -> String,
+    programName: @Composable () -> String,
+    difficulty: @Composable () -> String,
     progressText: () -> String,
-    progress: Float
+    progress: Float,
+    onStartClick: () -> Unit = {}
 ) {
     // Третья карточка
     Card(

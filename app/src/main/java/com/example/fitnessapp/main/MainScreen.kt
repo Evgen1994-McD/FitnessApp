@@ -154,12 +154,25 @@ fun MainScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(trainingDays) { day ->
-                    TrainingCard(
-                        day = day,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
+                val difficultiesbyZone = listOf(
+                    TrainingUtils.EASY+"_"+TrainingUtils.HANDS,
+                    TrainingUtils.EASY+"_"+TrainingUtils.BODY,
+                    TrainingUtils.EASY+"_"+TrainingUtils.BACK,
+                    TrainingUtils.EASY+"_"+TrainingUtils.LEGS,
+
+                )
+
+
+                items(difficultiesbyZone) { difficultyByZone ->
+                    val card = progressMap[difficultyByZone]
+                    ZonedTrainingCard(
+                        programName = { card?.title ?:""  },
+                        difficulty = {
+                            card?.difficulty.toString()
+                        },
+                        progressText = { "Прогресс: 0%" },
+                        progress = 0f,
+                        onStartClick = {  }
                     )
                 }
             }
