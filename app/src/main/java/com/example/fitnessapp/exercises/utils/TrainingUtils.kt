@@ -84,7 +84,7 @@ object TrainingUtils { //здесь будут константы которые
                 else -> R.drawable.hard
             }
             BACK -> when (difficulty) {
-                EASY -> R.drawable.easy
+                EASY -> R.drawable.easy_back1
                 MIDDLE -> R.drawable.middle
                 else -> R.drawable.hard
             }

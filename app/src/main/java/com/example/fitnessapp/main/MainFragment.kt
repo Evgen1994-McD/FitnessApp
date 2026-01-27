@@ -62,6 +62,10 @@ private fun MainScreenContent(viewModel: DaysViewModel, fragment: Fragment) {
         ) 
     }
     
+    var totalWorkouts by remember { mutableStateOf(viewModel.totalWorkouts.value ?: 0) }
+    var totalKcal by remember { mutableStateOf(viewModel.totalKcal.value ?: 0) }
+    var totalTime by remember { mutableStateOf(viewModel.totalTime.value ?: "00:00") }
+    
     // Загружаем данные при первом запуске
     LaunchedEffect(Unit) {
         viewModel.loadAllBodyProgress()
@@ -77,10 +81,43 @@ private fun MainScreenContent(viewModel: DaysViewModel, fragment: Fragment) {
             viewModel.allBodyProgressMap.removeObserver(observer)
         }
     }
+
+    DisposableEffect(viewModel.totalWorkouts) {
+        val observer = androidx.lifecycle.Observer<Int> { value ->
+            totalWorkouts = value ?: 0
+        }
+        viewModel.totalWorkouts.observeForever(observer)
+        onDispose {
+            viewModel.totalWorkouts.removeObserver(observer)
+        }
+    }
+
+    DisposableEffect(viewModel.totalKcal) {
+        val observer = androidx.lifecycle.Observer<Int> { value ->
+            totalKcal = value ?: 0
+        }
+        viewModel.totalKcal.observeForever(observer)
+        onDispose {
+            viewModel.totalKcal.removeObserver(observer)
+        }
+    }
+
+    DisposableEffect(viewModel.totalTime) {
+        val observer = androidx.lifecycle.Observer<String> { value ->
+            totalTime = value ?: "00:00"
+        }
+        viewModel.totalTime.observeForever(observer)
+        onDispose {
+            viewModel.totalTime.removeObserver(observer)
+        }
+    }
     
     MainScreen(
         trainingDays = emptyList(), // Не передаем daysList, так как он обновляется при навигации к тренировке
         progressMap = progressMap,
+        totalWorkouts = totalWorkouts,
+        totalKcal = totalKcal,
+        totalTime = totalTime,
         onStartTrainingClick = { difficulty, zone ->
             val bundle = Bundle().apply {
                 putString("difficulty", difficulty)

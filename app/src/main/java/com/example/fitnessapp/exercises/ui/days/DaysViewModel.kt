@@ -8,6 +8,7 @@ import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.domain.DaysInteractor
 import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import com.example.fitnessapp.exercises.utils.TrainingUtils
+import com.example.fitnessapp.statistic.domain.StatisticInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -18,6 +19,7 @@ import javax.inject.Inject
 // будем вызывать БД из МейнМодел
 class DaysViewModel @Inject constructor(
     private val daysInteractor: DaysInteractor, // получили доступ к базе данных
+    private val statisticInteractor: StatisticInteractor // добавили доступ к статистике
 ) : ViewModel() { //если БД инициализирована мы её найдём  в МейнМодуль
 
     companion object {
@@ -31,6 +33,11 @@ class DaysViewModel @Inject constructor(
     val daysList = MutableLiveData<List<DayModel>>() // список дней с тренировками
     val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
     val allBodyProgressMap = MutableLiveData<Map<String, TrainingTopCardModel>>(emptyMap()) // Map<difficulty, TrainingTopCardModel>
+    
+    // Новые LiveData для общей статистики
+    val totalWorkouts = MutableLiveData<Int>(0)
+    val totalKcal = MutableLiveData<Int>(0)
+    val totalTime = MutableLiveData<String>("00:00")
 
     fun getExerciseDaysByDifficulty ( trainingTopCardModel: TrainingTopCardModel, zone: String? = null) {
         viewModelScope.launch {  /* это трудоёмкая операция, поэтому делаем
@@ -71,6 +78,7 @@ class DaysViewModel @Inject constructor(
 
 
     fun loadAllBodyProgress() {
+        loadOverallStatistics()
         viewModelScope.launch {
             val progressMap = mutableMapOf<String, TrainingTopCardModel>()
             val mutex = Mutex()
@@ -140,6 +148,33 @@ class DaysViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun loadOverallStatistics() {
+        viewModelScope.launch {
+            val statisticList = statisticInteractor.getStatistic()
+            var totalKcalValue = 0.0
+            var totalSeconds = 0L
+
+            statisticList.forEach {
+                totalKcalValue += it.kcal
+                totalSeconds += it.workoutTime.toLongOrNull() ?: 0L
+            }
+
+            totalWorkouts.postValue(statisticList.size)
+            totalKcal.postValue(totalKcalValue.toInt())
+
+            val hours = totalSeconds / 3600
+            val minutes = (totalSeconds % 3600) / 60
+            val seconds = totalSeconds % 60
+            
+            val timeString = if (hours > 0) {
+                String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            } else {
+                String.format("%02d:%02d", minutes, seconds)
+            }
+            totalTime.postValue(timeString)
         }
     }
 

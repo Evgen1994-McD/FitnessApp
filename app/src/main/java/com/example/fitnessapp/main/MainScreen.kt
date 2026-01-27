@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,9 @@ import com.example.fitnessapp.exercises.utils.TrainingUtils
 fun MainScreen(
     trainingDays: List<DayModel> = emptyList<DayModel>(),
     progressMap: Map<String, TrainingTopCardModel> = emptyMap(),
+    totalWorkouts: Int = 0,
+    totalKcal: Int = 0,
+    totalTime: String = "00:00",
     onStartTrainingClick: (String, String?) -> Unit = { _, _ -> }
 ) {
     Scaffold(
@@ -57,12 +61,12 @@ fun MainScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "0",
+                        text = totalWorkouts.toString(),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Тренировок",
+                        text = pluralStringResource(id = R.plurals.workouts_count, count = totalWorkouts),
                         fontSize = 14.sp
                     )
                 }
@@ -72,7 +76,7 @@ fun MainScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "0",
+                        text = totalKcal.toString(),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -87,7 +91,7 @@ fun MainScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "0",
+                        text = totalTime,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )

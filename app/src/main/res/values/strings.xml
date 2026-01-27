@@ -32,6 +32,13 @@
     <string name="history">История</string>
     <string name="ok">OK</string>
 
+    <plurals name="workouts_count">
+        <item quantity="one">Тренировка</item>
+        <item quantity="few">Тренировки</item>
+        <item quantity="many">Тренировок</item>
+        <item quantity="other">Тренировок</item>
+    </plurals>
+
 <!--    Тренировки-->
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>
     <string name="reset_day_message">Хотите снова повторить этот день?</string>
