@@ -27,9 +27,10 @@
     <string name="rest_days"> дней </string>
     <string name="reset">Сбросить </string>
     <string name="alert">Внимание! </string>
-    <string name="back">Отмена</string>
+    <string name="backoff">Отмена</string>
     <string name="today">Сегодня</string>
     <string name="history">История</string>
+    <string name="ok">OK</string>
 
 <!--    Тренировки-->
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>
@@ -76,8 +77,12 @@
     <string name="after_question">Что вам не понравилось?</string>
     <string name="weight_input_title">Введите текущий вес.</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
+
     <string name="all_body">Всё тело</string>
+    <string name="hands">Руки</string>
+    <string name="body">Корпус</string>
+    <string name="back">Спина</string>
+    <string name="legs">Ноги</string>
 
 
 <!--ActionBars-->

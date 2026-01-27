@@ -81,9 +81,12 @@ private fun MainScreenContent(viewModel: DaysViewModel, fragment: Fragment) {
     MainScreen(
         trainingDays = emptyList(), // Не передаем daysList, так как он обновляется при навигации к тренировке
         progressMap = progressMap,
-        onStartTrainingClick = { difficulty ->
+        onStartTrainingClick = { difficulty, zone ->
             val bundle = Bundle().apply {
                 putString("difficulty", difficulty)
+                if (zone != null) {
+                    putString("zone", zone)
+                }
             }
             fragment.findNavController().navigate(R.id.trainingListFragment, bundle)
         }

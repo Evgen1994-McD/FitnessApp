@@ -32,17 +32,23 @@ class DaysViewModel @Inject constructor(
     val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
     val allBodyProgressMap = MutableLiveData<Map<String, TrainingTopCardModel>>(emptyMap()) // Map<difficulty, TrainingTopCardModel>
 
-    fun getExerciseDaysByDifficulty ( trainingTopCardModel: TrainingTopCardModel) {
+    fun getExerciseDaysByDifficulty ( trainingTopCardModel: TrainingTopCardModel, zone: String? = null) {
         viewModelScope.launch {  /* это трудоёмкая операция, поэтому делаем
         в корутинах */
             daysInteractor.getExerciseDaysByDifficulty(trainingTopCardModel.difficulty).collect { /* collect -
             получить то что найдём в БД */
                 list ->
 
-daysList.value = list // передали лист который нашли
+                val filteredList = if (zone.isNullOrEmpty()) {
+                    list.filter { it.zone.isNullOrEmpty() }
+                } else {
+                    list.filter { it.zone == zone }
+                }
+
+                daysList.value = filteredList // передали лист который нашли
                 topCardUpdate.value = trainingTopCardModel.copy(
-                    maxProgress = list.size,
-                    progress = getProgress(list)
+                    maxProgress = filteredList.size,
+                    progress = getProgress(filteredList)
 
                 )
             }

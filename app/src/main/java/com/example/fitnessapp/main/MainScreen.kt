@@ -17,7 +17,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,14 +29,13 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import com.example.fitnessapp.exercises.utils.TrainingUtils
-import com.example.fitnessapp.main.AllBodyCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     trainingDays: List<DayModel> = emptyList<DayModel>(),
     progressMap: Map<String, TrainingTopCardModel> = emptyMap(),
-    onStartTrainingClick: (String) -> Unit = {}
+    onStartTrainingClick: (String, String?) -> Unit = { _, _ -> }
 ) {
     Scaffold(
     ) { paddingValues ->
@@ -141,38 +139,80 @@ fun MainScreen(
                         },
                         progressText = { "Прогресс: $progressPercent%" },
                         progress = progress,
-                        onStartClick = { onStartTrainingClick(difficulty) }
+                        onStartClick = { onStartTrainingClick(difficulty, null) }
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn(
+            Text(
+                text = "Тренировки по зонам",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            LazyColumn (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+
             ) {
-                val difficultiesbyZone = listOf(
-                    TrainingUtils.EASY+"_"+TrainingUtils.HANDS,
-                    TrainingUtils.EASY+"_"+TrainingUtils.BODY,
-                    TrainingUtils.EASY+"_"+TrainingUtils.BACK,
-                    TrainingUtils.EASY+"_"+TrainingUtils.LEGS,
-
+                val zones = listOf(
+                    TrainingUtils.HANDS,
+                    TrainingUtils.BODY,
+                    TrainingUtils.BACK,
+                    TrainingUtils.LEGS
                 )
+                val difficulties = listOf(
+                    TrainingUtils.EASY,
+                    TrainingUtils.MIDDLE,
+                    TrainingUtils.HARD
+                )
+                
+                // Создаем список всех комбинаций зона+сложность
+                val zoneTrainingKeys = zones.flatMap { zone -> 
+                    difficulties.map { difficulty -> "${difficulty}_$zone" } 
+                }
 
+                items(zoneTrainingKeys) { key ->
+                    val card = progressMap[key]
+                    val parts = key.split("_")
+                    val difficulty = parts[0]
+                    val zone = parts[1]
+                    
+                    val progress: Float = if (card != null && card.maxProgress > 0) {
+                        card.progress.toFloat() / card.maxProgress
+                    } else {
+                        0f
+                    }
+                    val progressPercent = (progress * 100).toInt()
 
-                items(difficultiesbyZone) { difficultyByZone ->
-                    val card = progressMap[difficultyByZone]
                     ZonedTrainingCard(
-                        programName = { card?.title ?:""  },
-                        difficulty = {
-                            card?.difficulty.toString()
+                        programName = { 
+                            when(zone) {
+                                TrainingUtils.HANDS -> stringResource(R.string.hands)
+                                TrainingUtils.BODY -> stringResource(R.string.body)
+                                TrainingUtils.BACK -> stringResource(R.string.backoff)
+                                TrainingUtils.LEGS -> stringResource(R.string.legs)
+                                else -> zone
+                            }
                         },
-                        progressText = { "Прогресс: 0%" },
-                        progress = 0f,
-                        onStartClick = {  }
+                        difficulty = {
+                            when (difficulty) {
+                                TrainingUtils.EASY -> stringResource(R.string.easy)
+                                TrainingUtils.MIDDLE -> stringResource(R.string.middle)
+                                TrainingUtils.HARD -> stringResource(R.string.hard)
+                                TrainingUtils.CUSTOM -> stringResource(R.string.custom)
+                                else -> difficulty
+                            }
+                        },
+                        progressText = { "Прогресс: $progressPercent%" },
+                        progress = progress,
+                        onStartClick = { onStartTrainingClick(difficulty, zone) },
+
+
                     )
                 }
             }

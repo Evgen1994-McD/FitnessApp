@@ -3,6 +3,7 @@ package com.example.fitnessapp.main
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,22 +43,29 @@ fun ZonedTrainingCard(
     difficulty: @Composable () -> String,
     progressText: () -> String,
     progress: Float,
-    onStartClick: () -> Unit = {}
+    onStartClick: () -> Unit = {},
+
 ) {
     // Третья карточка
     Card(
         modifier = Modifier
+            .padding(top = 6.dp)
             .fillMaxWidth()
-            .height(150.dp),
+            .height(150.dp), // Увеличил высоту, чтобы влезла кнопка
+        onClick = {onStartClick()},
         colors = CardDefaults.cardColors(
             containerColor = AllBodyCardBgColor()
         )
     ) {
-
+        Column(
+            modifier = Modifier
+                .padding(6.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             Row(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxSize(),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -110,8 +118,9 @@ fun ZonedTrainingCard(
                 }
 
             }
-
         }
+
+    }
 
     }
 

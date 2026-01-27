@@ -2,20 +2,16 @@ package com.example.fitnessapp.utils
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.core.view.isVisible
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.AfterTrainingDialogueBinding
 import com.example.fitnessapp.databinding.WeightDialogBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Job
 
 object DialogManager {   // Сначала сделал как класс, но он работает только если обджект. Как и фрагмент менеджер. Если мы укажем обжект - сможем добраться без инициализации класса. Если как класс - сначала надо его инициализировать.
 
@@ -40,7 +36,7 @@ object DialogManager {   // Сначала сделал как класс, но 
             dialog?.dismiss()
 
         }
-        builder.setNegativeButton(R.string.back) { _, _ ->
+        builder.setNegativeButton(R.string.backoff) { _, _ ->
             dialog?.dismiss()  // Просто отменяем диалог если не согласны
         }
         dialog = builder.create()

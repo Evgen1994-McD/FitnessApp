@@ -34,15 +34,16 @@ private lateinit var binding: FragmentTrainingBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Получаем сложность из аргументов
+        // Получаем сложность и зону из аргументов
         val difficulty = arguments?.getString("difficulty") ?: TrainingUtils.EASY
+        val zone = arguments?.getString("zone")
         
         // Находим соответствующий TrainingTopCardModel
         val topCardModel = TrainingUtils.topCardList.find { it.difficulty == difficulty }
             ?: TrainingUtils.topCardList[0]
         
-        // Загружаем дни для выбранной сложности
-        model.getExerciseDaysByDifficulty(topCardModel)
+        // Загружаем дни для выбранной сложности и зоны
+        model.getExerciseDaysByDifficulty(topCardModel, zone)
         
         // Показываем DaysFragment вместо ViewPager
         showDaysFragment()
@@ -55,7 +56,14 @@ private lateinit var binding: FragmentTrainingBinding
             val alphaAnimation = AlphaAnimation(0.2f, 1.0f)
             alphaAnimation.duration = 700
             im.setImageResource(card.imageId)
-            difTitle.setText(card.difficultyTitle)
+            
+            // Если есть текстовый заголовок (для зон), используем его, иначе - ресурс сложности
+            if (card.title.isNotEmpty()) {
+                difTitle.text = card.title
+            } else {
+                difTitle.setText(card.difficultyTitle)
+            }
+            
             progressbar.max = card.maxProgress * 100
             val restDays = card.maxProgress - card.progress
             animProgressBar(card.progress)
