@@ -45,10 +45,23 @@ class DaysViewModel @Inject constructor(
                     list.filter { it.zone == zone }
                 }
 
-                daysList.value = filteredList // передали лист который нашли
+                // Логика разблокировки дней: первый день всегда открыт, остальные открыты, если предыдущий выполнен
+                val processedList = filteredList.mapIndexed { index, day ->
+                    if (index == 0) {
+                        day.copy(isOpen = true)
+                    } else {
+                        day.copy(isOpen = filteredList[index - 1].isDone)
+                    }
+                }
+
+                daysList.value = processedList // передали лист который нашли
+                
+                val imageRes = TrainingUtils.getTrainingImage(trainingTopCardModel.difficulty, zone)
+                
                 topCardUpdate.value = trainingTopCardModel.copy(
-                    maxProgress = filteredList.size,
-                    progress = getProgress(filteredList)
+                    imageId = imageRes,
+                    maxProgress = processedList.size,
+                    progress = getProgress(processedList)
 
                 )
             }
@@ -106,7 +119,10 @@ class DaysViewModel @Inject constructor(
                             val topCardModel = TrainingUtils.topCardList.find { it.difficulty == difficulty }
                                 ?: TrainingUtils.topCardList[0]
 
+                            val imageRes = TrainingUtils.getTrainingImage(difficulty, if(zone == "") null else zone)
+
                             val updatedModel = topCardModel.copy(
+                                imageId = imageRes,
                                 progress = progress,
                                 maxProgress = maxProgress,
                                 title = if (zone.isNullOrEmpty()) topCardModel.title else "${zone} ${topCardModel.title}"

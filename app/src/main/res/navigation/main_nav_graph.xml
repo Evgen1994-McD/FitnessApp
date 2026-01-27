@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/trainingFragment"
         android:name="com.example.fitnessapp.main.MainFragment"
-        android:label="MainFragment">
+        android:label="@string/app_name">
         <action
             android:id="@+id/action_trainingFragment_to_exListFragment"
             app:destination="@id/exListFragment" />
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/trainingListFragment"
         android:name="com.example.fitnessapp.exercises.ui.training.TrainingFragment"
-        android:label="fragment_training"
+        android:label="@string/trainingDays"
         tools:layout="@layout/fragment_training">
         <argument
             android:name="difficulty"
@@ -50,12 +50,12 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.fitnessapp.settings.ui.SettingsFragment"
-        android:label="fragment_settings"
+        android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/statisticFragment"
         android:name="com.example.fitnessapp.statistic.ui.StatisticFragment"
-        android:label="fragment_statistic"
+        android:label="@string/statistic"
         tools:layout="@layout/fragment_statistic" />
     <fragment
         android:id="@+id/customDaysListFragment"

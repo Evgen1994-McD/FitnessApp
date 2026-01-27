@@ -98,9 +98,6 @@ private fun animProgressBar ( progress : Int) {
         val daysFragment = DaysFragment.newInstance()
         fragmentTransaction.replace(R.id.daysFragmentContainer, daysFragment)
         fragmentTransaction.commit()
-        
-        val ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = "Список тренировок"
     }
 
     }

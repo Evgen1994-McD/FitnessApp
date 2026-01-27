@@ -113,7 +113,10 @@ fun MainScreen(
                     TrainingUtils.MIDDLE, 
                     TrainingUtils.HARD,
                     TrainingUtils.CUSTOM
-                )
+                ).filter { difficulty ->
+                    // Отображаем карточку только если в ней есть дни тренировок
+                    (progressMap[difficulty]?.maxProgress ?: 0) > 0
+                }
                 
                 items(difficulties) { difficulty ->
                     // Получаем прогресс из Map (используем тот же механизм, что и в TrainingFragment)
@@ -139,7 +142,8 @@ fun MainScreen(
                         },
                         progressText = { "Прогресс: $progressPercent%" },
                         progress = progress,
-                        onStartClick = { onStartTrainingClick(difficulty, null) }
+                        onStartClick = { onStartTrainingClick(difficulty, null) },
+                        image = topCard?.imageId ?: R.drawable.ic_custom_training_24
                     )
                 }
             }
@@ -174,6 +178,9 @@ fun MainScreen(
                 // Создаем список всех комбинаций зона+сложность
                 val zoneTrainingKeys = zones.flatMap { zone -> 
                     difficulties.map { difficulty -> "${difficulty}_$zone" } 
+                }.filter { key -> 
+                    // Отображаем только те карточки, где есть дни тренировок
+                    (progressMap[key]?.maxProgress ?: 0) > 0
                 }
 
                 items(zoneTrainingKeys) { key ->
@@ -194,7 +201,7 @@ fun MainScreen(
                             when(zone) {
                                 TrainingUtils.HANDS -> stringResource(R.string.hands)
                                 TrainingUtils.BODY -> stringResource(R.string.body)
-                                TrainingUtils.BACK -> stringResource(R.string.backoff)
+                                TrainingUtils.BACK -> stringResource(R.string.back)
                                 TrainingUtils.LEGS -> stringResource(R.string.legs)
                                 else -> zone
                             }
@@ -211,6 +218,7 @@ fun MainScreen(
                         progressText = { "Прогресс: $progressPercent%" },
                         progress = progress,
                         onStartClick = { onStartTrainingClick(difficulty, zone) },
+                        image = card?.imageId ?: R.drawable.ic_custom_training_24
 
 
                     )

@@ -43,11 +43,12 @@ fun AllBodyCard(
     difficulty: @Composable () -> String,
     progressText: () -> String,
     progress: Float,
-    onStartClick: () -> Unit = {}
+    onStartClick: () -> Unit = {},
+    image: Int
 ) {
     // Третья карточка
     Card(
-        modifier = Modifier.size(250.dp),
+        modifier = Modifier.size(200.dp),
         colors = CardDefaults.cardColors(
             containerColor = AllBodyCardBgColor()
         )
@@ -106,7 +107,7 @@ fun AllBodyCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.hard), contentDescription = null,
+                        painter = painterResource(image), contentDescription = null,
                         contentScale = ContentScale.Crop
                     )
                 }

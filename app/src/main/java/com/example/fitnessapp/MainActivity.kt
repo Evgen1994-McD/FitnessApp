@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnessapp.databinding.ActivityMainBinding
 import com.example.fitnessapp.utils.App
@@ -26,8 +29,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController : NavController
     private lateinit var bottomNavigationView:BottomNavigationView
-
-
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,15 +38,37 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         setContentView(binding.root)
         val toolbar = binding.materialToolbar
         setSupportActionBar(toolbar)
-//model.controlTheme()
 
         // Устанавливаем текущую активность для менеджера рекламы
         App.getAppOpenAdManager(application).setCurrentActivity(this)
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController =  navHostFragment.navController
+        
+        // Настройка конфигурации AppBar для определения верхнеуровневых фрагментов
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.trainingFragment, R.id.statisticFragment, R.id.settingsFragment)
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        
         bottomNavigationView = binding.bottomNavigationView
-        bottomNavigationView.setupWithNavController(navController)
+        
+        // Кастомная обработка нажатий в BottomNavigationView для сброса стека при переключении табов
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            val navOptions = androidx.navigation.NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setRestoreState(false)
+                .setPopUpTo(navController.graph.startDestinationId, inclusive = false, saveState = false)
+                .build()
+            
+            try {
+                navController.navigate(item.itemId, null, navOptions)
+                true
+            } catch (e: IllegalArgumentException) {
+                false
+            }
+        }
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id){
                 R.id.customDaysListFragment ->{
@@ -78,6 +102,10 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
     }
     
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
     override fun onResume() {
         super.onResume()
         // Обновляем текущую активность при возврате на экран

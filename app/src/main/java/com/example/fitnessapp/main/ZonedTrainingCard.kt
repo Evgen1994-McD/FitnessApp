@@ -44,6 +44,7 @@ fun ZonedTrainingCard(
     progressText: () -> String,
     progress: Float,
     onStartClick: () -> Unit = {},
+    image: Int
 
 ) {
     // Третья карточка
@@ -51,7 +52,7 @@ fun ZonedTrainingCard(
         modifier = Modifier
             .padding(top = 6.dp)
             .fillMaxWidth()
-            .height(150.dp), // Увеличил высоту, чтобы влезла кнопка
+            .height(130.dp), // Увеличил высоту, чтобы влезла кнопка
         onClick = {onStartClick()},
         colors = CardDefaults.cardColors(
             containerColor = AllBodyCardBgColor()
@@ -112,7 +113,7 @@ fun ZonedTrainingCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.hard), contentDescription = null,
+                        painter = painterResource(image), contentDescription = null,
                         contentScale = ContentScale.Crop
                     )
                 }
