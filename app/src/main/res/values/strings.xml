@@ -33,10 +33,10 @@
     <string name="ok">OK</string>
 
     <plurals name="workouts_count">
-        <item quantity="one">Тренировка</item>
-        <item quantity="few">Тренировки</item>
-        <item quantity="many">Тренировок</item>
-        <item quantity="other">Тренировок</item>
+        <item quantity="one">День</item>
+        <item quantity="few">Дня</item>
+        <item quantity="many">Дней</item>
+        <item quantity="other">День</item>
     </plurals>
 
 <!--    Тренировки-->
