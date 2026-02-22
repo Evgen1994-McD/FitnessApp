@@ -74,24 +74,24 @@ object TrainingUtils { //здесь будут константы которые
     fun getTrainingImage(difficulty: String, zone: String? = null): Int {
         return when (zone) {
             HANDS -> when (difficulty) {
-                EASY -> R.drawable.easy // Замените на hands_easy когда появятся
-                MIDDLE -> R.drawable.middle
-                else -> R.drawable.hard
+                EASY -> R.drawable.hand_easy // Замените на hands_easy когда появятся
+                MIDDLE -> R.drawable.hand_middle
+                else -> R.drawable.hand_hard
             }
             BODY -> when (difficulty) {
-                EASY -> R.drawable.easy
-                MIDDLE -> R.drawable.middle
-                else -> R.drawable.hard
+                EASY -> R.drawable.body_easy
+                MIDDLE -> R.drawable.body_middle
+                else -> R.drawable.body_hard
             }
             BACK -> when (difficulty) {
-                EASY -> R.drawable.easy_back1
-                MIDDLE -> R.drawable.middle
-                else -> R.drawable.hard
+                EASY -> R.drawable.back_easy
+                MIDDLE -> R.drawable.back_middle
+                else -> R.drawable.back_hard
             }
             LEGS -> when (difficulty) {
-                EASY -> R.drawable.easy
-                MIDDLE -> R.drawable.middle
-                else -> R.drawable.hard
+                EASY -> R.drawable.legs_easy
+                MIDDLE -> R.drawable.legs_middle
+                else -> R.drawable.legs_hard
             }
             else -> when (difficulty) {
                 EASY -> R.drawable.easy
