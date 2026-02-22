@@ -16,16 +16,19 @@ android {
         kotlinCompilerExtensionVersion = "1.5.17"
     }
 
-
-
     defaultConfig {
         applicationId = "com.example.fitnessapp"
         minSdk = 29
-        targetSdk = 36
+        targetSdk = 33
         versionCode = 5
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Поддерживаемые архитектуры для нативных библиотек
+        ndk {
+            abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86"))
+        }
     }
 
     buildTypes {
@@ -101,7 +104,8 @@ dependencies {
     // Для observeAsState и ViewModel в Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
 
-
+    //Lottie Animation
+    implementation("com.airbnb.android:lottie:6.1.0")
 
     // Other libraries
     implementation(libs.androidx.appcompat)
@@ -126,16 +130,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
     // Lifecycle Process для отслеживания состояния приложения
     implementation("androidx.lifecycle:lifecycle-process:2.9.1")
-    //Lottie Animation
-    implementation(libs.dotlottie.android)
-    implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
-    implementation("com.airbnb.android:lottie:3.4.0")
-
-
-    // Cactus AI
-    implementation("com.cactuscompute:cactus:1.4.1-beta") {
-        exclude(group = "net.java.dev.jna", module = "jna")
-    }
 
     // Иконки
     // Базовые иконки Material 3
@@ -143,8 +137,26 @@ dependencies {
     // Дополнительные иконки (если нужны Outlined, Rounded и т.д.)
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
+    // Cactus AI
+    implementation("com.cactuscompute:cactus:1.4.1-beta"){
+        // Исключаем JNA из Cactus, чтобы не было дублей
+        exclude(group = "net.java.dev.jna", module = "jna")
+    }
+    
+    // JNA для нативных библиотек (требуется для Cactus)
+    implementation("net.java.dev.jna:jna:5.14.0")
+
+    // OkHttp для ручного скачивания моделей
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    implementation(libs.android.gif.drawable)  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
+
     // Yandex Mobile Ads SDK
     implementation("com.yandex.android:mobileads:7.18.0")
 
-    implementation(libs.android.gif.drawable)  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
+    // Hilt Navigation Compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    // Если ещё нет, добавьте:
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
 }
