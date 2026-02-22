@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,7 +13,7 @@ android {
     namespace = "com.example.fitnessapp"
     compileSdk = 36
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = "1.5.17"
     }
 
 
@@ -39,9 +41,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
+//    kotlinOptions {
+//        jvmTarget = "17"
+//    }
     buildFeatures {
         compose = true
         viewBinding = true
@@ -63,7 +70,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Room
-    val roomVersion = "2.5.0"
+    val roomVersion = "2.6.1"
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
@@ -125,16 +132,10 @@ dependencies {
     implementation("com.airbnb.android:lottie:3.4.0")
 
 
-
-    implementation(libs.android.gif.drawable)  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
-
-    // Yandex Mobile Ads SDK
-    implementation("com.yandex.android:mobileads:7.18.0")
-
-//    // Cactus AI
-//    implementation("com.cactuscompute:cactus:1.4.1-beta") {
-//        exclude(group = "net.java.dev.jna", module = "jna")
-//    }
+    // Cactus AI
+    implementation("com.cactuscompute:cactus:1.4.1-beta") {
+        exclude(group = "net.java.dev.jna", module = "jna")
+    }
 
     // Иконки
     // Базовые иконки Material 3
@@ -142,4 +143,8 @@ dependencies {
     // Дополнительные иконки (если нужны Outlined, Rounded и т.д.)
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
+    // Yandex Mobile Ads SDK
+    implementation("com.yandex.android:mobileads:7.18.0")
+
+    implementation(libs.android.gif.drawable)  // GIF-библиотека (не рекомендуется использовать такую старую версию!)
 }
