@@ -5,11 +5,10 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.db.DayModel
-import com.example.fitnessapp.db.MainDb
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class CustomDaysListViewModel @Inject constructor(

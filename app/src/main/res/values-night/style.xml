@@ -12,6 +12,7 @@
     <style name="bottom_navigation_style" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="backgroundTint"> @color/black</item>
         <item name="titleTextColor">@color/white</item>
+        <item name="labelVisibilityMode">labeled</item>  <!-- все элементы всегда с текстом -->
     </style>
 
     <style name="calendar_style" >

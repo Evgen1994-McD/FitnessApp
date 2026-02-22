@@ -43,6 +43,8 @@ android:theme="@style/Theme.FitnessApp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation" />
+        app:menu="@menu/bottom_navigation"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

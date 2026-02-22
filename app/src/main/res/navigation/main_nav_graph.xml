@@ -80,4 +80,9 @@
         tools:layout="@layout/finish"
 
         />
+    <fragment
+        android:id="@+id/aiChatFragment"
+        android:name="com.example.fitnessapp.ai.ui.AiChatFragment"
+        android:label="AI Тренер"
+        tools:layout="@layout/fragment_ai_chat" />
 </navigation>

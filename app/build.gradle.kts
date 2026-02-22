@@ -83,20 +83,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-        implementation("androidx.compose.runtime:runtime:1.5.9")
+    implementation("androidx.compose.runtime:runtime:1.5.9")
 
     // Compose UI
     implementation("androidx.compose.ui:ui:1.5.9")
-// Material 3
-    implementation("androidx.compose.material3:material3:1.2.0")
-// Интеграция Compose с View-системами
+    // Material 3
+    implementation("androidx.compose.material3:material3:1.2.1")
+    // Интеграция Compose с View-системами
     implementation("androidx.compose.ui:ui-viewbinding:1.5.9")
-// Для observeAsState и ViewModel в Compose
+    // Для observeAsState и ViewModel в Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
-
-
-
-
 
 
 
@@ -134,4 +130,16 @@ dependencies {
 
     // Yandex Mobile Ads SDK
     implementation("com.yandex.android:mobileads:7.18.0")
+
+//    // Cactus AI
+//    implementation("com.cactuscompute:cactus:1.4.1-beta") {
+//        exclude(group = "net.java.dev.jna", module = "jna")
+//    }
+
+    // Иконки
+    // Базовые иконки Material 3
+    implementation("androidx.compose.material3:material3:1.2.1")
+    // Дополнительные иконки (если нужны Outlined, Rounded и т.д.)
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
+
 }

@@ -12,9 +12,9 @@ import com.example.fitnessapp.exercises.utils.ExerciseHelper
 import com.example.fitnessapp.statistic.domain.StatisticInteractor
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @HiltViewModel
