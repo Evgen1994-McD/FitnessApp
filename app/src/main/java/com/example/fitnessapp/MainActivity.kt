@@ -15,14 +15,15 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnessapp.databinding.ActivityMainBinding
 import com.example.fitnessapp.utils.App
+// import com.cactus.CactusContextInitializer // Временно отключено
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import jakarta.inject.Inject
+// import jakarta.inject.Inject // Временно отключено
 import kotlinx.coroutines.launch
 import kotlin.getValue
 @AndroidEntryPoint  // Это точка входа для DaggerHilt, указать если нужно получать инстанции для Хилт
 class MainActivity : AppCompatActivity() {
-@Inject
+// @Inject // Временно отключено
 lateinit var tts:TextToSpeech // инициализируем в MainActivity потому что это долгая операция, будем держать в памяти
     private val model: MainViewModel by viewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
     private lateinit var binding: ActivityMainBinding
@@ -33,6 +34,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // CactusContextInitializer.initialize(this) // Временно отключено
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
@@ -97,7 +99,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
 
 /*
-мы можем указывать нижнее подчеркивание, если не используем некоторые переменные методов, например
+можем указывать нижнее подчеркивание, если не используем некоторые переменные методов, например
  */
 
     }
@@ -121,5 +123,5 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
 
 
-
 }
+

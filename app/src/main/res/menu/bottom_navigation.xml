@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-<item
-    android:title="Training"
-android:id="@+id/trainingFragment"
-    android:icon="@drawable/ic_bottom_sport"
-    />
+    <item
+        android:title="Training"
+        android:id="@+id/trainingFragment"
+        android:icon="@drawable/ic_bottom_sport"
+        />
 
     <item
         android:title="Statistic"
@@ -14,15 +14,17 @@ android:id="@+id/trainingFragment"
         android:icon="@drawable/ic_bottom_statistic"
         />
 
+    <item
+        android:title="AI Тренер"
+        android:id="@+id/aiChatFragment"
+        android:icon="@drawable/ic_ai_trainer_24"
+        />
 
     <item
         android:title="Settings"
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_bottom_settings"
         />
-
-
-
 
 
 </menu>

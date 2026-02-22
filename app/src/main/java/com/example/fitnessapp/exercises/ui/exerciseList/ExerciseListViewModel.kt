@@ -9,8 +9,8 @@ import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import com.example.fitnessapp.exercises.utils.TrainingUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /* для каждого объекта будет свой вью модел */
 @HiltViewModel //анннотация Хилт вьюмодел
