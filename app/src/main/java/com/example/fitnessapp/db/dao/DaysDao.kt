@@ -1,4 +1,4 @@
-package com.example.fitnessapp.db
+package com.example.fitnessapp.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.fitnessapp.db.DayModel
 import kotlinx.coroutines.flow.Flow
 import java.nio.charset.CodingErrorAction.REPLACE
 

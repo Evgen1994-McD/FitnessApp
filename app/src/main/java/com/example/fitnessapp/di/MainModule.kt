@@ -3,7 +3,15 @@ package com.example.fitnessapp.di
 import android.app.Application
 import android.speech.tts.TextToSpeech
 import androidx.room.Room
+import com.example.fitnessapp.ai.data.CactusAiRepository
+import com.example.fitnessapp.ai.data.TrainingPlanRepository
+import com.example.fitnessapp.ai.domain.TrainingPlanAiService
 import com.example.fitnessapp.customTraining.data.CustomRepositoryImpl
+import com.example.fitnessapp.db.dao.DaysDao
+import com.example.fitnessapp.db.dao.ExerciseDao
+import com.example.fitnessapp.db.dao.StatisticDao
+import com.example.fitnessapp.db.dao.TrainingPlanDao
+import com.example.fitnessapp.db.dao.WeightDao
 import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.customTraining.domain.CustomRepository
 import com.example.fitnessapp.customTraining.domain.impl.CustomInteractorImpl
@@ -66,6 +74,42 @@ object MainModule {
         return tts
 
 
+    }
+
+    @Provides
+    @Singleton
+    fun provideCactusAiRepository(app: Application): CactusAiRepository {
+        return CactusAiRepository(app)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrainingPlanAiService(
+        cactusRepository: CactusAiRepository,
+        exerciseDao: ExerciseDao
+    ): TrainingPlanAiService {
+        return TrainingPlanAiService(cactusRepository, exerciseDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrainingPlanRepository(
+        trainingPlanDao: TrainingPlanDao,
+        trainingPlanAiService: TrainingPlanAiService
+    ): TrainingPlanRepository {
+        return TrainingPlanRepository(trainingPlanDao, trainingPlanAiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideExerciseDao(mainDb: MainDb): ExerciseDao {
+        return mainDb.exerciseDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrainingPlanDao(mainDb: MainDb): TrainingPlanDao {
+        return mainDb.trainingPlanDao
     }
 
     @Provides

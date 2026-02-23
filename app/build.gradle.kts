@@ -137,13 +137,7 @@ dependencies {
 
     // Cactus AI
     implementation("com.cactuscompute:cactus:1.4.1-beta")
-//    {
-//        // Исключаем JNA из Cactus, чтобы не было дублей
-//        exclude(group = "net.java.dev.jna", module = "jna")
-//    }
-    
-//    // JNA для нативных библиотек (требуется для Cactus)
-//    implementation("net.java.dev.jna:jna:5.14.0")
+
 
     // OkHttp для ручного скачивания моделей
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
