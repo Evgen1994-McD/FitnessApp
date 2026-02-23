@@ -25,6 +25,7 @@ lifecycleLivedataKtx = "2.9.1"
 lifecycleViewmodelKtx = "2.9.1"
 fragmentKtx = "1.8.8"
 roomVersion = "2.8.4"
+foundation = "1.10.3"
 
 [libraries]
 android-gif-drawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidGifDrawable" }
@@ -61,6 +62,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 material-calendar-view = { module = "com.applandeo:material-calendar-view", version.ref = "materialCalendarView" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 
