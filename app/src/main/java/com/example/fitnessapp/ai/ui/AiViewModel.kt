@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.UInt
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,9 @@ class AiViewModel @Inject constructor(
 
     private val _inputText = MutableStateFlow("")
     val inputText: StateFlow<String> = _inputText.asStateFlow()
+
+    // Для стриминга - храним текущее сообщение AI
+    private var currentAiMessage = ""
 
     init {
         warmUpModel()
@@ -82,14 +86,43 @@ class AiViewModel @Inject constructor(
                     aiRepository.ensureModelInitialized()
                 }
 
-                val aiResponse = aiRepository.generateResponse(message)
-                
+                // Создаем пустое сообщение AI для стриминга
                 val aiMessage = ChatMessage(
-                    content = aiResponse,
+                    content = "",
                     isUser = false,
                     timestamp = System.currentTimeMillis()
                 )
                 _messages.update { it + aiMessage }
+                currentAiMessage = ""
+
+                // Генерируем ответ со стримингом
+                val finalResponse = aiRepository.generateResponse(
+                    userMessage = message,
+                    onToken = { token, tokenId ->
+                        // Обновляем сообщение по мере поступления токенов
+                        currentAiMessage += token
+                        _messages.update { messages ->
+                            messages.map { msg ->
+                                if (msg.timestamp == aiMessage.timestamp && !msg.isUser) {
+                                    msg.copy(content = currentAiMessage)
+                                } else {
+                                    msg
+                                }
+                            }
+                        }
+                    }
+                )
+
+                // Финальное обновление (на случай если что-то пропустили)
+                _messages.update { messages ->
+                    messages.map { msg ->
+                        if (msg.timestamp == aiMessage.timestamp && !msg.isUser) {
+                            msg.copy(content = finalResponse)
+                        } else {
+                            msg
+                        }
+                    }
+                }
 
             } catch (e: Exception) {
                 val errorMessage = ChatMessage(
@@ -100,6 +133,7 @@ class AiViewModel @Inject constructor(
                 _messages.update { it + errorMessage }
             } finally {
                 _isLoading.value = false
+                currentAiMessage = ""
             }
         }
     }

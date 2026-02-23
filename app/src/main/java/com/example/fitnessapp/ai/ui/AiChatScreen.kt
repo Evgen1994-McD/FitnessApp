@@ -1,10 +1,13 @@
 package com.example.fitnessapp.ai.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -96,6 +99,13 @@ fun AiChatScreen(
                 if (isLoading) {
                     item {
                         LoadingBubble()
+                    }
+                }
+                
+                // Индикатор набора текста (когда AI печатает)
+                if (isLoading && messages.lastOrNull()?.isUser == false) {
+                    item {
+                        TypingIndicator()
                     }
                 }
             }
@@ -192,6 +202,61 @@ fun LoadingBubble() {
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TypingIndicator() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 16.dp,
+                        topEnd = 16.dp,
+                        bottomStart = 4.dp,
+                        bottomEnd = 16.dp
+                    )
+                )
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Dot()
+                Dot(delay = 100)
+                Dot(delay = 200)
+            }
+        }
+    }
+}
+
+@Composable
+private fun Dot(delay: Int = 0) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(600),
+            repeatMode = RepeatMode.Reverse,
+            initialStartOffset = StartOffset(delay)
+        )
+    )
+    
+    Box(
+        modifier = Modifier
+            .size(8.dp)
+            .background(
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
+                shape = CircleShape
+            )
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

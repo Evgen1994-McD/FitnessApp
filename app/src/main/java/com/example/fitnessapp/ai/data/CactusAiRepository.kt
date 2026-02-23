@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.UInt
 
 class CactusAiRepository(
     private val context: Context,
@@ -194,9 +195,12 @@ class CactusAiRepository(
     }
 
     /**
-     * Генерация ответа
+     * Генерация ответа с поддержкой стриминга
      */
-    suspend fun generateResponse(userMessage: String): String = withContext(Dispatchers.IO) {
+    suspend fun generateResponse(
+        userMessage: String,
+        onToken: ((String, UInt?) -> Unit)? = null
+    ): String = withContext(Dispatchers.IO) {
         ensureModelInitialized()
 
         if (lm == null) {
@@ -212,7 +216,8 @@ class CactusAiRepository(
                         content = userMessage,
                         role = "user"
                     )
-                )
+                ),
+                onToken = onToken
             )
 
             result?.let { response ->
@@ -230,6 +235,13 @@ class CactusAiRepository(
             Log.e(TAG, "❌ Ошибка генерации ответа: ${e.message}")
             throw e
         }
+    }
+
+    /**
+     * Генерация ответа (старый метод для совместимости)
+     */
+    suspend fun generateResponse(userMessage: String): String {
+        return generateResponse(userMessage, null)
     }
 
     /**
