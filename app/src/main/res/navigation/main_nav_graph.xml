@@ -84,5 +84,15 @@
         android:id="@+id/aiChatFragment"
         android:name="com.example.fitnessapp.ai.ui.AiChatFragment"
         android:label="AI Тренер"
-        tools:layout="@layout/fragment_ai_chat" />
+        tools:layout="@layout/fragment_ai_chat">
+        <action
+            android:id="@+id/action_aiChatFragment_to_createPlanFragment"
+            app:destination="@id/createPlanFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/createPlanFragment"
+        android:name="com.example.fitnessapp.ai.ui.CreatePlanFragment"
+        android:label="Создать план"
+        tools:layout="@layout/fragment_create_plan" />
 </navigation>

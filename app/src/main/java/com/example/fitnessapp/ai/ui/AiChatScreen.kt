@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -30,7 +31,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AiChatScreen(
     viewModel: AiViewModel = hiltViewModel(),
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onCreatePlanClick: () -> Unit = {}
 ) {
     val messages by viewModel.messages.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
@@ -61,6 +63,12 @@ fun AiChatScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onCreatePlanClick) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Создать план"
+                        )
+                    }
                     IconButton(onClick = { viewModel.clearChat() }) {
                         Icon(
                             Icons.Default.Delete,
@@ -87,7 +95,7 @@ fun AiChatScreen(
             ) {
                 items(
                     items = messages,
-                    key = { it.timestamp }
+                    key = { "${it.timestamp}_${it.content.hashCode()}" }
                 ) { message ->
                     ChatBubble(
                         message = message,

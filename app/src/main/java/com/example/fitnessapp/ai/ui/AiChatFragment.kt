@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.fitnessapp.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +29,9 @@ class AiChatFragment : Fragment() {
                         viewModel = viewModel,
                         onBackClick = {
                             parentFragmentManager.popBackStack()
+                        },
+                        onCreatePlanClick = {
+                            findNavController().navigate(R.id.action_aiChatFragment_to_createPlanFragment)
                         }
                     )
                 }

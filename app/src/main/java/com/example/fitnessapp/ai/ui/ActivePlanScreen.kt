@@ -102,7 +102,10 @@ fun ActivePlanScreen(
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(plannedDays) { day ->
+                items(
+                    items = plannedDays,
+                    key = { day -> "${day.id}_${day.dayNumber}" }
+                ) { day ->
                     DayPlanCard(
                         day = day,
                         onLoadRecommendations = { zone ->
@@ -123,7 +126,10 @@ fun ActivePlanScreen(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    items(recommendations) { exercise ->
+                    items(
+                        items = recommendations,
+                        key = { exercise -> "${exercise.id}_${exercise.name}" }
+                    ) { exercise ->
                         ExerciseRecommendationCard(exercise = exercise)
                     }
                 }
