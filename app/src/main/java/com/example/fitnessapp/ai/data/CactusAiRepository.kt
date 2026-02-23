@@ -101,26 +101,31 @@ class CactusAiRepository(
                 Log.d(TAG, "   ⬇️ Начинаем скачивание модели $MODEL_SLUG...")
                 Log.d(TAG, "   - Это может занять время при первом запуске...")
                 
-                // Очищаем директорию models перед скачиванием
+                // Проверяем существует ли директория модели
                 val modelsDir = java.io.File(context.filesDir, "models")
                 val modelDir = java.io.File(modelsDir, MODEL_SLUG)
                 
-                Log.d(TAG, "   🗑️ Очищаем директорию модели...")
                 if (modelDir.exists()) {
-                    Log.d(TAG, "   - Найдена существующая директория: ${modelDir.absolutePath}")
-                    val deleted = modelDir.deleteRecursively()
-                    Log.d(TAG, "   - Директория удалена: $deleted")
+                    Log.d(TAG, "   - Директория модели уже существует: ${modelDir.absolutePath}")
+                    Log.d(TAG, "   - Пропускаем скачивание, используем существующую модель")
+                } else {
+                    Log.d(TAG, "   - Директория модели не найдена, создаём новую")
+                    modelsDir.mkdirs()
+                    modelDir.mkdirs()
+                    Log.d(TAG, "   - Создана директория: ${modelDir.absolutePath}")
                 }
                 
-                // Создаём чистую директорию
-                modelsDir.mkdirs()
-                modelDir.mkdirs()
-                Log.d(TAG, "   - Создана чистая директория: ${modelDir.absolutePath}")
-                Log.d(TAG, "   - Директория существует: ${modelDir.exists()}")
-                Log.d(TAG, "   - Можно писать: ${modelDir.canWrite()}")
-                
                 val downloadStart = System.currentTimeMillis()
-                lm?.downloadModel(MODEL_SLUG)
+                
+                // Проверяем, нужно ли скачивать модель
+                if (modelDir.exists() && modelDir.listFiles()?.isNotEmpty() == true) {
+                    Log.d(TAG, "   - Модель уже скачана, пропускаем downloadModel()")
+                    Log.d(TAG, "   - Файлы в директории: ${modelDir.listFiles()?.size}")
+                } else {
+                    Log.d(TAG, "   - Модель не найдена, начинаем скачивание...")
+                    lm?.downloadModel(MODEL_SLUG)
+                }
+                
                 val downloadTime = System.currentTimeMillis() - downloadStart
                 
                 Log.d(TAG, "   ✅ Модель скачана за ${downloadTime}ms")
@@ -165,6 +170,19 @@ class CactusAiRepository(
             } catch (e: Exception) {
                 Log.e(TAG, "❌ Ошибка инициализации модели: ${e.message}")
                 e.printStackTrace()
+                
+                // Если ошибка связана с файлами, очищаем директорию модели
+                if (e.message?.contains("ENOTDIR") == true || 
+                    e.message?.contains("FileNotFoundException") == true ||
+                    e.message?.contains("corrupted") == true) {
+                    Log.w(TAG, "🗑️ Обнаружена ошибка файлов, очищаем директорию модели...")
+                    val modelsDir = java.io.File(context.filesDir, "models")
+                    val modelDir = java.io.File(modelsDir, MODEL_SLUG)
+                    if (modelDir.exists()) {
+                        val deleted = modelDir.deleteRecursively()
+                        Log.d(TAG, "   - Директория очищена: $deleted")
+                    }
+                }
                 
                 // Очищаем при ошибке
                 lm?.unload()
