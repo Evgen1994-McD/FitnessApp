@@ -51,19 +51,40 @@ fun MainScreen(
 ) {
     Scaffold(
     ) { paddingValues ->
-        Column(
+        // Создаем список всех комбинаций зона+сложность
+        val zones = listOf(
+            TrainingUtils.HANDS,
+            TrainingUtils.BODY,
+            TrainingUtils.BACK,
+            TrainingUtils.LEGS
+        )
+        val difficulties = listOf(
+            TrainingUtils.EASY,
+            TrainingUtils.MIDDLE,
+            TrainingUtils.HARD
+        )
+        
+        val zoneTrainingKeys = zones.flatMap { zone -> 
+            difficulties.map { difficulty -> "${difficulty}_$zone" } 
+        }.filter { key -> 
+            // Отображаем только те карточки, где есть дни тренировок
+            (progressMap[key]?.maxProgress ?: 0) > 0
+        }
+
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Row со статистикой
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            item {
+                // Row со статистикой
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                 // Тренировок всего
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -202,14 +223,16 @@ fun MainScreen(
                 
                 Spacer(modifier = Modifier.height(16.dp))
             }
+            }
 
             // Row с квадратными карточками (прокручиваемые)
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+            item {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
                 val difficulties = listOf(
                     TrainingUtils.EASY, 
                     TrainingUtils.MIDDLE, 
@@ -248,82 +271,58 @@ fun MainScreen(
                     )
                 }
             }
+            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
-            Text(
-                text = "Тренировки по зонам",
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            LazyColumn (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-
-            ) {
-                val zones = listOf(
-                    TrainingUtils.HANDS,
-                    TrainingUtils.BODY,
-                    TrainingUtils.BACK,
-                    TrainingUtils.LEGS
+            item {
+                Text(
+                    text = "Тренировки по зонам",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
                 )
-                val difficulties = listOf(
-                    TrainingUtils.EASY,
-                    TrainingUtils.MIDDLE,
-                    TrainingUtils.HARD
-                )
+            }
+
+            items(zoneTrainingKeys) { key ->
+                val card = progressMap[key]
+                val parts = key.split("_")
+                val difficulty = parts[0]
+                val zone = parts[1]
                 
-                // Создаем список всех комбинаций зона+сложность
-                val zoneTrainingKeys = zones.flatMap { zone -> 
-                    difficulties.map { difficulty -> "${difficulty}_$zone" } 
-                }.filter { key -> 
-                    // Отображаем только те карточки, где есть дни тренировок
-                    (progressMap[key]?.maxProgress ?: 0) > 0
+                val progress: Float = if (card != null && card.maxProgress > 0) {
+                    card.progress.toFloat() / card.maxProgress
+                } else {
+                    0f
                 }
+                val progressPercent = (progress * 100).toInt()
 
-                items(zoneTrainingKeys) { key ->
-                    val card = progressMap[key]
-                    val parts = key.split("_")
-                    val difficulty = parts[0]
-                    val zone = parts[1]
-                    
-                    val progress: Float = if (card != null && card.maxProgress > 0) {
-                        card.progress.toFloat() / card.maxProgress
-                    } else {
-                        0f
-                    }
-                    val progressPercent = (progress * 100).toInt()
-
-                    ZonedTrainingCard(
-                        programName = { 
-                            when(zone) {
-                                TrainingUtils.HANDS -> stringResource(R.string.hands)
-                                TrainingUtils.BODY -> stringResource(R.string.body)
-                                TrainingUtils.BACK -> stringResource(R.string.back)
-                                TrainingUtils.LEGS -> stringResource(R.string.legs)
-                                else -> zone
-                            }
-                        },
-                        difficulty = {
-                            when (difficulty) {
-                                TrainingUtils.EASY -> stringResource(R.string.easy)
-                                TrainingUtils.MIDDLE -> stringResource(R.string.middle)
-                                TrainingUtils.HARD -> stringResource(R.string.hard)
-                                TrainingUtils.CUSTOM -> stringResource(R.string.custom)
-                                else -> difficulty
-                            }
-                        },
-                        progressText = { "Прогресс: $progressPercent%" },
-                        progress = progress,
-                        onStartClick = { onStartTrainingClick(difficulty, zone) },
-                        image = card?.imageId ?: R.drawable.ic_custom_training_24
-
-
-                    )
-                }
+                ZonedTrainingCard(
+                    programName = { 
+                        when(zone) {
+                            TrainingUtils.HANDS -> stringResource(R.string.hands)
+                            TrainingUtils.BODY -> stringResource(R.string.body)
+                            TrainingUtils.BACK -> stringResource(R.string.back)
+                            TrainingUtils.LEGS -> stringResource(R.string.legs)
+                            else -> zone
+                        }
+                    },
+                    difficulty = {
+                        when (difficulty) {
+                            TrainingUtils.EASY -> stringResource(R.string.easy)
+                            TrainingUtils.MIDDLE -> stringResource(R.string.middle)
+                            TrainingUtils.HARD -> stringResource(R.string.hard)
+                            TrainingUtils.CUSTOM -> stringResource(R.string.custom)
+                            else -> difficulty
+                        }
+                    },
+                    progressText = { "Прогресс: $progressPercent%" },
+                    progress = progress,
+                    onStartClick = { onStartTrainingClick(difficulty, zone) },
+                    image = card?.imageId ?: R.drawable.ic_custom_training_24
+                )
             }
         }
     }
