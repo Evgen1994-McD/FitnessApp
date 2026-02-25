@@ -45,6 +45,10 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
             super.onViewCreated(view, savedInstanceState)
             (requireActivity() as AppCompatActivity).
                 supportActionBar?.title = getString(R.string.custom_training_title_ab)
+            
+            // Скрываем навигацию назад но оставляем bottom меню
+            (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(false)
 
             binding.addNewDayButton.setOnClickListener {
                 model.insertDay(

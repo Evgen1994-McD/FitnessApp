@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -127,8 +128,13 @@ fun MainScreen(
                         .height(180.dp) // Увеличил на 100dp (было 200dp)
                         .padding(horizontal = 16.dp)
                         .clickable { onStartTrainingClick(TrainingUtils.CUSTOM, null) },
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 8.dp,
+                        pressedElevation = 12.dp
+                    ),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.LightGray // Такой же как у других карточек
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     )
                 ) {
                     Row(

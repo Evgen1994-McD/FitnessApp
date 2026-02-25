@@ -49,6 +49,10 @@ fun AllBodyCard(
     // Третья карточка
     Card(
         modifier = Modifier.size(200.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp,
+            pressedElevation = 12.dp
+        ),
         colors = CardDefaults.cardColors(
             containerColor = AllBodyCardBgColor()
         )

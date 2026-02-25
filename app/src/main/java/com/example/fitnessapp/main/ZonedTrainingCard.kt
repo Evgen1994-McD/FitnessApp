@@ -54,6 +54,10 @@ fun ZonedTrainingCard(
             .fillMaxWidth()
             .height(130.dp), // Увеличил высоту, чтобы влезла кнопка
         onClick = {onStartClick()},
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp,
+            pressedElevation = 12.dp
+        ),
         colors = CardDefaults.cardColors(
             containerColor = AllBodyCardBgColor()
         )

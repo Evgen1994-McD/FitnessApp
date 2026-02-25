@@ -73,9 +73,6 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id){
-                R.id.customDaysListFragment ->{
-                    binding.bottomNavigationView.visibility = View.GONE
-                }
                 R.id.selectedExerciseListFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
                 }
