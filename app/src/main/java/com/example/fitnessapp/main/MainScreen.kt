@@ -1,10 +1,12 @@
 package com.example.fitnessapp.main
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -104,6 +106,77 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Карточка кастомных тренировок во всю ширину
+            val customCard = progressMap[TrainingUtils.CUSTOM]
+            if (customCard != null && customCard.maxProgress > 0) {
+                val progress: Float = if (customCard.maxProgress > 0) {
+                    customCard.progress.toFloat() / customCard.maxProgress
+                } else {
+                    0f
+                }
+                val progressPercent = (progress * 100).toInt()
+                
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(horizontal = 16.dp)
+                        .clickable { onStartTrainingClick(TrainingUtils.CUSTOM, null) },
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFF4CAF50) // Зеленый цвет для кастомных тренировок
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(
+                                text = stringResource(R.string.custom),
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "Ваша персональная тренировка",
+                                fontSize = 16.sp,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
+                        }
+                        
+                        Column {
+                            Text(
+                                text = "Прогресс: $progressPercent%",
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                            
+                            // Прогресс бар
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(8.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.White.copy(alpha = 0.3f)
+                                )
+                            ) {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth(progress)
+                                        .fillMaxHeight(),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color.White
+                                    )
+                                ) {}
+                            }
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             // Row с квадратными карточками (прокручиваемые)
             LazyRow(
@@ -115,8 +188,7 @@ fun MainScreen(
                 val difficulties = listOf(
                     TrainingUtils.EASY, 
                     TrainingUtils.MIDDLE, 
-                    TrainingUtils.HARD,
-                    TrainingUtils.CUSTOM
+                    TrainingUtils.HARD
                 ).filter { difficulty ->
                     // Отображаем карточку только если в ней есть дни тренировок
                     (progressMap[difficulty]?.maxProgress ?: 0) > 0
