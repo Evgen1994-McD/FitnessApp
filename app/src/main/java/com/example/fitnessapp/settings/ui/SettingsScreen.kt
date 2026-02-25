@@ -39,7 +39,6 @@ import com.example.fitnessapp.exercises.domain.models.ThemeMode
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel,
-                   onCustomClick:()->Unit,
                    onClearedDataClick: () -> Unit) {
     val themeMode by viewModel.themeMode.collectAsState()
 
@@ -89,23 +88,24 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                 )
             )
         }
+
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 40.dp)
                 .clickable {
-                    onCustomClick()
+                    onClearedDataClick()
                 }
         ) {
             Text(
-                text = stringResource(R.string.custom_training),
+                text = stringResource(R.string.clean_data),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Icon(
-                painter = painterResource(R.drawable.ic_custom_training_24),
+                painter = painterResource(R.drawable.ic_clear_24),
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
                 tint = MaterialTheme.colorScheme.onSurface

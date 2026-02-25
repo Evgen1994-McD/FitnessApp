@@ -10,6 +10,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.ExerciseListItemBinding
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.utils.TimeUtils
+import com.example.fitnessapp.utils.ZoneUtils
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
@@ -26,8 +27,11 @@ class ExerciseAdapter() :
 
 
             tvNameEx.text = exercise.name //Название упражнения
-            tvcount.text =
-                getTime(exercise.time)
+            tvcount.text = getTime(exercise.time)
+            
+            // Показываем зоны на русском
+            tvZones.text = ZoneUtils.getZonesDisplayNames(exercise.muscleZone)
+            
             imExercise.setImageDrawable(
                 GifDrawable(
                     root.context.assets,

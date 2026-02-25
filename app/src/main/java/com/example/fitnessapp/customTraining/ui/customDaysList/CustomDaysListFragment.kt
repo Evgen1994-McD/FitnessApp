@@ -12,12 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentCustomDaysListBinding
 import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.db.dao.ExerciseDao
 import com.example.fitnessapp.utils.DialogManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
     private lateinit var daysAdapter: CustomDaysAdapter
+
+    @Inject
+    lateinit var exerciseDao: ExerciseDao
 
         private var _binding: FragmentCustomDaysListBinding? = null //ЭТО сам байндинг Налл
         private val binding get() = _binding!! // а здесь мы получаем байндинг
@@ -66,7 +71,7 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
     private fun initRcView(){
         binding.apply {
             rcView.layoutManager = LinearLayoutManager(requireContext())
-            daysAdapter = CustomDaysAdapter(this@CustomDaysListFragment)
+            daysAdapter = CustomDaysAdapter(this@CustomDaysListFragment, exerciseDao)
             rcView.adapter = daysAdapter
         }
     }

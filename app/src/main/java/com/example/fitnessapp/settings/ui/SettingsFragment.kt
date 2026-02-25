@@ -36,7 +36,6 @@ class SettingsFragment : Fragment() {
                     var dialogState by remember { mutableStateOf(false) }
 
                     SettingsScreen(model,
-                        onCustomClick = { findNavController().navigate(R.id.customDaysListFragment) },
                         onClearedDataClick = {
                             dialogState = true
                         })

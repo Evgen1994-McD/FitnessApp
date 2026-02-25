@@ -1,5 +1,8 @@
 package com.example.fitnessapp.utils
 
+import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.db.dao.ExerciseDao
+
 object ZoneUtils {
     
     fun getZoneDisplayName(zone: String): String {
@@ -20,6 +23,38 @@ object ZoneUtils {
             .map { getZoneDisplayName(it) }
             .distinct()
             .joinToString(", ")
+    }
+    
+    suspend fun getZonesFromExercises(
+        exercisesIds: String?,
+        exerciseDao: ExerciseDao
+    ): List<String> {
+        if (exercisesIds.isNullOrEmpty()) return emptyList()
+        
+        return try {
+            // Получаем ID упражнений
+            val ids = exercisesIds.split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .mapNotNull { it.toIntOrNull() }
+            
+            if (ids.isEmpty()) return emptyList()
+            
+            // Получаем упражнения из БД
+            val exercises = exerciseDao.getExercisesByIds(ids)
+            
+            // Собираем все зоны из упражнений
+            val allZones = exercises
+                .mapNotNull { it.muscleZone }
+                .flatMap { it.split(",").map { zone -> zone.trim() } }
+                .distinct()
+            
+            // Переводим на русский
+            allZones.map { getZoneDisplayName(it) }
+            
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
     
     fun matchesZones(exerciseZone: String?, targetZone: String): Boolean {

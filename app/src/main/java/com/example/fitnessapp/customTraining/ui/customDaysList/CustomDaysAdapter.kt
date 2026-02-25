@@ -9,14 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.CustomDaysListItemBinding
 import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.db.dao.ExerciseDao
+import com.example.fitnessapp.utils.ZoneUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class CustomDaysAdapter(var listener: Listener) :
+class CustomDaysAdapter(var listener: Listener, private val exerciseDao: ExerciseDao) :
     ListAdapter<DayModel, CustomDaysAdapter.DayHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
 
     class DayHolder(view: View) : RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
         private val binding = CustomDaysListItemBinding.bind(view)
 
-        fun setData(day: DayModel, listener: Listener) =
+        fun setData(day: DayModel, listener: Listener, exerciseDao: ExerciseDao) =
             with(binding) {  // прикольная фича. Чтобы не писать binding.tvName А писать сразу tvName. Круто! Напрямую
 
                 val name =
@@ -29,6 +34,17 @@ class CustomDaysAdapter(var listener: Listener) :
                 } else {
                     exCounter + " " + root.context.getString(R.string.exercises)// передали строку которую перевели в массив, узнали её размер и перевели в стринг. Таким образом мы узнали количетство упражнений в каждом дне
                 }
+                
+                // Получаем зоны упражнений в фоне
+                CoroutineScope(Dispatchers.Main).launch {
+                    try {
+                        val zones = ZoneUtils.getZonesFromExercises(day.exercises, exerciseDao)
+                        tvZones.text = zones.joinToString(", ")
+                    } catch (e: Exception) {
+                        tvZones.text = ""
+                    }
+                }
+                
                 itemView.setOnClickListener { listener.onClick(day.copy(dayNumber = adapterPosition + 1)) }
 
                 delete.setOnClickListener {
@@ -49,7 +65,7 @@ listener.onDelete(day)
     }
 
     override fun onBindViewHolder(holder: DayHolder, position: Int) { // а здесь заполняем
-        holder.setData(getItem(position), listener)
+        holder.setData(getItem(position), listener, exerciseDao)
 
     }
 
