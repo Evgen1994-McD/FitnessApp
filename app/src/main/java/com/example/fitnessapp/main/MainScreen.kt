@@ -1,6 +1,7 @@
 package com.example.fitnessapp.main
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -23,8 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -119,59 +124,73 @@ fun MainScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .height(180.dp) // Увеличил на 100dp (было 200dp)
                         .padding(horizontal = 16.dp)
                         .clickable { onStartTrainingClick(TrainingUtils.CUSTOM, null) },
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF4CAF50) // Зеленый цвет для кастомных тренировок
+                        containerColor = Color.LightGray // Такой же как у других карточек
                     )
                 ) {
-                    Column(
+                    Row(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        // Левая часть с текстом
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
                             Text(
-                                text = stringResource(R.string.custom),
-                                fontSize = 24.sp,
+                                text = "Свои тренировки",
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
-                            Text(
-                                text = "Ваша персональная тренировка",
-                                fontSize = 16.sp,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        }
-                        
-                        Column {
-                            Text(
-                                text = "Прогресс: $progressPercent%",
-                                fontSize = 16.sp,
-                                color = Color.White
-                            )
+                            Text(text="Здесь все ваши самостоятельно созданные программы",
+                                fontSize = 14.sp)
                             
-                            // Прогресс бар
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color.White.copy(alpha = 0.3f)
+                            Spacer(modifier = Modifier.weight(1f))
+                            
+                            // Прогресс внизу
+                            Column {
+                                val progressPercent = (progress * 100).toInt()
+                                Text(
+                                    text = "Прогресс: $progressPercent%",
+                                    fontSize = 16.sp
                                 )
-                            ) {
+                                
+                                // Прогресс бар
                                 Card(
                                     modifier = Modifier
-                                        .fillMaxWidth(progress)
-                                        .fillMaxHeight(),
+                                        .fillMaxWidth()
+                                        .height(8.dp),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = Color.White
+                                        containerColor = Color.White.copy(alpha = 0.3f)
                                     )
-                                ) {}
+                                ) {
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth(progress)
+                                            .fillMaxHeight(),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color.White
+                                        )
+                                    ) {}
+                                }
                             }
                         }
+                        
+                        // Правая часть с картинкой
+                        Image(
+                            painter = painterResource(R.drawable.custom),
+                            contentDescription = "Custom Training",
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(start = 16.dp),
+                            contentScale = ContentScale.FillHeight
+                        )
                     }
                 }
                 
