@@ -1,5 +1,6 @@
 package com.example.fitnessapp.ai.domain
 
+import android.util.Log
 import com.example.fitnessapp.ai.data.CactusAiRepository
 import com.example.fitnessapp.ai.utils.ZoneUtils
 import com.example.fitnessapp.db.ExerciseModel
@@ -40,45 +41,93 @@ class TrainingPlanAiService(
         timePerSession: Int        // время на тренировку
     ): TrainingPlanResult {
         
-        val zonesString = targetZones.joinToString(",")
+        Log.d("TrainingPlanAiService", "🚀 Создаю план: goal=$goal, zones=$targetZones")
         
+        // 1. Получаем реальные упражнения из предзаполненной БД
+        val exercisesByZone = try {
+            targetZones.associateWith { zone ->
+                Log.d("TrainingPlanAiService", "🔍 Получаем упражнения из fitness.db для зоны: $zone")
+                val exercises = exerciseDao.getExercisesByZone(zone)
+                Log.d("TrainingPlanAiService", "📊 Найдено в fitness.db: ${exercises.size} упражнений")
+                exercises.forEach { exercise ->
+                    Log.d("TrainingPlanAiService", "  - ID:${exercise.id} ${exercise.name} (${exercise.muscleZone})")
+                }
+                exercises
+            }
+        } catch (e: Exception) {
+            Log.e("TrainingPlanAiService", "❌ Ошибка получения упражнений: ${e.message}")
+            return createFallbackPlanResult(goal, targetZones.joinToString(","), availableDays, timePerSession, emptyList())
+        }
+        
+        // 2. Проверяем что есть упражнения из предзаполненной БД
+        val totalExercises = exercisesByZone.values.sumOf { it.size }
+        if (totalExercises == 0) {
+            Log.w("TrainingPlanAiService", "⚠️ В fitness.db не найдено упражнений для зон: $targetZones")
+            return createFallbackPlanResult(goal, targetZones.joinToString(","), availableDays, timePerSession, emptyList())
+        }
+        
+        // 3. Создаем контекст с реальными данными из fitness.db
+        val exercisesContext = buildString {
+            appendLine("УПРАЖНЕНИЯ ИЗ ПРЕДЗАПОЛНЕННОЙ БД:")
+            exercisesByZone.forEach { (zone, exercises) ->
+                appendLine("\n📍 Зона: $zone (${exercises.size} упражнений)")
+                exercises.forEach { exercise ->
+                    appendLine("  • ID:${exercise.id} - ${exercise.name}")
+                    appendLine("    ${exercise.description}")
+                }
+            }
+        }
+        
+        // 4. Создаем промпт с реальными упражнениями
         val prompt = """
-            Составь план тренировок для $goal. 
-            Зоны: ${targetZones.joinToString(", ")}. 
-            Доступные дни: ${availableDays.joinToString(", ")}. 
-            Время на сессию: $timePerSession минут. 
-            Используй упражнения из базы данных для домашних тренировок. 
-            Определи сложность количеством повторений (начинающий: 8-12, средний: 12-15, продвинутый: 15-20).
+            Ты - фитнес-тренер. Создай план тренировки для цели: $goal.
             
-            ВАЖНО: Упражнение может работать с несколькими зонами одновременно (например: "hands,body").
-            При выборе упражнений учитывай, что одно упражнение может охватывать несколько целевых зон.
+            $exercisesContext
             
-            Ответь в формате JSON:
+            ТРЕБОВАНИЯ:
+            - Используй ТОЛЬКО упражнения из списка выше
+            - Используй ТОЛЬКО существующие ID из fitness.db
+            - Выбери 3-5 упражнений для каждой тренировки
+            - Укажи подходы и повторения (8-15)
+            - Ответ в формате JSON с реальными ID упражнений
+            
+            Пример ответа:
             {
-                "name": "Название плана",
-                "description": "Описание плана",
-                "days": [
-                    {
-                        "dayNumber": 1,
-                        "targetZone": "hands,body",
-                        "exercises": [
-                            {
-                                "id": 1,
-                                "repetitions": 12
-                            }
-                        ],
-                        "restDay": false,
-                        "estimatedTime": 30,
-                        "estimatedCalories": 150
-                    }
-                ]
+              "name": "План тренировки на $goal",
+              "description": "План из предзаполненной БД",
+              "days": [{
+                "dayNumber": ${availableDays.first()},
+                "targetZone": "${targetZones.first()}",
+                "exercises": [
+                  {"id": 5, "repetitions": 12},
+                  {"id": 12, "repetitions": 10}
+                ],
+                "restDay": false,
+                "estimatedTime": $timePerSession,
+                "estimatedCalories": 150
+              }]
             }
         """.trimIndent()
         
-        val response = cactusRepository.generateResponse(prompt)
+        Log.d("TrainingPlanAiService", "📝 Промпт для AI: ${prompt.take(200)}...")
         
-        // Парсим ответ и создаем TrainingPlanResult
-        return parseTrainingPlanResponse(response, zonesString)
+        // 5. Генерируем ответ через текущий Cactus API
+        val response = try {
+            cactusRepository.generateResponse(prompt)
+        } catch (e: Exception) {
+            Log.e("TrainingPlanAiService", "❌ Ошибка Cactus AI: ${e.message}")
+            return createFallbackPlanResult(goal, targetZones.joinToString(","), availableDays, timePerSession, exercisesByZone.values.flatten())
+        }
+        
+        Log.d("TrainingPlanAiService", "🤖 Ответ AI: $response")
+        
+        // 6. Парсим ответ с реальными ID из fitness.db
+        return try {
+            parseTrainingPlanResponse(response, exercisesByZone)
+        } catch (e: Exception) {
+            Log.e("TrainingPlanAiService", "❌ Ошибка парсинга: ${e.message}")
+            createFallbackPlanResult(goal, targetZones.joinToString(","), availableDays, timePerSession, exercisesByZone.values.flatten())
+        }
     }
     
     suspend fun generateDayPlan(
@@ -130,23 +179,92 @@ class TrainingPlanAiService(
             .take(5)
     }
     
-    private suspend fun parseTrainingPlanResponse(response: String, zonesJson: String): TrainingPlanResult {
-        // Упрощенный парсинг - просто создаем базовый план
-        // В реальном приложении здесь будет более сложный парсинг AI ответа
-        val plan = TrainingPlanModel(
-            name = "AI План тренировок",
-            description = "Персонализированный план сгенерированный AI",
-            targetZones = zonesJson,
-            exercisesPerDay = 5,
-            aiGenerated = true,
-            createdAt = System.currentTimeMillis(),
-            isActive = false
-        )
+    private suspend fun parseTrainingPlanResponse(response: String, exercisesByZone: Map<String, List<ExerciseModel>>): TrainingPlanResult {
+        Log.d("TrainingPlanAiService", "🔍 Парсим ответ AI с реальными ID из fitness.db")
         
-        // Заглушка для дней - будет заполнена при реальной генерации
-        val plannedDays = listOf<PlannedDayResult>()
+        // Получаем все валидные ID из предзаполненной БД
+        val allValidIds = exercisesByZone.values.flatten().mapNotNull { it.id }.toSet()
+        Log.d("TrainingPlanAiService", "✅ Валидные ID в fitness.db: ${allValidIds.size} - $allValidIds")
         
-        return TrainingPlanResult(plan, plannedDays)
+        try {
+            // Извлекаем JSON из ответа AI
+            val jsonStart = response.indexOf("{")
+            val jsonEnd = response.lastIndexOf("}") + 1
+            
+            if (jsonStart == -1 || jsonEnd == 0) {
+                Log.w("TrainingPlanAiService", "⚠️ JSON не найден в ответе AI")
+                return createFallbackPlanResult("План тренировки", exercisesByZone.keys.joinToString(","), listOf(1), 30, exercisesByZone.values.flatten())
+            }
+            
+            val jsonString = response.substring(jsonStart, jsonEnd)
+            Log.d("TrainingPlanAiService", "📝 JSON для парсинга: ${jsonString.take(300)}...")
+            
+            // Упрощенный парсинг JSON (в реальном приложении здесь будет Gson/Moshi)
+            val planName = extractJsonValue(jsonString, "name") ?: "AI План тренировок"
+            val planDescription = extractJsonValue(jsonString, "description") ?: "Персонализированный план из fitness.db"
+            
+            // Создаем базовый план
+            val plan = TrainingPlanModel(
+                name = planName,
+                description = planDescription,
+                targetZones = exercisesByZone.keys.joinToString(","),
+                exercisesPerDay = 5,
+                aiGenerated = true,
+                createdAt = System.currentTimeMillis(),
+                isActive = false
+            )
+            
+            // Извлекаем упражнения из AI ответа
+            val exerciseIds = extractExerciseIds(jsonString, allValidIds)
+            Log.d("TrainingPlanAiService", "📊 Извлечено ID упражнений: $exerciseIds")
+            
+            // Создаем запланированные дни с реальными ID
+            val plannedDays = if (exerciseIds.isNotEmpty()) {
+                listOf(
+                    PlannedDayResult(
+                        dayNumber = 1,
+                        exerciseIds = exerciseIds,
+                        restDay = false,
+                        targetZone = exercisesByZone.keys.firstOrNull(),
+                        estimatedTime = 30,
+                        estimatedCalories = 150.0,
+                        repetitions = exerciseIds.associateWith { 12 } // Базовые повторения
+                    )
+                )
+            } else {
+                Log.w("TrainingPlanAiService", "⚠️ Не удалось извлечь валидные ID, создаем fallback")
+                createFallbackPlanResult(planName, exercisesByZone.keys.joinToString(","), listOf(1), 30, exercisesByZone.values.flatten()).plannedDays
+            }
+            
+            Log.d("TrainingPlanAiService", "✅ План создан: ${plannedDays.size} дней, ${plannedDays.flatMap { it.exerciseIds }.size} упражнений")
+            return TrainingPlanResult(plan, plannedDays)
+            
+        } catch (e: Exception) {
+            Log.e("TrainingPlanAiService", "❌ Ошибка парсинга JSON: ${e.message}")
+            return createFallbackPlanResult("План тренировки", exercisesByZone.keys.joinToString(","), listOf(1), 30, exercisesByZone.values.flatten())
+        }
+    }
+    
+    // Вспомогательные функции для парсинга JSON
+    private fun extractJsonValue(json: String, key: String): String? {
+        val pattern = """"$key"\s*:\s*"([^"]+)"""".toRegex()
+        val match = pattern.find(json)
+        return match?.groupValues?.get(1)
+    }
+    
+    private fun extractExerciseIds(json: String, validIds: Set<Int>): List<Int> {
+        val ids = mutableListOf<Int>()
+        
+        // Ищем все ID в формате {"id": 123, "repetitions": 12}
+        val idPattern = """\{"id":\s*(\d+)""".toRegex()
+        idPattern.findAll(json).forEach { match ->
+            val id = match.groupValues[1].toIntOrNull()
+            if (id != null && validIds.contains(id)) {
+                ids.add(id)
+            }
+        }
+        
+        return ids.distinct().take(5) // Максимум 5 упражнений
     }
     
     private suspend fun parseDayPlanResponse(response: String): DayPlanResult {
@@ -155,5 +273,51 @@ class TrainingPlanAiService(
         val repetitions = exercises.associateBy({ it.id ?: 0 }) { 12 }
         
         return DayPlanResult(exercises, repetitions)
+    }
+    
+    private suspend fun createFallbackPlanResult(
+        goal: String,
+        zonesString: String,
+        availableDays: List<Int>,
+        timePerSession: Int,
+        exercises: List<ExerciseModel>
+    ): TrainingPlanResult {
+        Log.d("TrainingPlanAiService", "🔄 Создаю fallback план из ${exercises.size} упражнений")
+        
+        val plan = TrainingPlanModel(
+            name = "План тренировки на $goal",
+            description = "Персональный план для зоны ${zonesString.split(",").firstOrNull() ?: "общая"}",
+            targetZones = zonesString,
+            exercisesPerDay = 5,
+            aiGenerated = false,
+            createdAt = System.currentTimeMillis(),
+            isActive = false
+        )
+        
+        // Создаем план с реальными упражнениями
+        val selectedExercises = if (exercises.isNotEmpty()) {
+            exercises.shuffled().take(3)
+        } else {
+            emptyList()
+        }
+        
+        val plannedDays = if (selectedExercises.isNotEmpty()) {
+            listOf(
+                PlannedDayResult(
+                    dayNumber = availableDays.firstOrNull() ?: 1,
+                    exerciseIds = selectedExercises.mapNotNull { it.id },
+                    restDay = false,
+                    targetZone = zonesString.split(",").firstOrNull(),
+                    estimatedTime = timePerSession,
+                    estimatedCalories = 150.0,
+                    repetitions = selectedExercises.associateBy({ it.id ?: 0 }) { 12 }
+                )
+            )
+        } else {
+            emptyList()
+        }
+        
+        Log.d("TrainingPlanAiService", "✅ Fallback план создан: ${plannedDays.size} дней")
+        return TrainingPlanResult(plan, plannedDays)
     }
 }

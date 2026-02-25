@@ -1,8 +1,10 @@
 package com.example.fitnessapp.ai.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.ai.data.TrainingPlanRepository
+import com.example.fitnessapp.ai.domain.TrainingPlanAiService
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.PlannedDayModel
 import com.example.fitnessapp.db.TrainingPlanModel
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrainingPlanViewModel @Inject constructor(
-    private val trainingPlanRepository: TrainingPlanRepository
+    private val trainingPlanRepository: TrainingPlanRepository,
+    private val trainingPlanAiService: TrainingPlanAiService
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(TrainingPlanUiState())
@@ -28,26 +31,158 @@ class TrainingPlanViewModel @Inject constructor(
     val plannedDays: StateFlow<List<PlannedDayModel>> = _plannedDays.asStateFlow()
     
     private val _allPlans = MutableStateFlow<List<TrainingPlanModel>>(emptyList())
-    val allPlans: StateFlow<List<TrainingPlanModel>> = _allPlans.asStateFlow()
     
-    private val _recommendations = MutableStateFlow<List<ExerciseModel>>(emptyList())
-    val recommendations: StateFlow<List<ExerciseModel>> = _recommendations.asStateFlow()
-    
-    init {
-        loadAllPlans()
-        loadActivePlan()
+    // Состояния диалога
+    enum class DialogState {
+        START, WAITING_FOR_ZONE, WAITING_FOR_DIFFICULTY, READY
     }
     
-    fun generatePlan(
-        goal: String,
-        targetZones: List<String>,
-        availableDays: List<Int>,
-        timePerSession: Int
-    ) {
+    private var dialogState = DialogState.START
+    private var collectedZone: String? = null
+    private var collectedDifficulty: String? = null
+    
+    fun processUserMessage(message: String, onResponse: (String) -> Unit) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            Log.d("TrainingPlanViewModel", "📨 Сообщение от пользователя: '$message', состояние: $dialogState")
             
+            val response = when (dialogState) {
+                DialogState.START -> {
+                    if (message.contains("план", ignoreCase = true) || 
+                        message.contains("составь", ignoreCase = true) ||
+                        message.contains("трениров", ignoreCase = true)) {
+                        dialogState = DialogState.WAITING_FOR_ZONE
+                        "Отлично! Я помогу составить план тренировок. 🏋️\n\nКакую зону хотите тренировать? Выберите из:\n• **руки**\n• **тело**\n• **спина**\n• **ноги**"
+                    } else {
+                        "Привет! Я могу составить персональный план тренировок. Напишите 'Составь план тренировки' чтобы начать."
+                    }
+                }
+                
+                DialogState.WAITING_FOR_ZONE -> {
+                    val zone = detectZone(message)
+                    if (zone != null) {
+                        collectedZone = zone
+                        dialogState = DialogState.WAITING_FOR_DIFFICULTY
+                        "Отлично! Зона: ${getZoneDisplayName(zone)}. 💪\n\nТеперь какой уровень сложности? Выберите:\n• **начинающий**\n• **средний**\n• **продвинутый**"
+                    } else {
+                        "Пожалуйста, выберите зону из списка: руки, тело, спина, ноги. Напишите название зоны, которую хотите тренировать."
+                    }
+                }
+                
+                DialogState.WAITING_FOR_DIFFICULTY -> {
+                    val difficulty = detectDifficulty(message)
+                    if (difficulty != null) {
+                        collectedDifficulty = difficulty
+                        dialogState = DialogState.READY
+                        
+                        try {
+                            // Генерируем план с собранными параметрами
+                            Log.d("TrainingPlanViewModel", "🎯 Генерируем план: зона=$collectedZone, сложность=$collectedDifficulty")
+                            
+                            _uiState.value = _uiState.value.copy(isLoading = true)
+                            
+                            val planResult = trainingPlanAiService.generateTrainingPlan(
+                                goal = "тренировка $collectedDifficulty",
+                                targetZones = listOf(collectedZone!!),
+                                availableDays = listOf(1, 3, 5), // По умолчанию Пн, Ср, Пт
+                                timePerSession = getTimeForDifficulty(difficulty)
+                            )
+                            
+                            // Сохраняем план
+                            val planId = trainingPlanRepository.generateAndSavePlan(
+                                goal = "тренировка $collectedDifficulty",
+                                targetZones = listOf(collectedZone!!),
+                                availableDays = listOf(1, 3, 5), // По умолчанию Пн, Ср, Пт
+                                timePerSession = getTimeForDifficulty(difficulty)
+                            )
+                            
+                            // Получаем сохраненные запланированные дни
+                            val savedDays = trainingPlanRepository.getPlannedDays(planId.toInt())
+                            _plannedDays.value = savedDays
+                            
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                isPlanCreated = true,
+                                error = null
+                            )
+                            
+                            "Отлично! ✅ План тренировки создан!\n\n🎯 **Зона**: ${getZoneDisplayName(collectedZone!!)}\n💪 **Сложность**: $difficulty\n⏱️ **Время**: ${getTimeForDifficulty(difficulty)} минут\n\n${planResult.plan.name}\n${planResult.plan.description}\n\nПлан готов! Вы можете начать тренировку. 🚀"
+                            
+                        } catch (e: Exception) {
+                            Log.e("TrainingPlanViewModel", "❌ Ошибка создания плана: ${e.message}")
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                error = "Не удалось создать план: ${e.message}"
+                            )
+                            "Извините, произошла ошибка при создании плана. Попробуйте еще раз."
+                        }
+                    } else {
+                        "Пожалуйста, выберите уровень сложности: начинающий, средний или продвинутый."
+                    }
+                }
+                
+                DialogState.READY -> {
+                    "План уже создан! Хотите составить новый план? Напишите 'Составь новый план'."
+                }
+            }
+            
+            onResponse(response)
+        }
+    }
+    
+    private fun detectZone(message: String): String? {
+        val lowerMessage = message.lowercase()
+        return when {
+            "рук" in lowerMessage -> "hands"
+            "тел" in lowerMessage -> "body"
+            "спин" in lowerMessage -> "back"
+            "ног" in lowerMessage -> "legs"
+            else -> null
+        }
+    }
+    
+    private fun detectDifficulty(message: String): String? {
+        val lowerMessage = message.lowercase()
+        return when {
+            "начина" in lowerMessage -> "начинающий"
+            "средн" in lowerMessage -> "средний"
+            "продвин" in lowerMessage -> "продвинутый"
+            else -> null
+        }
+    }
+    
+    private fun getZoneDisplayName(zone: String): String {
+        return when (zone) {
+            "hands" -> "руки"
+            "body" -> "тело"
+            "back" -> "спина"
+            "legs" -> "ноги"
+            else -> zone
+        }
+    }
+    
+    private fun getTimeForDifficulty(difficulty: String): Int {
+        return when (difficulty) {
+            "начинающий" -> 20
+            "средний" -> 30
+            "продвинутый" -> 45
+            else -> 30
+        }
+    }
+    
+    // Сброс диалога для нового плана
+    fun resetDialog() {
+        dialogState = DialogState.START
+        collectedZone = null
+        collectedDifficulty = null
+        _uiState.value = TrainingPlanUiState()
+    }
+    
+    // Старые методы для совместимости
+    fun generatePlan(goal: String, targetZones: List<String>, availableDays: List<Int>, timePerSession: Int) {
+        viewModelScope.launch {
             try {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+                
                 val planId = trainingPlanRepository.generateAndSavePlan(
                     goal = goal,
                     targetZones = targetZones,
@@ -55,90 +190,31 @@ class TrainingPlanViewModel @Inject constructor(
                     timePerSession = timePerSession
                 )
                 
+                // Получаем сохраненные запланированные дни
+                val savedDays = trainingPlanRepository.getPlannedDays(planId.toInt())
+                _plannedDays.value = savedDays
+                
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    success = "План успешно создан!"
+                    isPlanCreated = true
                 )
-                
-                loadAllPlans()
                 
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Ошибка создания плана: ${e.message}"
+                    error = e.message
                 )
-            }
-        }
-    }
-    
-    fun activatePlan(planId: Int) {
-        viewModelScope.launch {
-            try {
-                trainingPlanRepository.activatePlan(planId)
-                loadActivePlan()
-                _uiState.value = _uiState.value.copy(success = "План активирован!")
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = "Ошибка активации: ${e.message}")
-            }
-        }
-    }
-    
-    fun deletePlan(planId: Int) {
-        viewModelScope.launch {
-            try {
-                trainingPlanRepository.deletePlan(planId)
-                loadAllPlans()
-                loadActivePlan()
-                _uiState.value = _uiState.value.copy(success = "План удален!")
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = "Ошибка удаления: ${e.message}")
-            }
-        }
-    }
-    
-    fun loadRecommendations(targetZone: String, excludeIds: List<Int> = emptyList()) {
-        viewModelScope.launch {
-            try {
-                val recommendations = trainingPlanRepository.getExerciseRecommendations(
-                    targetZone = targetZone,
-                    excludeIds = excludeIds
-                )
-                _recommendations.value = recommendations
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = "Ошибка загрузки рекомендаций: ${e.message}")
-            }
-        }
-    }
-    
-    private fun loadAllPlans() {
-        viewModelScope.launch {
-            trainingPlanRepository.getAllPlans().collect { plans ->
-                _allPlans.value = plans
-            }
-        }
-    }
-    
-    private fun loadActivePlan() {
-        viewModelScope.launch {
-            val plan = trainingPlanRepository.getActivePlan()
-            _activePlan.value = plan
-            
-            if (plan != null) {
-                val days = trainingPlanRepository.getPlannedDays(plan.id ?: 0)
-                _plannedDays.value = days
-            } else {
-                _plannedDays.value = emptyList()
             }
         }
     }
     
     fun clearMessages() {
-        _uiState.value = _uiState.value.copy(error = null, success = null)
+        _uiState.value = _uiState.value.copy(error = null)
     }
 }
 
 data class TrainingPlanUiState(
     val isLoading: Boolean = false,
-    val error: String? = null,
-    val success: String? = null
+    val isPlanCreated: Boolean = false,
+    val error: String? = null
 )

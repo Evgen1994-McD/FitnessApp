@@ -3,21 +3,21 @@ package com.example.fitnessapp.ai.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.fitnessapp.exercises.utils.TrainingUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,15 +28,55 @@ fun CreatePlanScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
-    var goal by remember { mutableStateOf("") }
-    var selectedZones by remember { mutableStateOf(setOf<String>()) }
-    var selectedDays by remember { mutableStateOf(setOf<String>()) }
-    var timePerSession by remember { mutableStateOf("") }
-
+    var messages by remember { mutableStateOf(listOf<ChatMessage>()) }
+    var inputText by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    
+    // Отправка сообщения
+    fun sendMessage() {
+        if (inputText.isBlank() || isLoading) return
+        
+        val userMessage = ChatMessage(
+            content = inputText,
+            isUser = true,
+            timestamp = System.currentTimeMillis()
+        )
+        
+        messages = messages + userMessage
+        val currentInput = inputText
+        inputText = ""
+        isLoading = true
+        
+        viewModel.processUserMessage(currentInput) { aiResponse ->
+            val aiMessage = ChatMessage(
+                content = aiResponse,
+                isUser = false,
+                timestamp = System.currentTimeMillis()
+            )
+            messages = messages + aiMessage
+            isLoading = false
+        }
+    }
+    
+    // Автопрокрутка к новому сообщению
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.size - 1)
+        }
+    }
+    
+    // Наблюдаем за созданием плана
+    LaunchedEffect(uiState.isPlanCreated) {
+        if (uiState.isPlanCreated) {
+            onPlanCreated()
+        }
+    }
+    
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Создать AI план") },
+                title = { Text("AI План тренировок") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -48,240 +88,156 @@ fun CreatePlanScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
-                // Заголовок
-                Text(
-                    text = "Создание AI плана тренировок",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                
-                // Цель тренировки
-                Text(
-                    text = "Цель тренировки:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                
-                val goals = listOf(
-                    "Похудение" to "похудения",
-                    "Набор массы" to "набора массы", 
-                    "Рельеф" to "рельефа",
-                    "Поддержание формы" to "поддержания формы"
-                )
-                
-                goals.forEach { (display, value) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = goal == value,
-                                onClick = { goal = value },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = goal == value,
-                            onClick = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = display)
-                    }
+            // История диалога
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(messages) { message ->
+                    ChatMessageItem(message = message)
                 }
                 
-                // Выбор зон
-                Text(
-                    text = "Целевые зоны:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                
-                val zones = listOf(
-                    "hands" to "Руки",
-                    "legs" to "Ноги",
-                    "body" to "Тело",
-                    "back" to "Спина",
-                    "press" to "Пресс",
-                    "cardio" to "Кардио"
-                )
-                
-                LazyColumn(
-                    modifier = Modifier.height(120.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(
-                        items = zones,
-                        key = { (zone, _) -> zone }
-                    ) { (zone, displayName) ->
-                        Row(
+                if (isLoading) {
+                    item {
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .selectable(
-                                    selected = selectedZones.contains(zone),
-                                    onClick = { 
-                                        selectedZones = if (selectedZones.contains(zone)) {
-                                            selectedZones - zone
-                                        } else {
-                                            selectedZones + zone
-                                        }
-                                    },
-                                    role = Role.Checkbox
-                                )
-                                .padding(vertical = 2.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(8.dp),
+                            contentAlignment = Alignment.CenterStart
                         ) {
-                            Checkbox(
-                                checked = selectedZones.contains(zone),
-                                onCheckedChange = { checked ->
-                                    selectedZones = if (checked) {
-                                        selectedZones + zone
-                                    } else {
-                                        selectedZones - zone
-                                    }
+                            Card(
+                                modifier = Modifier.width(120.dp),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(16.dp),
+                                        strokeWidth = 2.dp
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Пишет...",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
                                 }
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = displayName)
+                            }
                         }
                     }
                 }
-                
-                // Выбор дней
-                Text(
-                    text = "Дни тренировок:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                
-                val daysOfWeek = listOf(
-                    "1" to "Понедельник",
-                    "2" to "Вторник",
-                    "3" to "Среда",
-                    "4" to "Четверг",
-                    "5" to "Пятница",
-                    "6" to "Суббота",
-                    "7" to "Воскресенье"
-                )
-                
-                LazyColumn(
-                    modifier = Modifier.height(140.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(
-                        items = daysOfWeek,
-                        key = { (day, _) -> day }
-                    ) { (day, displayName) ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .selectable(
-                                    selected = selectedDays.contains(day),
-                                    onClick = { 
-                                        selectedDays = if (selectedDays.contains(day)) {
-                                            selectedDays - day
-                                        } else {
-                                            selectedDays + day
-                                        }
-                                    },
-                                    role = Role.Checkbox
-                                )
-                                .padding(vertical = 2.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Checkbox(
-                                checked = selectedDays.contains(day),
-                                onCheckedChange = { checked ->
-                                    selectedDays = if (checked) {
-                                        selectedDays + day
-                                    } else {
-                                        selectedDays - day
-                                    }
-                                }
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = displayName)
-                        }
-                    }
-                }
-                
-                // Время на тренировку
-                Text(
-                    text = "Время на тренировку (минут):",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                
-                OutlinedTextField(
-                    value = timePerSession,
-                    onValueChange = { timePerSession = it },
-                    label = { Text("Время") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
-                )
-                
-                // Кнопки
+            }
+            
+            // Поле ввода
+            Surface(
+                shadowElevation = 8.dp
+            ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    OutlinedButton(
-                        onClick = onBack,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Назад")
-                    }
-                    
-                    Button(
-                        onClick = {
-                            if (goal.isNotEmpty() && selectedZones.isNotEmpty() && 
-                                selectedDays.isNotEmpty() && timePerSession.isNotEmpty()) {
-                                
-                                viewModel.generatePlan(
-                                    goal = goal,
-                                    targetZones = selectedZones.toList(),
-                                    availableDays = selectedDays.map { it.toIntOrNull() ?: 1 },
-                                    timePerSession = timePerSession.toIntOrNull() ?: 30
-                                )
-                                onPlanCreated()
-                            }
-                        },
+                    OutlinedTextField(
+                        value = inputText,
+                        onValueChange = { inputText = it },
                         modifier = Modifier.weight(1f),
-                        enabled = goal.isNotEmpty() && selectedZones.isNotEmpty() && 
-                                selectedDays.isNotEmpty() && timePerSession.isNotEmpty() && !uiState.isLoading
+                        placeholder = { Text("Напишите сообщение...") },
+                        enabled = !isLoading,
+                        singleLine = true,
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    
+                    IconButton(
+                        onClick = { sendMessage() },
+                        enabled = inputText.isNotBlank() && !isLoading
                     ) {
-                        if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                strokeWidth = 2.dp
-                            )
-                        } else {
-                            Text("Создать план")
-                        }
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "Отправить"
+                        )
                     }
                 }
-                
-                // Сообщения об ошибках и успехе
-                uiState.error?.let { error ->
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChatMessageItem(message: ChatMessage) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = if (message.isUser) Arrangement.End else Arrangement.Start
+    ) {
+        Box(
+            modifier = Modifier.widthIn(max = 280.dp)
+        ) {
+            Card(
+                modifier = Modifier.clip(RoundedCornerShape(16.dp)),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (message.isUser) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    }
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp)
+                ) {
                     Text(
-                        text = error,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        text = message.content,
+                        color = if (message.isUser) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        style = MaterialTheme.typography.bodyMedium
                     )
-                }
-                
-                if (uiState.success != null) {
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    
                     Text(
-                        text = "✅ План успешно создан!",
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        text = formatTime(message.timestamp),
+                        color = if (message.isUser) {
+                            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 11.sp
                     )
                 }
             }
         }
+    }
+}
+
+data class ChatMessage(
+    val content: String,
+    val isUser: Boolean,
+    val timestamp: Long
+)
+
+private fun formatTime(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+    
+    return when {
+        diff < 60000 -> "только что"
+        diff < 3600000 -> "${diff / 60000} мин назад"
+        diff < 86400000 -> "${diff / 3600000} ч назад"
+        else -> "${diff / 86400000} д назад"
     }
 }

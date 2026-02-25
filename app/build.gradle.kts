@@ -137,6 +137,7 @@ dependencies {
 
     // Cactus AI
     implementation("com.cactuscompute:cactus:1.4.1-beta")
+//    implementation("com.cactuscompute:cactus:1.8.0") // или последнюю
 
 
     // OkHttp для ручного скачивания моделей

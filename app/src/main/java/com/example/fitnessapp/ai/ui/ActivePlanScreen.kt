@@ -24,7 +24,6 @@ fun ActivePlanScreen(
 ) {
     val activePlan by viewModel.activePlan.collectAsStateWithLifecycle()
     val plannedDays by viewModel.plannedDays.collectAsStateWithLifecycle()
-    val recommendations by viewModel.recommendations.collectAsStateWithLifecycle()
     
     val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
     
@@ -107,31 +106,8 @@ fun ActivePlanScreen(
                     key = { day -> "${day.id}_${day.dayNumber}" }
                 ) { day ->
                     DayPlanCard(
-                        day = day,
-                        onLoadRecommendations = { zone ->
-                            viewModel.loadRecommendations(zone)
-                        }
+                        day = day
                     )
-                }
-            }
-            
-            // Рекомендации упражнений
-            if (recommendations.isNotEmpty()) {
-                Text(
-                    text = "Рекомендуемые упражнения:",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(
-                        items = recommendations,
-                        key = { exercise -> "${exercise.id}_${exercise.name}" }
-                    ) { exercise ->
-                        ExerciseRecommendationCard(exercise = exercise)
-                    }
                 }
             }
         } ?: run {
@@ -140,21 +116,10 @@ fun ActivePlanScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = "Нет активного плана",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    
-                    Text(
-                        text = "Создайте новый план с помощью AI",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Text(
+                    text = "Нет активного плана тренировок",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     }
@@ -162,8 +127,7 @@ fun ActivePlanScreen(
 
 @Composable
 private fun DayPlanCard(
-    day: com.example.fitnessapp.db.PlannedDayModel,
-    onLoadRecommendations: (String) -> Unit
+    day: com.example.fitnessapp.db.PlannedDayModel
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -203,13 +167,6 @@ private fun DayPlanCard(
                     text = "Зона: $zone",
                     style = MaterialTheme.typography.bodySmall
                 )
-                
-                Button(
-                    onClick = { onLoadRecommendations(zone) },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Показать рекомендации")
-                }
             }
             
             if (!day.restDay) {
@@ -223,32 +180,6 @@ private fun DayPlanCard(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun ExerciseRecommendationCard(
-    exercise: com.example.fitnessapp.db.ExerciseModel
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = exercise.name,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.weight(1f)
-            )
-            
-            Text(
-                text = exercise.muscleZone,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
         }
     }
 }
