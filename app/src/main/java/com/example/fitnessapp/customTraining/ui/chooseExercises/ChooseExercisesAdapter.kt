@@ -8,9 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
-import com.example.fitnessapp.databinding.SelectedExerciseListItemBinding
+import com.example.fitnessapp.databinding.ChooseExerciseItemBinding
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.utils.TimeUtils
+import com.example.fitnessapp.utils.ZoneUtils
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
@@ -19,7 +20,7 @@ class ChooseExercisesAdapter(val listener: Listener) :
 
     class ExerciseHolder(view: View, val listener: Listener) :
         RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
-        private val binding = SelectedExerciseListItemBinding.bind(view)
+        private val binding = ChooseExerciseItemBinding.bind(view)
 
         init {
             binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
@@ -44,12 +45,12 @@ class ChooseExercisesAdapter(val listener: Listener) :
 
         fun setData(exercise: ExerciseModel) = with(binding) {
 
-delete.visibility = View.INVISIBLE
-up.visibility = View.INVISIBLE
-down.visibility = View.INVISIBLE
             tvNameEx.text = exercise.name //Название упражнения
-            tvcount.text =
-                getTime(exercise.time)
+            tvCount.text = getTime(exercise.time)
+            
+            // Показываем зоны на русском
+            tvZones.text = ZoneUtils.getZonesDisplayNames(exercise.muscleZone)
+            
             imExercise.setImageDrawable(
                 GifDrawable(
                     root.context.assets,
@@ -77,7 +78,7 @@ down.visibility = View.INVISIBLE
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.selected_exercise_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.choose_exercise_item, parent, false)
         return ExerciseHolder(view, listener)
     }
 

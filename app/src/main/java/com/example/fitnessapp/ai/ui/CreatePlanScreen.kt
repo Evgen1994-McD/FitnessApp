@@ -76,7 +76,7 @@ fun CreatePlanScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("AI План тренировок") },
+                title = { Text("Тренер") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(

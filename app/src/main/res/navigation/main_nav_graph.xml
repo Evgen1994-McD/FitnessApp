@@ -60,7 +60,7 @@
     <fragment
         android:id="@+id/customDaysListFragment"
         android:name="com.example.fitnessapp.customTraining.ui.customDaysList.CustomDaysListFragment"
-        android:label="fragment_custom_days_list"
+        android:label="Своя тренировка"
         tools:layout="@layout/fragment_custom_days_list" />
     <fragment
         android:id="@+id/selectedExerciseListFragment"
@@ -80,19 +80,4 @@
         tools:layout="@layout/finish"
 
         />
-    <fragment
-        android:id="@+id/aiChatFragment"
-        android:name="com.example.fitnessapp.ai.ui.AiChatFragment"
-        android:label="AI Тренер"
-        tools:layout="@layout/fragment_ai_chat">
-        <action
-            android:id="@+id/action_aiChatFragment_to_createPlanFragment"
-            app:destination="@id/createPlanFragment" />
-    </fragment>
-    
-    <fragment
-        android:id="@+id/createPlanFragment"
-        android:name="com.example.fitnessapp.ai.ui.CreatePlanFragment"
-        android:label="Создать план"
-        tools:layout="@layout/fragment_create_plan" />
 </navigation>

@@ -15,9 +15,9 @@
         />
 
     <item
-        android:title="AI Тренер"
-        android:id="@+id/aiChatFragment"
-        android:icon="@drawable/ic_ai_trainer_24"
+        android:title="Своя тренировка"
+        android:id="@+id/customDaysListFragment"
+        android:icon="@drawable/ic_bottom_custom"
         />
 
     <item

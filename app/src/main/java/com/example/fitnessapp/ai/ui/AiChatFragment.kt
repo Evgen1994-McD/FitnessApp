@@ -31,7 +31,7 @@ class AiChatFragment : Fragment() {
                             parentFragmentManager.popBackStack()
                         },
                         onCreatePlanClick = {
-                            findNavController().navigate(R.id.action_aiChatFragment_to_createPlanFragment)
+
                         }
                     )
                 }

@@ -75,23 +75,36 @@ class TrainingPlanViewModel @Inject constructor(
                         dialogState = DialogState.READY
                         
                         try {
-                            // Генерируем план с собранными параметрами
-                            Log.d("TrainingPlanViewModel", "🎯 Генерируем план: зона=$collectedZone, сложность=$collectedDifficulty")
+                            // Создаем план БЕЗ AI - просто выбираем рандомные упражнения
+                            Log.d("TrainingPlanViewModel", "🎯 Создаем план: зона=$collectedZone, сложность=$collectedDifficulty")
                             
                             _uiState.value = _uiState.value.copy(isLoading = true)
                             
-                            val planResult = trainingPlanAiService.generateTrainingPlan(
-                                goal = "тренировка $collectedDifficulty",
-                                targetZones = listOf(collectedZone!!),
-                                availableDays = listOf(1, 3, 5), // По умолчанию Пн, Ср, Пт
-                                timePerSession = getTimeForDifficulty(difficulty)
+                            // Получаем упражнения из БД и выбираем рандомные
+                            val exercises = trainingPlanAiService.getExerciseRecommendations(
+                                targetZone = collectedZone!!,
+                                excludeIds = emptyList()
+                            )
+                            
+                            val selectedExercises = exercises.shuffled().take(3)
+                            Log.d("TrainingPlanViewModel", "📊 Выбраны упражнения: ${selectedExercises.map { "${it.id}:${it.name}" }}")
+                            
+                            // Создаем план вручную
+                            val plan = com.example.fitnessapp.db.TrainingPlanModel(
+                                name = "План тренировки на $collectedDifficulty",
+                                description = "Персональный план для зоны ${getZoneDisplayName(collectedZone!!)}",
+                                targetZones = collectedZone!!,
+                                exercisesPerDay = 3,
+                                aiGenerated = false, // Не AI генерация!
+                                createdAt = System.currentTimeMillis(),
+                                isActive = false
                             )
                             
                             // Сохраняем план
                             val planId = trainingPlanRepository.generateAndSavePlan(
                                 goal = "тренировка $collectedDifficulty",
                                 targetZones = listOf(collectedZone!!),
-                                availableDays = listOf(1, 3, 5), // По умолчанию Пн, Ср, Пт
+                                availableDays = listOf(1, 3, 5),
                                 timePerSession = getTimeForDifficulty(difficulty)
                             )
                             
@@ -105,7 +118,7 @@ class TrainingPlanViewModel @Inject constructor(
                                 error = null
                             )
                             
-                            "Отлично! ✅ План тренировки создан!\n\n🎯 **Зона**: ${getZoneDisplayName(collectedZone!!)}\n💪 **Сложность**: $difficulty\n⏱️ **Время**: ${getTimeForDifficulty(difficulty)} минут\n\n${planResult.plan.name}\n${planResult.plan.description}\n\nПлан готов! Вы можете начать тренировку. 🚀"
+                            "Отлично! ✅ План тренировки создан!\n\n🎯 **Зона**: ${getZoneDisplayName(collectedZone!!)}\n💪 **Сложность**: $difficulty\n⏱️ **Время**: ${getTimeForDifficulty(difficulty)} минут\n\n📋 **Упражнения в плане**:\n${selectedExercises.joinToString("\n") { "• ${it.name}" }}\n\nПлан готов! Вы можете начать тренировку. 🚀"
                             
                         } catch (e: Exception) {
                             Log.e("TrainingPlanViewModel", "❌ Ошибка создания плана: ${e.message}")
