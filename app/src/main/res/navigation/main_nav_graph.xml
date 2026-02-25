@@ -50,12 +50,10 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.fitnessapp.settings.ui.SettingsFragment"
-        android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/statisticFragment"
         android:name="com.example.fitnessapp.statistic.ui.StatisticFragment"
-        android:label="@string/statistic"
         tools:layout="@layout/fragment_statistic" />
     <fragment
         android:id="@+id/customDaysListFragment"
@@ -70,7 +68,7 @@
     <fragment
         android:id="@+id/chooseExercisesFragment"
         android:name="com.example.fitnessapp.customTraining.ui.chooseExercises.ChooseExercisesFragment"
-        android:label="fragment_choose_exercises"
+        android:label="Выбор упражнений"
         tools:layout="@layout/fragment_choose_exercises"
         />
     <fragment

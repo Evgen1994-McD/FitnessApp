@@ -11,9 +11,9 @@
     <Button
         android:id="@+id/addExercises"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
         android:backgroundTint="@color/blue"
-        android:text="Add New Exercises"
+        android:text="Добавить упражнения"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
