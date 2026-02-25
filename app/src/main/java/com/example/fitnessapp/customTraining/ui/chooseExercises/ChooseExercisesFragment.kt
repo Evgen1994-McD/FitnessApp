@@ -21,7 +21,9 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     private val _binding get() = binding!!
 
     private val model: ChooseExercisesViewModel by viewModels()
-
+    
+    // Состояние фильтров
+    private val selectedZones = mutableSetOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +40,10 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Настройка кнопок фильтра
+        setupFilterButtons()
+        
         _binding.doneButton.setOnClickListener {
             model.updateDay(newExercises)
             findNavController().popBackStack()
@@ -48,6 +54,56 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         model.getAllExercises()
     }
 
+    private fun setupFilterButtons() = with(_binding) {
+        // Кнопка "Спина"
+        filterBack.setOnClickListener {
+            toggleFilter("back", filterBack)
+        }
+        
+        // Кнопка "Руки"
+        filterHands.setOnClickListener {
+            toggleFilter("hands", filterHands)
+        }
+        
+        // Кнопка "Ноги"
+        filterLegs.setOnClickListener {
+            toggleFilter("legs", filterLegs)
+        }
+        
+        // Кнопка "Тело"
+        filterBody.setOnClickListener {
+            toggleFilter("body", filterBody)
+        }
+    }
+    
+    private fun toggleFilter(zone: String, button: View) {
+        if (selectedZones.contains(zone)) {
+            selectedZones.remove(zone)
+            button.setBackgroundColor(resources.getColor(R.color.black_light))
+        } else {
+            selectedZones.add(zone)
+            button.setBackgroundColor(resources.getColor(R.color.blue))
+        }
+        
+        // Применяем фильтр
+        applyFilter()
+    }
+    
+    private fun applyFilter() {
+        model.exerciseListData.value?.let { exercises ->
+            val filtered = if (selectedZones.isEmpty()) {
+                exercises
+            } else {
+                exercises.filter { exercise ->
+                    exercise.muscleZone?.split(",")?.any { zone ->
+                        selectedZones.contains(zone.trim())
+                    } == true
+                }
+            }
+            adapter.submitList(filtered)
+        }
+    }
+
     private fun initRcView() = with(_binding) {
         rcView.layoutManager = LinearLayoutManager(requireContext())
         adapter = ChooseExercisesAdapter(this@ChooseExercisesFragment)
@@ -56,10 +112,7 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
 
     private fun exerciseListObserver() {
         model.exerciseListData.observe(viewLifecycleOwner) { list ->
-            adapter.submitList(list)
-                /*
-                передаём все упражнения в лайв дата ( для выбора тренировки)
-                 */
+            applyFilter() // Применяем фильтр при получении новых данных
         }
     }
 

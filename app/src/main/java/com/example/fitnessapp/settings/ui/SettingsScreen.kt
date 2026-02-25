@@ -111,29 +111,6 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }
-
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 40.dp
-                )
-                .clickable { onClearedDataClick() }
-        ) {
-            Text(
-                text = stringResource(R.string.clean_data),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Icon(
-                painter = painterResource(R.drawable.ic_clear_24),
-                contentDescription = null,
-                modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        }
     }
 }
 
