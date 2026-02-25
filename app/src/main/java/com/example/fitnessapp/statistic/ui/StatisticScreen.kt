@@ -64,14 +64,9 @@ fun StatisticScreen(
 
 
 Scaffold(
-topBar = {
-TopAppBar(
-    title = { Text(stringResource(R.string.statistic),
-        fontSize = 28.sp,
-        fontWeight = FontWeight.Bold) }
-)
-}
-
+    topBar = {
+        // Убираем TopAppBar так как заголовок уже установлен в тулбаре
+    }
 ) {paddingValues ->
     val scrollState = rememberScrollState()
     val showWeightDialog = remember { mutableStateOf(false) }

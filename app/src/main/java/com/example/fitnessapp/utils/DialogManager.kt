@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.AfterTrainingDialogueBinding
@@ -20,12 +19,7 @@ object DialogManager {   // Сначала сделал как класс, но 
         mId: Int,
         listener: Listener,
     ) {  // передаём контекст, mId - messageId ( это сообщение) - Так как ресурсы у нас это ИНТ!!!
-        val builder = MaterialAlertDialogBuilder(
-            ContextThemeWrapper(
-                context,
-                R.style.AlertDialog_AppCompat_
-            )
-        ) // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
+        val builder = MaterialAlertDialogBuilder(context) // Убрал ContextThemeWrapper чтобы использовать системную тему
         var dialog: Dialog? =
             null // типа инициализировали диалог, изначально он равен null, а ниже мы используем его
         builder.setTitle(R.string.alert)

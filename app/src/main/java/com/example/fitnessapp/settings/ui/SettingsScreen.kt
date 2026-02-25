@@ -49,13 +49,6 @@ fun SettingsScreen(viewModel: SettingsViewModel,
             .fillMaxWidth(),
 
     ) {
-        Text(
-            text = stringResource(R.string.settings),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
         Spacer(
             modifier = Modifier
                 .height(100.dp)
