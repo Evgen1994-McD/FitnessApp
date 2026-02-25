@@ -50,7 +50,7 @@ fun ZonedTrainingCard(
     // Третья карточка
     Card(
         modifier = Modifier
-            .padding(top = 6.dp)
+            .padding(top = 9.dp)
             .fillMaxWidth()
             .height(130.dp), // Увеличил высоту, чтобы влезла кнопка
         onClick = {onStartClick()},
