@@ -13,6 +13,7 @@ interface ExerciseRepository{
     suspend  fun insertStatistic(statisticModel: StatisticModel)
     suspend fun getAllExerciseList():List<ExerciseModel>
     suspend fun getDayById(dayId:Int): DayModel?
+    suspend fun getExerciseById(exerciseId: Int): ExerciseModel
 
  suspend fun getAllDaysByDifficulty(diffculty: String): Flow<List<DayModel>>
  suspend fun insertDay(dayModel: DayModel)

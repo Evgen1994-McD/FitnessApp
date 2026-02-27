@@ -28,6 +28,7 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
     val exerciseList =
         MutableLiveData<List<ExerciseModel>>() // сюда мы с базы данных будем передавать данные, а затем получать список с помощью обсервера уже на фрагменте
     val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
+    val selectedExercise = MutableLiveData<ExerciseModel>() // для хранения выбранного упражнения
 
     fun getDayExerciseList(dayModel: DayModel?) =
         viewModelScope.launch { // запускаем в корутине, потому что сложная операция
@@ -88,5 +89,10 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
 
 
               */
+    }
+
+    fun getExerciseById(exerciseId: Int) = viewModelScope.launch {
+        val exercise = exerciseInteractor.getExerciseById(exerciseId)
+        selectedExercise.value = exercise
     }
 }

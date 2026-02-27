@@ -49,6 +49,10 @@ class ExerciseRepositoryImpl @Inject constructor(
         return mainDb.daysDao.getDay(dayId)
     }
 
+    override suspend fun getExerciseById(exerciseId: Int): ExerciseModel {
+        return mainDb.exerciseDao.findExerciseById(exerciseId)
+    }
+
     override suspend fun getAllDaysByDifficulty(diffculty:String): Flow<List<DayModel>> {
         return mainDb.daysDao.getAllDaysByDifficulty(diffculty)
     }

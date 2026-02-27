@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.exercises.ui.adapters.ExerciseAdapter
+import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.utils.getDayFromArguments
@@ -45,6 +47,7 @@ class ExerciseListFragment : Fragment() {
         dayModel = getDayFromArguments()
         model.getDayExerciseList(dayModel)
         topCardObserver() // запускаю топКардОбсервер который будет мне обновлять состояние вью
+        selectedExerciseObserver() // добавляю observer для выбранного упражнения
 /*
 Функция getDayFromArguments - это экстеншен функция, которыую мы создали чтобы использовать
 на любом фрагменте.
@@ -61,15 +64,17 @@ class ExerciseListFragment : Fragment() {
 
 
     private fun init() = with(binding) {  // Инициализируем Адаптер и добавляем RecyclerVIew
-        adapter = ExerciseAdapter()
+        adapter = ExerciseAdapter { exercise ->
+            // Обработка клика на упражнение
+            model.getExerciseById(exercise.id ?: 0)
+        }
         rcView.layoutManager = LinearLayoutManager(activity)
         rcView.adapter = adapter // Назначили адаптер
         bStart.setOnClickListener {
             val bundle = Bundle().apply {
                 putSerializable("day", dayModel )
             }
-findNavController().navigate(R.id.action_exListFragment_to_exerciseFragment,
-    bundle)
+            findNavController().navigate(R.id.action_exListFragment_to_exerciseFragment, bundle)
         }
         /*
         Прикольно.
@@ -125,6 +130,34 @@ progressbar.max = card.maxProgress * 100
 
 
         }
+    }
+
+
+    private fun selectedExerciseObserver() {
+        model.selectedExercise.observe(viewLifecycleOwner) { exercise ->
+            exercise?.let {
+                showExerciseBottomSheet(it)
+            }
+        }
+    }
+
+    private fun showExerciseBottomSheet(exercise: com.example.fitnessapp.db.ExerciseModel) {
+        val composeView = ComposeView(requireContext()).apply {
+            setContent {
+                ExerciseBottomSheet(
+                    exercise = exercise,
+                    onDismiss = {
+                        // Очищаем selectedExercise при закрытии
+                        model.selectedExercise.value = null
+                        // Удаляем ComposeView из parent
+                        (parent as? ViewGroup)?.removeView(this)
+                    }
+                )
+            }
+        }
+        
+        // Добавляем ComposeView в корневой layout
+        binding.root.addView(composeView)
     }
 
 
