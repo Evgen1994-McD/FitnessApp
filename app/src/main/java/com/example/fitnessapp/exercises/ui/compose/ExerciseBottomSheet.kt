@@ -166,6 +166,36 @@ fun ExerciseBottomSheet(
                 }
             }
 
+            // Распространенные ошибки
+            if (exercise.mistakes.isNotEmpty()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            text = "Распространенные ошибки:",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Text(
+                            text = exercise.mistakes.split("||")
+                                .mapIndexed { index, mistake -> "${index + 1}. ${mistake.trim()}" }
+                                .joinToString("\n"),
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
+
             
             Spacer(modifier = Modifier.height(16.dp))
         }

@@ -18,7 +18,7 @@ import com.example.fitnessapp.db.dao.WeightDao
         PlannedDayModel::class
                // Таким образом при первом запуске приложения создадутся 6 таблиц и мы сможем в них записывать/считывать и ТД
                ],//Важно! Если выложить его, то пользователь не сможет увидеть обновления тк нет миграции
-    version = 3 // Увеличена версия для добавления новых таблиц
+    version = 4 // Увеличена версия для добавления поля mistakes в exercise_table
 )
 abstract class MainDb: RoomDatabase()  {   // создаём базу данных она должна быть абстрактной
 abstract val daysDao: DaysDao // инициализируем ДАО в БД
