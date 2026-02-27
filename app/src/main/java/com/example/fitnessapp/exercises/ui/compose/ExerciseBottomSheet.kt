@@ -22,6 +22,7 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import com.example.fitnessapp.utils.ZoneUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,9 +32,6 @@ fun ExerciseBottomSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val density = LocalDensity.current
-
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         modifier = modifier,
@@ -43,6 +41,7 @@ fun ExerciseBottomSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp), // Добавляем отступ снизу для кнопок
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -156,7 +155,9 @@ fun ExerciseBottomSheet(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = exercise.instruction,
+                            text = exercise.instruction.split("||")
+                                .mapIndexed { index, step -> "${index + 1}. ${step.trim()}" }
+                                .joinToString("\n"),
                             fontSize = 16.sp,
                             lineHeight = 26.sp, // Увеличиваем межстрочный интервал для лучшей читаемости
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -165,60 +166,7 @@ fun ExerciseBottomSheet(
                 }
             }
 
-            // Дополнительная информация
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                // Время/подходы
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = if (exercise.time.startsWith("x")) "Подходы" else "Время",
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = exercise.time,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
-
-                // Калории
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Калории",
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Text(
-                            text = "${exercise.kcal.toInt()} ккал",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
-                }
-            }
-
+            
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

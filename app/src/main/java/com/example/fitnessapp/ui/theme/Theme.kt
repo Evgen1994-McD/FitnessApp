@@ -23,8 +23,8 @@ import dagger.hilt.EntryPoints
 
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    onPrimary = Color(0xFF1A1A1A),
+    primary = mainDarkBgColor,
+    onPrimary = mainLightBgColor,
     secondary = PurpleGrey80,
     tertiary = Pink80,
     onPrimaryContainer = Color(0xFF1A1A1A),
@@ -35,8 +35,8 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    onPrimary = Color.White,
+    primary = mainLightBgColor,
+    onPrimary = mainDarkBgColor,
     secondary = PurpleGrey40,
     tertiary = Pink40,
     onBackground = Color(0xFF1C1B1F),

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import com.example.fitnessapp.exercises.ui.adapters.ExerciseAdapter
 import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import com.example.fitnessapp.utils.getDayFromArguments
 
 class ExerciseListFragment : Fragment() {
@@ -148,15 +150,17 @@ progressbar.max = card.maxProgress * 100
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             setContent {
-                ExerciseBottomSheet(
-                    exercise = exercise,
-                    onDismiss = {
-                        // Очищаем selectedExercise при закрытии
-                        model.selectedExercise.value = null
-                        // Удаляем ComposeView из parent
-                        (parent as? ViewGroup)?.removeView(this)
-                    }
-                )
+                FitnessAppTheme () {
+                    ExerciseBottomSheet(
+                        exercise = exercise,
+                        onDismiss = {
+                            // Очищаем selectedExercise при закрытии
+                            model.selectedExercise.value = null
+                            // Удаляем ComposeView из parent
+                            (parent as? ViewGroup)?.removeView(this)
+                        }
+                    )
+                }
             }
         }
         
