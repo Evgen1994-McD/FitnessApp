@@ -33,7 +33,7 @@ fun ExerciseBottomSheet(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
-    
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         modifier = modifier,
@@ -55,7 +55,7 @@ fun ExerciseBottomSheet(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            
+
             // GIF с упражнением большего размера
             Card(
                 modifier = Modifier
@@ -81,9 +81,9 @@ fun ExerciseBottomSheet(
                         .clipToBounds() // Обрезаем контент, чтобы он не выходил за границы
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp)) // Дополнительный отступ после GIF
-            
+
             // Информация о мышечных зонах
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -108,7 +108,7 @@ fun ExerciseBottomSheet(
                     )
                 }
             }
-            
+
             // Описание упражнения
             if (exercise.description.isNotEmpty()) {
                 Card(
@@ -136,7 +136,7 @@ fun ExerciseBottomSheet(
                     }
                 }
             }
-            
+
             // Инструкция выполнения
             if (exercise.instruction.isNotEmpty()) {
                 Card(
@@ -164,7 +164,7 @@ fun ExerciseBottomSheet(
                     }
                 }
             }
-            
+
             // Дополнительная информация
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -193,7 +193,7 @@ fun ExerciseBottomSheet(
                         )
                     }
                 }
-                
+
                 // Калории
                 Card(
                     colors = CardDefaults.cardColors(
@@ -218,7 +218,7 @@ fun ExerciseBottomSheet(
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
