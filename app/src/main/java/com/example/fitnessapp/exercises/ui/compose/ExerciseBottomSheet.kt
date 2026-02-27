@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -18,7 +17,6 @@ import pl.droidsonroids.gif.GifDrawable
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.compose.foundation.background
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.example.fitnessapp.db.ExerciseModel
@@ -36,15 +34,14 @@ fun ExerciseBottomSheet(
     
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        modifier = modifier,
+        modifier = modifier.fillMaxHeight(0.9f),
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp), // Добавляем отступ снизу для кнопок
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -57,32 +54,26 @@ fun ExerciseBottomSheet(
             )
             
             // GIF с упражнением большего размера
-            Card(
+            AndroidView(
+                factory = { context ->
+                    ImageView(context).apply {
+                        val heightPx = with(density) { 300.dp.toPx().toInt() }
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            heightPx
+                        )
+                        scaleType = ImageView.ScaleType.CENTER_CROP
+                        try {
+                            setImageDrawable(GifDrawable(context.assets, exercise.image))
+                        } catch (e: Exception) {
+                            // Обработка ошибки загрузки GIF
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(600.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-            ) {
-                AndroidView(
-                    factory = { context ->
-                        ImageView(context).apply {
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                            adjustViewBounds = true
-                            try {
-                                setImageDrawable(GifDrawable(context.assets, exercise.image))
-                            } catch (e: Exception) {
-                                // Обработка ошибки загрузки GIF
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .clipToBounds() // Обрезаем контент, чтобы он не выходил за границы
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp)) // Дополнительный отступ после GIF
+                    .height(300.dp)
+            )
             
             // Информация о мышечных зонах
             Card(
@@ -118,8 +109,8 @@ fun ExerciseBottomSheet(
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp), // Увеличиваем отступы для консистентности
-                        verticalArrangement = Arrangement.spacedBy(12.dp) // Увеличиваем расстояние между элементами
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
                             text = "Описание:",
@@ -146,8 +137,8 @@ fun ExerciseBottomSheet(
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp), // Увеличиваем отступы для объемного текста
-                        verticalArrangement = Arrangement.spacedBy(12.dp) // Увеличиваем расстояние между элементами
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
                             text = "Инструкция выполнения:",
@@ -158,7 +149,7 @@ fun ExerciseBottomSheet(
                         Text(
                             text = exercise.instruction,
                             fontSize = 16.sp,
-                            lineHeight = 26.sp, // Увеличиваем межстрочный интервал для лучшей читаемости
+                            lineHeight = 24.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
