@@ -196,6 +196,36 @@ fun ExerciseBottomSheet(
                 }
             }
 
+            // Советы по правильному выполнению
+            if (exercise.advise.isNotEmpty()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            text = "Советы по выполнению:",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Text(
+                            text = exercise.advise.split("||")
+                                .mapIndexed { index, tip -> "${index + 1}. ${tip.trim()}" }
+                                .joinToString("\n"),
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+            }
+
             
             Spacer(modifier = Modifier.height(16.dp))
         }
