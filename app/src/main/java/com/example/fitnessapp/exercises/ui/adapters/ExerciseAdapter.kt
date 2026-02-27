@@ -14,7 +14,7 @@ import com.example.fitnessapp.utils.ZoneUtils
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
-class ExerciseAdapter() :
+class ExerciseAdapter(private val onExerciseClick: (ExerciseModel) -> Unit) :
     ListAdapter<ExerciseModel, ExerciseAdapter.ExerciseHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
 
     class ExerciseHolder(view: View) :
@@ -58,8 +58,12 @@ class ExerciseAdapter() :
     }
 
     override fun onBindViewHolder(holder: ExerciseHolder, position: Int) {
-        holder.setData(getItem(position))
-
+        val exercise = getItem(position)
+        holder.setData(exercise)
+        
+        holder.itemView.setOnClickListener {
+            onExerciseClick(exercise)
+        }
     }
 
     class MyComporator : DiffUtil.ItemCallback<ExerciseModel>() {
