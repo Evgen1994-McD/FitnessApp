@@ -1,7 +1,10 @@
 package com.example.fitnessapp.exercises.ui.exerciseList
 
 import android.animation.ObjectAnimator
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +32,7 @@ class ExerciseListFragment : Fragment() {
     private val model: ExerciseListViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,10 +43,11 @@ class ExerciseListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
         super.onViewCreated(view, savedInstanceState)
         dayModel = getDayFromArguments() // Вызвавли функци получания Деймодел и открытия нужного объекта
+
+        // Инициализируем SharedPreferences
+        sharedPreferences = requireContext().getSharedPreferences("exercise_prefs", Context.MODE_PRIVATE)
 
         init() //функия инит которая ниже
         exerciseListObserver()
@@ -61,9 +66,6 @@ class ExerciseListFragment : Fragment() {
         ab?.title = ("День: ${dayModel?.dayNumber}. Список упражнений.")
 
     }
-
-
-
 
     private fun init() = with(binding) {  // Инициализируем Адаптер и добавляем RecyclerVIew
         adapter = ExerciseAdapter { exercise ->
@@ -89,8 +91,27 @@ class ExerciseListFragment : Fragment() {
     private fun exerciseListObserver(){ // делаю эксерсайз лист обсервер и здесь мы используем класс вью модел
 model.exerciseList.observe(viewLifecycleOwner) { list -> // этот обсервер выдаёт лист как только он появится. Этот лист надо будет передавать в наш адаптер
 adapter.submitList(list) // передали этот список
+showInstructionToast() // Показываем Toast с инструкцией
 }
     }
+
+    private fun showInstructionToast() {
+        val toastCount = sharedPreferences.getInt("instruction_toast_count", 0)
+        
+        if (toastCount < 3) {
+            Toast.makeText(
+                requireContext(),
+                "Нажмите на упражнение чтобы посмотреть инструкцию",
+                Toast.LENGTH_LONG
+            ).show()
+            
+            // Увеличиваем счетчик показов
+            sharedPreferences.edit()
+                .putInt("instruction_toast_count", toastCount + 1)
+                .apply()
+        }
+    }
+
     private fun topCardObserver(){
         model.topCardUpdate.observe(viewLifecycleOwner){ card ->
             binding.apply {
