@@ -61,14 +61,29 @@
 
     <ImageView
         android:id="@+id/checkBoxImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_check_bx_im_24" />
+        app:srcCompat="@drawable/ic_check_bx_im_24"
+        tools:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/infoIcon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/checkBoxImage"
+        app:layout_constraintEnd_toEndOf="@+id/checkBoxImage"
+        app:layout_constraintStart_toStartOf="@+id/checkBoxImage"
+        app:layout_constraintTop_toTopOf="@+id/checkBoxImage"
+        app:srcCompat="@drawable/ic_help_outline_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

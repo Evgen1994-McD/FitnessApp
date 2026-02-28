@@ -36,19 +36,20 @@ class SelectedListExerciseAdapter( val listener: Listener) :
                     exercise.image
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
+            
+            // Корзина теперь показывает информацию
             delete.setOnClickListener {
-
-                listener.onDelete(adapterPosition)
+                listener.onInfoClick(exercise)
             }
-            up.setOnClickListener{
-
+            
+            // up - это кнопка +
+            up.setOnClickListener {
                 listener.addExerciseTime(adapterPosition)
-
             }
+            
+            // down - это кнопка -
             down.setOnClickListener {
-
                 listener.decreaseExerciseTime(adapterPosition)
-
             }
         }
 
@@ -89,7 +90,7 @@ class SelectedListExerciseAdapter( val listener: Listener) :
     }
 
     interface Listener{
-        fun onDelete(pos: Int)
+        fun onInfoClick(exercise: ExerciseModel)
         fun addExerciseTime(pos:Int)
         fun decreaseExerciseTime(pos:Int)
     }

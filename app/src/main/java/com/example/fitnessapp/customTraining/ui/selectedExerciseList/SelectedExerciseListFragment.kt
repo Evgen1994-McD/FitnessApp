@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentSelectedExerciseListBinding
 import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
+import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.util.Collections
@@ -103,10 +106,11 @@ model.getExercises(dayId)
 
     private fun createItemTouchHelper(): ItemTouchHelper {
         return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT 
         ) { /*
         с помощью ItemTouchHelper можем как перетаскивать вверх - вниз, так и свайпать элементы
-        В данном случае нас интересует только верх - низ.
+        В данном случае нас интересует и верх-низ, и свайп для удаления.
         Мы будем использовать функцию onMove, где между вью холдерами и таргет вью холдером
         будем менять и перемешивать элементы.
 
@@ -128,7 +132,9 @@ model.getExercises(dayId)
                 viewHolder: RecyclerView.ViewHolder,
                 direction: Int,
             ) {
-
+                // Удаляем элемент при свайпе
+                val position = viewHolder.adapterPosition
+                deleteExercise(position)
             }
 
         }
@@ -137,7 +143,7 @@ model.getExercises(dayId)
 
     override fun onDestroyView() {
         super.onDestroyView()
-updateDay()
+        updateDay()
         binding = null
     }
 
@@ -148,90 +154,102 @@ updateDay()
         }
 
         Log.d("MyLog", " Update exercises = $exercises")
-            model.updateDay(exercises)
+        model.updateDay(exercises)
 
     }
 
 
-    override fun onDelete(pos:Int) {
+    private fun deleteExercise(position: Int) {
         tempList = ArrayList<ExerciseModel>(adapter.currentList)
         var exercises = ""
 
+        tempList.removeAt(position)
 
-
-tempList.removeAt(pos)
-
-Log.d("MyLog", "TempListOnDelete = ${tempList}")
-     tempList.forEach {
-         exercises += ",${it.id}"
-
-     }
+        Log.d("MyLog", "TempListOnDelete = ${tempList}")
+        tempList.forEach {
+            exercises += ",${it.id}"
+        }
         runBlocking {
             model.updateDay(exercises)
-
         }
         runBlocking {
             model.getExercises(dayId)
-
         }
         adapter.submitList(tempList)
 
-
-
-
-        if (tempList.isEmpty()){
+        if (tempList.isEmpty()) {
             _binding.textEmpty.visibility = View.VISIBLE
         }
     }
 
-     override fun addExerciseTime(pos:Int) {
-         try {
-
-
-             /*
-         функция для настройки времени упражнений ( кастом)
-          */
-             tempList = ArrayList<ExerciseModel>(adapter.currentList)
-             val selectedExercise = let { tempList[pos].copy() }
-             var replacerWithoutX = ""
-             var upX2 = ""
-             var stringTime = ""
-             Log.d("MyLog", "Selected id = ${selectedExercise.id}")
-             if (selectedExercise.time.startsWith("x")) {
-                 replacerWithoutX = ((selectedExercise.time).split("x"))[1]
-                 upX2 = (replacerWithoutX.toInt() * 1.5).roundToInt().toString()
-                 stringTime = "x$upX2"
-             } else {
-                 replacerWithoutX = selectedExercise.time
-                 upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
-                 stringTime = upX2
-
-             }
-
-             Log.d("MyLog", stringTime)
-             val newEx = selectedExercise.copy(time = stringTime)
-             runBlocking {
-                 model.saveNewExerciseAndReplace(newEx, pos)
-             }
-             runBlocking {
-                 model.getExercises(dayId)
-
-             }
-             if (tempList.isEmpty()) {
-                 _binding.textEmpty.visibility = View.VISIBLE
-             }
-         }
-         catch (e: IndexOutOfBoundsException) {
-       Log.d("MyLog", "Неверный Индекс")
-         } catch (e: NumberFormatException) {
-             Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
-         } catch (e: Exception) {
-             Toast.makeText(context, "Возникла неизвестная ошибка.", Toast.LENGTH_SHORT).show()
-         }
+    override fun onInfoClick(exercise: ExerciseModel) {
+        showExerciseBottomSheet(exercise)
     }
 
+    private fun showExerciseBottomSheet(exercise: ExerciseModel) {
+        val composeView = ComposeView(requireContext()).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setContent {
+                FitnessAppTheme {
+                    ExerciseBottomSheet(
+                        exercise = exercise,
+                        onDismiss = {
+                            // Удаляем ComposeView из parent
+                            (parent as? ViewGroup)?.removeView(this)
+                        }
+                    )
+                }
+            }
+        }
+        
+        // Добавляем ComposeView в корневой layout
+        _binding.root.addView(composeView)
+    }
 
+    override fun addExerciseTime(pos:Int) {
+        try {
 
+            tempList = ArrayList<ExerciseModel>(adapter.currentList)
+            val selectedExercise = let { tempList[pos].copy() }
+            var replacerWithoutX = ""
+            var upX2 = ""
+            var stringTime = ""
+            Log.d("MyLog", "Selected id = ${selectedExercise.id}")
+            if (selectedExercise.time.startsWith("x")) {
+                replacerWithoutX = ((selectedExercise.time).split("x"))[1]
+                upX2 = (replacerWithoutX.toInt() * 1.5).roundToInt().toString()
+                stringTime = "x$upX2"
+            } else {
+                replacerWithoutX = selectedExercise.time
+                upX2 = ((replacerWithoutX.toInt() * 1.5).roundToInt()).toString()
+                stringTime = upX2
+
+            }
+
+            Log.d("MyLog", stringTime)
+            val newEx = selectedExercise.copy(time = stringTime)
+            runBlocking {
+                model.saveNewExerciseAndReplace(newEx, pos)
+            }
+            runBlocking {
+                model.getExercises(dayId)
+
+            }
+            if (tempList.isEmpty()) {
+                _binding.textEmpty.visibility = View.VISIBLE
+            }
+        }
+        catch (e: IndexOutOfBoundsException) {
+            Log.d("MyLog", "Неверный Индекс")
+        } catch (e: NumberFormatException) {
+            Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Возникла неизвестная ошибка.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun decreaseExerciseTime(pos:Int) {
         /*

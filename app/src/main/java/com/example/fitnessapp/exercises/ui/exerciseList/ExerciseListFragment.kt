@@ -68,10 +68,16 @@ class ExerciseListFragment : Fragment() {
     }
 
     private fun init() = with(binding) {  // Инициализируем Адаптер и добавляем RecyclerVIew
-        adapter = ExerciseAdapter { exercise ->
-            // Обработка клика на упражнение
-            model.getExerciseById(exercise.id ?: 0)
-        }
+        adapter = ExerciseAdapter(
+            onExerciseClick = { exercise ->
+                // Обработка клика на упражнение
+                model.getExerciseById(exercise.id ?: 0)
+            },
+            onInfoClick = { exercise ->
+                // Обработка клика на иконку информации
+                showExerciseBottomSheet(exercise)
+            }
+        )
         rcView.layoutManager = LinearLayoutManager(activity)
         rcView.adapter = adapter // Назначили адаптер
         bStart.setOnClickListener {

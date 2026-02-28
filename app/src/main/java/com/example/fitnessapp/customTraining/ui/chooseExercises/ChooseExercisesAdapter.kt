@@ -30,11 +30,12 @@ class ChooseExercisesAdapter(val listener: Listener) :
 
                 override fun onAnimationEnd(animation: Animator) {
                     binding.lottieView.visibility = View.INVISIBLE
-
+                    binding.infoIcon.visibility = View.VISIBLE // Показываем иконку ? снова
                 }
 
                 override fun onAnimationCancel(animation: Animator) {
-
+                    binding.lottieView.visibility = View.INVISIBLE
+                    binding.infoIcon.visibility = View.VISIBLE // Показываем иконку ? снова
                 }
 
                 override fun onAnimationRepeat(animation: Animator) {
@@ -57,11 +58,28 @@ class ChooseExercisesAdapter(val listener: Listener) :
                     exercise.image
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
+            
+            // Изначально показываем иконку ?, скрываем анимацию
+            infoIcon.visibility = View.VISIBLE
+            lottieView.visibility = View.INVISIBLE
+            
+            // Клик на иконку ? - показываем информацию
+            infoIcon.setOnClickListener {
+                listener.onInfoClick(exercise)
+            }
+            
+            // Клик на элемент целиком (не на ?) - добавляем в тренировку и показываем анимацию
             itemView.setOnClickListener {
                 listener.onClick(exercise)
-                binding.lottieView.visibility = View.VISIBLE
-
+                // Показываем анимацию поверх иконки ?
+                infoIcon.visibility = View.INVISIBLE
+                lottieView.visibility = View.VISIBLE
                 lottieView.playAnimation()
+            }
+            
+            itemView.setOnLongClickListener {
+                listener.onLongClick(exercise)
+                true // Возвращаем true, чтобы показать, что событие обработано
             }
 
         }
@@ -104,5 +122,7 @@ class ChooseExercisesAdapter(val listener: Listener) :
 
     interface Listener{
         fun onClick(exercise: ExerciseModel)
+        fun onLongClick(exercise: ExerciseModel)
+        fun onInfoClick(exercise: ExerciseModel)
     }
 }

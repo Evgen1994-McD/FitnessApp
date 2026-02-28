@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -11,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentChooseExercisesBinding
 import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
+import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -140,6 +144,37 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         val choosenCounterText = "${getString(R.string.selected_exercise_count)} $count"
         _binding.tvChoosenExCounter.text = choosenCounterText
 
+    }
+
+    override fun onLongClick(exercise: ExerciseModel) {
+        showExerciseBottomSheet(exercise)
+    }
+
+    override fun onInfoClick(exercise: ExerciseModel) {
+        showExerciseBottomSheet(exercise)
+    }
+
+    private fun showExerciseBottomSheet(exercise: ExerciseModel) {
+        val composeView = ComposeView(requireContext()).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setContent {
+                FitnessAppTheme {
+                    ExerciseBottomSheet(
+                        exercise = exercise,
+                        onDismiss = {
+                            // Удаляем ComposeView из parent
+                            (parent as? ViewGroup)?.removeView(this)
+                        }
+                    )
+                }
+            }
+        }
+        
+        // Добавляем ComposeView в корневой layout
+        _binding.root.addView(composeView)
     }
 
 }

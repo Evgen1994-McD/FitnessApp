@@ -14,17 +14,19 @@ import com.example.fitnessapp.utils.ZoneUtils
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
-class ExerciseAdapter(private val onExerciseClick: (ExerciseModel) -> Unit) :
+class ExerciseAdapter(
+    private val onExerciseClick: (ExerciseModel) -> Unit,
+    private val onInfoClick: (ExerciseModel) -> Unit
+) :
     ListAdapter<ExerciseModel, ExerciseAdapter.ExerciseHolder>(MyComporator()) { // А вот сюда мы запишем компоратор который отвечает за сравнение элеентов. А так же сюда передаем листенер Интерфейс
 
     class ExerciseHolder(view: View) :
         RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
         private val binding = ExerciseListItemBinding.bind(view)
 
-        fun setData(exercise: ExerciseModel) = with(binding) {
+        fun setData(exercise: ExerciseModel, onInfoClick: (ExerciseModel) -> Unit) = with(binding) {
             checkBoxImage.visibility =
                 if (exercise.isDone) View.VISIBLE else View.INVISIBLE// Там где будет из isDone = true - то отметим чек бокс. ИЗИ
-
 
             tvNameEx.text = exercise.name //Название упражнения
             tvcount.text = getTime(exercise.time)
@@ -38,7 +40,11 @@ class ExerciseAdapter(private val onExerciseClick: (ExerciseModel) -> Unit) :
                     exercise.image
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
-
+            
+            // Обработка клика на иконку информации
+            infoIcon.setOnClickListener {
+                onInfoClick(exercise)
+            }
         }
 
         private fun getTime(time: String): String {
@@ -59,7 +65,7 @@ class ExerciseAdapter(private val onExerciseClick: (ExerciseModel) -> Unit) :
 
     override fun onBindViewHolder(holder: ExerciseHolder, position: Int) {
         val exercise = getItem(position)
-        holder.setData(exercise)
+        holder.setData(exercise, onInfoClick)
         
         holder.itemView.setOnClickListener {
             onExerciseClick(exercise)
