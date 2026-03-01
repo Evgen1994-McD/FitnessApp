@@ -32,6 +32,9 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun getDontDoesDaysByDifficulty(difficulty: String): List<DayModel>{
         return statisticRepository.getDontDoesDaysByDifficulty(difficulty)
     }
+    override suspend fun getDontDoesDaysByDifficultyAndZone(difficulty: String, zone: String?): List<DayModel>{
+        return statisticRepository.getDontDoesDaysByDifficultyAndZone(difficulty, zone)
+    }
     override suspend fun getAllExercise(): List<ExerciseModel>{
         return statisticRepository.getAllExercise()
     }

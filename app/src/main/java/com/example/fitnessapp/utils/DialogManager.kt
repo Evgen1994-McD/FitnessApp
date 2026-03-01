@@ -94,12 +94,13 @@ object DialogManager {   // Сначала сделал как класс, но 
 
 
     interface OnDifficultySelectedListener {
-        fun onDifficultySelected(difficultyLevel: Int)
+        fun onDifficultySelected(difficultyLevel: Int, zone: String? = null)
     }
 
     fun showAfterTrainingDialog(
         context: Context,
-        listener: OnDifficultySelectedListener
+        listener: OnDifficultySelectedListener,
+        zone: String? = null
     ) {
         val builder = MaterialAlertDialogBuilder(context) // Используем стандартную тему
         val dialog = builder.create()
@@ -119,7 +120,7 @@ object DialogManager {   // Сначала сделал как класс, но 
                 tvTitle.setText("Усложнить тренировку?")
                 btSoEasy.setText("Да, усложнить вызов!")
                 btSoEasy.setOnClickListener {
-                    listener.onDifficultySelected(DIFFICULTY_UP)
+                    listener.onDifficultySelected(DIFFICULTY_UP, zone)
                     tvTitle.setText("Работаем...\n" +
                             "Пожалуйста, подождите...")
                     btSoEasy.isVisible = false
@@ -170,7 +171,7 @@ object DialogManager {   // Сначала сделал как класс, но 
                 tvTitle.setText("Упростить тренировку?")
                 btSoHard.setText("Да, сделать проще!")
                 btSoHard.setOnClickListener {
-                    listener.onDifficultySelected(DIFFICULTY_DOWN)
+                    listener.onDifficultySelected(DIFFICULTY_DOWN, zone)
                     tvTitle.setText("Работаем...\n" +
                             "Пожалуйста, подождите...")
                     btSoHard.isVisible = false

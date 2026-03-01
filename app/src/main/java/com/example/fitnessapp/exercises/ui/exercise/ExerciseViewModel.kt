@@ -45,15 +45,8 @@ class ExerciseViewModel @Inject constructor(
     }
 
     fun getAndOpenNextDay()= viewModelScope.launch {
-        var nextId = ((currentDay?.id)?.plus(1)) ?: 0
-        if (nextId!=0) {
-            try {
-                nextDay = execiseInteractor.getDayById(nextId)
-                    nextDay = nextDay!!.copy(isOpen = true)
-                    updateDay(nextDay!!)
-            }catch (e:Exception){
-
-            }
+        currentDay?.let { day ->
+            execiseInteractor.getAndOpenNextDay(day)
         }
     }
 
@@ -173,9 +166,16 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
     fun nextExercise() {
         timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
         updateToolbar()
-        val exercise = exercisesStack[doneExerciseCounter++]
-        speechExercise(exercise)
-        updateExercise.value = exercise
+        
+        // Проверяем, что есть еще упражнения для показа
+        if (doneExerciseCounter < exercisesStack.size) {
+            val exercise = exercisesStack[doneExerciseCounter++]
+            speechExercise(exercise)
+            updateExercise.value = exercise
+        } else {
+            // Если упражнений больше нет, не делаем ничего
+            // Фрагмент сам перейдет на экран статистики
+        }
 
         /*
         будем запускать и передавать по обсерверу следующее упражнение на View через лайв дата.

@@ -17,15 +17,14 @@ class ExerciseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAndOpenNextDay(dayModel: DayModel) {
-        var nextId = ((dayModel?.id)?.plus(1)) ?: 0
-        if (nextId!=0) {
-            try {
-                var nextDay = mainDb.daysDao.getDay(nextId)
-                nextDay = nextDay!!.copy(isOpen = true)
-                updateDay(nextDay!!)
-            }catch (e:Exception){
-
-            }
+        // Ищем следующий день по id + 1 с проверкой на существование
+        val nextId = dayModel.id?.plus(1) ?: return
+        val nextDay = mainDb.daysDao.getDay(nextId)
+        
+        // Проверяем, что следующий день существует
+        if (nextDay != null) {
+            val updatedNextDay = nextDay.copy(isOpen = true)
+            updateDay(updatedNextDay)
         }
     }
 

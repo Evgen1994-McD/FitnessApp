@@ -97,11 +97,12 @@ class ExerciseFragment : Fragment() {
                 var bundle = Bundle()
                 bundle.putString("tec", totalExerciseCounter)
                 bundle.putString("difficulty", "${currentDay?.difficulty}")
+                bundle.putString("zone", "${currentDay?.zone}")
                 /*
-                В бандл передам диффикульти чтобы на финишном фрагменте, если понадобится,
-                изменить все тренировки выбранной сложности
+                В бандл передам диффикульти и зону чтобы на финишном фрагменте, если понадобится,
+                изменить все тренировки выбранной сложности и зоны
                  */
-findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment, bundle)
+                findNavController().navigate(R.id.action_exerciseFragment_to_daysFinishFragment, bundle)
 
     /*
     возвращаемся по бекстеку назад ( стек фрагментов из навигации)

@@ -77,29 +77,52 @@ class DaysFinishViewModel @Inject constructor(
 
     }
 
-    fun addTrainingHarder(difficulty: String) = viewModelScope.launch {
+    fun addTrainingHarder(difficulty: String, zone: String? = null) = viewModelScope.launch {
+        android.util.Log.d("DaysFinishViewModel", "addTrainingHarder called with difficulty: $difficulty, zone: $zone")
+        
+        // Если зона указана, увеличиваем только тренировки для этой зоны
+        // Если зона не указана, увеличиваем только общие тренировки (без зоны)
+        val daysToProcess = if (zone != null) {
+            // Для конкретной зоны увеличиваем только тренировки с этой зоной
+            statisticInteractor.getDontDoesDaysByDifficultyAndZone(difficulty, zone)
+        } else {
+            // Для общих тренировок увеличиваем только тренировки без зоны
+            statisticInteractor.getDontDoesDaysByDifficultyAndZone(difficulty, null)
+        }
 
-        statisticInteractor.getDontDoesDaysByDifficulty(difficulty).forEach { day ->
-                val exerciseList = statisticInteractor.getAllExercise()
+        android.util.Log.d("DaysFinishViewModel", "Found ${daysToProcess.size} days to process")
+        daysToProcess.forEach { day ->
+            android.util.Log.d("DaysFinishViewModel", "Processing day with zone: ${day.zone}, difficulty: ${day.difficulty}")
+            val exerciseList = statisticInteractor.getAllExercise()
 
-                val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
+            val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
 
-                // Формируем новые идентификаторы упражнений
-                val newExIds = exList.map { ex ->
-                    val newEx = addExerciseTime(ex)
+            // Формируем новые идентификаторы упражнений
+            val newExIds = exList.map { ex ->
+                val newEx = addExerciseTime(ex)
 
-                    newEx.id.toString()
-                }.joinToString(separator = ",")
+                newEx.id.toString()
+            }.joinToString(separator = ",")
 
-                // Обновляем день с новыми идентификаторами упражнений
-                statisticInteractor.insertDay(day.copy(exercises = newExIds))
-
+            // Обновляем день с новыми идентификаторами упражнений
+            statisticInteractor.insertDay(day.copy(exercises = newExIds))
         }
     }
 
-    fun reduceTrainingComplexity(difficulty: String) = viewModelScope.launch {
+    fun reduceTrainingComplexity(difficulty: String, zone: String? = null) = viewModelScope.launch {
+        android.util.Log.d("DaysFinishViewModel", "reduceTrainingComplexity called with difficulty: $difficulty, zone: $zone")
+        
+        // Если зона указана, уменьшаем только тренировки для этой зоны
+        // Если зона не указана, уменьшаем только общие тренировки (без зоны)
+        val daysToProcess = if (zone != null) {
+            // Для конкретной зоны уменьшаем только тренировки с этой зоной
+            statisticInteractor.getDontDoesDaysByDifficultyAndZone(difficulty, zone)
+        } else {
+            // Для общих тренировок уменьшаем только тренировки без зоны
+            statisticInteractor.getDontDoesDaysByDifficultyAndZone(difficulty, null)
+        }
 
-        statisticInteractor.getDontDoesDaysByDifficulty(difficulty).forEach { day ->
+        daysToProcess.forEach { day ->
             val exerciseList = statisticInteractor.getAllExercise()
 
             val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
@@ -112,7 +135,6 @@ class DaysFinishViewModel @Inject constructor(
 
             // Обновляем день с новыми идентификаторами упражнений
             statisticInteractor.insertDay(day.copy(exercises = newExIds))
-
         }
     }
 

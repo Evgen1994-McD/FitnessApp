@@ -23,14 +23,19 @@ suspend fun getDay(dayId: Int) : DayModel
 
 
     @Query("SELECT * FROM day_model_table")
-   suspend fun getAllDays() : List<DayModel>
+    suspend fun getAllDays() : List<DayModel>
 
-   @Delete
-   suspend fun deleteDay(dayModel: DayModel)
+    @Delete
+    suspend fun deleteDay(dayModel: DayModel)
 
 
     @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty AND isDone = 0") // тут мы выбираем и фильтруем себе дни по сложности
-   suspend fun getDontDonesDayByDifficulty(difficulty: String) : List<DayModel>// выдасти нам лист с DayModel по сложности. Флоу обязательно из пакета корутин. Флоу сам следит за изменениями и обновляет при необходимости
+    suspend fun getDontDonesDayByDifficulty(difficulty: String) : List<DayModel>// выдасти нам лист с DayModel по сложности. Флоу обязательно из пакета корутин. Флоу сам следит за изменениями и обновляет при необходимости
 
+    @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty AND zone =:zone AND isDone = 0") // выбираем дни по сложности и зоне
+    suspend fun getDontDonesDayByDifficultyAndZone(difficulty: String, zone: String) : List<DayModel>
+
+    @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty AND (zone IS NULL OR zone = '') AND isDone = 0") // выбираем дни по сложности без зоны
+    suspend fun getDontDonesDayByDifficultyAndNoZone(difficulty: String) : List<DayModel>
 
 }

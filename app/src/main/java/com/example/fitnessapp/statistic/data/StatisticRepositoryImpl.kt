@@ -48,6 +48,14 @@ class StatisticRepositoryImpl @Inject constructor(
         return mainDb.daysDao.getDontDonesDayByDifficulty(difficulty)
     }
 
+    override suspend fun getDontDoesDaysByDifficultyAndZone(difficulty: String, zone: String?): List<DayModel>{
+        return if (zone != null) {
+            mainDb.daysDao.getDontDonesDayByDifficultyAndZone(difficulty, zone)
+        } else {
+            mainDb.daysDao.getDontDonesDayByDifficultyAndNoZone(difficulty)
+        }
+    }
+
     override suspend fun getAllExercise():List<ExerciseModel>{
      return mainDb.exerciseDao.getAllExercises()
     }
