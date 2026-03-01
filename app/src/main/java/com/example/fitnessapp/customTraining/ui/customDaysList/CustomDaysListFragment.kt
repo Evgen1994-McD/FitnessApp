@@ -8,12 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentCustomDaysListBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.dao.ExerciseDao
-import com.example.fitnessapp.utils.DialogManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -77,7 +78,35 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
             rcView.layoutManager = LinearLayoutManager(requireContext())
             daysAdapter = CustomDaysAdapter(this@CustomDaysListFragment, exerciseDao)
             rcView.adapter = daysAdapter
+            createItemTouchHelper().attachToRecyclerView(rcView)
         }
+    }
+
+    private fun createItemTouchHelper(): ItemTouchHelper {
+        return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0, 
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false // Не разрешаем перемещение
+            }
+
+            override fun onSwiped(
+                viewHolder: RecyclerView.ViewHolder,
+                direction: Int
+            ) {
+                val position = viewHolder.adapterPosition
+                val currentList = daysAdapter.currentList
+                if (position >= 0 && position < currentList.size) {
+                    val day = currentList[position]
+                    model.deleteDay(day)
+                }
+            }
+        })
     }
 
     private fun daysListObserver(){
@@ -102,22 +131,6 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
             putInt("day_number", day.dayNumber)
         }
      findNavController().navigate(R.id.selectedExerciseListFragment, bundle)
-    }
-
-    override fun onDelete(day: DayModel) {
-DialogManager.showDialog(requireContext(), R.string.delete_day, object :DialogManager.Listener{
-    override fun onClick() {
-      model.deleteDay(day)
-    }
-/*
-Удаление добавленных дней
-Добавили иконку
-Добавили строку, вызываем диалог при нажантии
-Если пользователь хочет удалить, с помощью вью модел( написали там функцию)
-- Удалаяем
- */
-})
-
     }
 
     /*

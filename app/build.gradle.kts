@@ -101,6 +101,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-viewbinding:1.5.9")
     // Для observeAsState и ViewModel в Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    // Для collectAsStateWithLifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
+    // Для observeAsState с LiveData
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.9")
 
     //Lottie Animation
     implementation("com.airbnb.android:lottie:6.1.0")

@@ -11,4 +11,5 @@ interface SettingsRepository {
 //    fun switchTheme(savedTheme: Boolean)
     fun getThemeMode(): Flow<ThemeMode>
     suspend fun setThemeMode(mode: ThemeMode)
+    suspend fun openAllTrainings(onProgress: (Float) -> Unit = {})
 }

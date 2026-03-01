@@ -52,19 +52,10 @@ class DaysViewModel @Inject constructor(
                     list.filter { it.zone == zone }
                 }
 
-                // Логика разблокировки дней: первый день всегда открыт, остальные открыты, если предыдущий выполнен
-                // Кастомные тренировки (zone.isNullOrEmpty) всегда открыты
-                val processedList = filteredList.mapIndexed { index, day ->
-                    if (day.zone.isNullOrEmpty()) {
-                        // Кастомная тренировка - всегда открыта
-                        day.copy(isOpen = true)
-                    } else if (index == 0) {
-                        // Первый обычный день - всегда открыт
-                        day.copy(isOpen = true)
-                    } else {
-                        // Остальные обычные дни - открыты если предыдущий выполнен
-                        day.copy(isOpen = filteredList[index - 1].isDone)
-                    }
+                // Просто используем значения isOpen из базы данных
+                // isOpen = 0 → закрыто (замочек), isOpen = 1 → открыто
+                val processedList = filteredList.map { day ->
+                    day // Используем значения из базы как есть
                 }
 
                 daysList.value = processedList // передали лист который нашли
@@ -78,8 +69,12 @@ class DaysViewModel @Inject constructor(
 
                 )
             }
-
         }
+    }
+
+    // Метод для принудительного обновления всех данных дней (после открытия всех тренировок)
+    fun refreshAllDays() {
+        loadAllBodyProgress()
     }
 
 

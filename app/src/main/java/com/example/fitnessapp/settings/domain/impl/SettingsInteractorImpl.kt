@@ -11,7 +11,7 @@ class SettingsInteractorImpl @Inject constructor(
     private val settingsRepository: SettingsRepository
 ): SettingsInteractor{
     override suspend fun clearData() {
-settingsRepository.clearData()
+        settingsRepository.clearData()
     }
 
     override fun getThemeMode(): Flow<ThemeMode> {
@@ -20,6 +20,10 @@ settingsRepository.clearData()
 
     override suspend fun setThemeMode(mode: ThemeMode) {
         settingsRepository.setThemeMode(mode)
+    }
+
+    override suspend fun openAllTrainings(onProgress: (Float) -> Unit) {
+        settingsRepository.openAllTrainings(onProgress)
     }
 
 }

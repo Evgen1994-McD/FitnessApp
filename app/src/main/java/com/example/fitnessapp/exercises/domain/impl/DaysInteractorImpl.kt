@@ -22,4 +22,12 @@ class DaysInteractorImpl @Inject constructor(
     override suspend fun insertDay(day: DayModel) {
        exerciseRepository.insertDay(day)
     }
+    
+    override suspend fun refreshDays() {
+        // Получаем все дни по всем сложностям чтобы Room обновил Flow observers
+        val difficulties = listOf("Легкая", "Средняя", "Сложная")
+        difficulties.forEach { difficulty ->
+            exerciseRepository.getAllDaysByDifficulty(difficulty)
+        }
+    }
 }

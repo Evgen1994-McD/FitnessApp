@@ -47,10 +47,6 @@ class CustomDaysAdapter(var listener: Listener, private val exerciseDao: Exercis
                 
                 itemView.setOnClickListener { listener.onClick(day.copy(dayNumber = adapterPosition + 1)) }
 
-                delete.setOnClickListener {
-listener.onDelete(day)
-                }
-
             }
 
     }
@@ -88,7 +84,6 @@ listener.onDelete(day)
 
     interface Listener {   // Интерфейс для того чтобы переходить потом из DaysFragment в ExListFragment
         fun onClick(day: DayModel)
-        fun onDelete(day: DayModel)
     }
 
 }
