@@ -83,7 +83,7 @@ fun OpenAllTrainingsDialog(
                             modifier = Modifier
                                 .weight(1f)
                                 .height(4.dp),
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "${(progress * 100).toInt()}%",
