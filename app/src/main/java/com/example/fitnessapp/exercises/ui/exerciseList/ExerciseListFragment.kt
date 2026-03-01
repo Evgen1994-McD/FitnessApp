@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +16,20 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.exercises.ui.adapters.ExerciseAdapter
 import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
+import com.example.fitnessapp.exercises.ui.exercise.ExerciseViewModel
+import com.example.fitnessapp.statistic.ui.DaysFinishViewModel
+import com.example.fitnessapp.utils.DialogManager
+import com.example.fitnessapp.utils.getDayFromArguments
+import kotlinx.coroutines.delay
 import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
-import com.example.fitnessapp.utils.getDayFromArguments
+import kotlinx.coroutines.launch
 
 class ExerciseListFragment : Fragment() {
     private var dayModel: DayModel? = null
@@ -52,8 +58,6 @@ class ExerciseListFragment : Fragment() {
 
         init() //функия инит которая ниже
         exerciseListObserver()
-        dayModel = getDayFromArguments()
-        model.getDayExerciseList(dayModel)
         topCardObserver() // запускаю топКардОбсервер который будет мне обновлять состояние вью
         selectedExerciseObserver() // добавляю observer для выбранного упражнения
 /*
@@ -81,11 +85,41 @@ class ExerciseListFragment : Fragment() {
         )
         rcView.layoutManager = LinearLayoutManager(activity)
         rcView.adapter = adapter // Назначили адаптер
+        
+        // Загружаем список упражнений при инициализации
+        model.getDayExerciseList(dayModel)
+        
         bStart.setOnClickListener {
             val bundle = Bundle().apply {
                 putSerializable("day", dayModel )
             }
             findNavController().navigate(R.id.action_exListFragment_to_exerciseFragment, bundle)
+        }
+        
+        // Обработчик клика на FAB для вызова afterTrainingDialog
+        fabEdit.setOnClickListener {
+            dayModel?.let { day ->
+                val finishViewModel = activityViewModels<DaysFinishViewModel>().value
+                DialogManager.showAfterTrainingDialog(
+                    requireContext(),
+                    object : DialogManager.OnDifficultySelectedListener {
+                        override fun onDifficultySelected(difficultyLevel: Int, zone: String?) {
+                            if (difficultyLevel == 1) {
+                                finishViewModel?.addTrainingHarder(day.difficulty, day.zone)
+                            } else if (difficultyLevel == 2) {
+                                finishViewModel?.reduceTrainingComplexity(day.difficulty, day.zone)
+                            }
+                            // Получаем свежий dayModel из базы и обновляем список
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                delay(2500) // ждем 2.5 секунды как в диалоге
+                                dayModel = getDayFromArguments() // получаем обновленный dayModel с новыми ID
+                                model.getDayExerciseList(dayModel)
+                            }
+                        }
+                    },
+                    day.zone
+                )
+            }
         }
         /*
         Прикольно.
