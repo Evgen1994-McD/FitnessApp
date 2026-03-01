@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.annotation.OptIn
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +43,7 @@ class ExerciseFragment : Fragment() {
     private  var currentDay : DayModel? = null   // Это деймодел кооторый мы передали в аргументах
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
+    private var additionalRestTime = 0L // Дополнительное время отдыха для текущей сессии
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -117,6 +119,33 @@ class ExerciseFragment : Fragment() {
             }
         }
 
+        // Обработчик для кнопки +20 сек
+        binding.bAddTime?.setOnClickListener {
+            // Добавляем 20 секунд только если сейчас отдых
+            val isRest = binding.subTitle.text.toString().startsWith(getString(R.string.relax))
+            if (isRest) {
+                additionalRestTime += 20000L // 20 секунд в миллисекундах
+                // Обновляем таймер с учетом дополнительного времени
+                model.currentTimerValue?.let { currentTime ->
+                    val newTime = currentTime + 20000L
+                    model.updateTimerValue(newTime)
+                }
+            }
+        } ?: run {
+            // Если кнопка не найдена в binding, пробуем найти по ID
+            val addTimeButton = binding.root.findViewById<Button>(R.id.bAddTime)
+            addTimeButton?.setOnClickListener {
+                val isRest = binding.subTitle.text.toString().startsWith(getString(R.string.relax))
+                if (isRest) {
+                    additionalRestTime += 20000L
+                    model.currentTimerValue?.let { currentTime ->
+                        val newTime = currentTime + 20000L
+                        model.updateTimerValue(newTime)
+                    }
+                }
+            }
+        }
+
 
     }
 
@@ -160,10 +189,11 @@ class ExerciseFragment : Fragment() {
 
     private fun updateTime() = with(binding){
         model.updateTime.observe(viewLifecycleOwner){ time ->
-            tvTime.text = TimeUtils.getTime(time)
-animProgressBar(time)
+            val totalTime = time + additionalRestTime
+            tvTime.text = TimeUtils.getTime(totalTime)
+            animProgressBar(totalTime)
             /*
-            передаём прогресс в прогресс бар
+            передаём прогресс в прогресс бар с учетом дополнительного времени
              */
         }
     }
@@ -182,14 +212,21 @@ animProgressBar(time)
 
 
     private fun showTime(exercise: ExerciseModel?) {
+        // Сбрасываем дополнительное время отдыха при каждом новом упражнении
+        additionalRestTime = 0L
+        
+        // Получаем кнопку либо через binding, либо через findViewById
+        val addTimeButton = binding.bAddTime ?: binding.root.findViewById<Button>(R.id.bAddTime)
+        
         if (exercise?.time!!.startsWith("x") || exercise.time.isEmpty() ) {
             binding.progressBar.visibility = View.INVISIBLE  // если количество повторений считаем, то прогрессбар не нужен, поэтому инвизибл
             binding.tvTime.text = exercise.time
+            addTimeButton?.visibility = View.GONE // Скрываем кнопку +20 сек для упражнений с повторениями
         } else {
             binding.progressBar.visibility = View.VISIBLE // тут соответвтенно - нужен Прогрессбар
             binding.progressBar.max = exercise.time.toInt() * 1000 // потому что считаем в милисекундах умножаем на 1000
-            binding.progressBar.progress =  exercise?.time!!.toInt() * 1000 // обновим максимум пб До максимума
-        model.startTimer(exercise.time.toLong()) // запустим таймер
+            binding.progressBar.progress = exercise?.time!!.toInt() * 1000 // обновим максимум пб До максимума
+            model.startTimer(exercise.time.toLong()) // запустим таймер
         }
     }
 
@@ -201,6 +238,13 @@ animProgressBar(time)
         val blueDark =ContextCompat.getColor(requireContext(), R.color.blue_dark)
         val black =ContextCompat.getColor(requireContext(), R.color.black)
 
+        // Отладочная информация
+        android.util.Log.d("ExerciseFragment", "setMainColors: isExercise=$isExercise")
+        android.util.Log.d("ExerciseFragment", "bAddTime exists: ${bAddTime != null}")
+
+        // Получаем кнопку либо через binding, либо через findViewById
+        val addTimeButton = bAddTime ?: binding.root.findViewById<Button>(R.id.bAddTime)
+        android.util.Log.d("ExerciseFragment", "addTimeButton found: ${addTimeButton != null}")
 
         if (isExercise){
 
@@ -213,6 +257,8 @@ progressBar.progressTintList = ColorStateList.valueOf(blueDark)
 progressBar.backgroundTintList = ColorStateList.valueOf(white)
             bNext.backgroundTintList = ColorStateList.valueOf(blue)
             bNext.setTextColor(white)
+            addTimeButton?.visibility = View.GONE // Скрываем кнопку +20 сек для упражнений
+            android.util.Log.d("ExerciseFragment", "Button visibility set to GONE")
 
         }else {
 
@@ -225,6 +271,8 @@ progressBar.backgroundTintList = ColorStateList.valueOf(white)
             progressBar.backgroundTintList = ColorStateList.valueOf(white)
             bNext.backgroundTintList = ColorStateList.valueOf(white)
             bNext.setTextColor(black)
+            addTimeButton?.visibility = View.VISIBLE // Показываем кнопку +20 сек для отдыха
+            android.util.Log.d("ExerciseFragment", "Button visibility set to VISIBLE")
 
         }
     }
@@ -235,6 +283,9 @@ progressBar.backgroundTintList = ColorStateList.valueOf(white)
         val blue =ContextCompat.getColor(requireContext(), R.color.blue)
         val blueDark =ContextCompat.getColor(requireContext(), R.color.blue_dark)
         val black =ContextCompat.getColor(requireContext(), R.color.black)
+
+        // Получаем кнопку либо через binding, либо через findViewById
+        val addTimeButton = bAddTime ?: binding.root.findViewById<Button>(R.id.bAddTime)
 
         if (isExercise){
             bg.setBackgroundColor(white)
@@ -249,6 +300,7 @@ progressBar.backgroundTintList = ColorStateList.valueOf(white)
 
             bNext.backgroundTintList = ColorStateList.valueOf(blue)
             bNext.setTextColor(white)
+            addTimeButton?.visibility = View.GONE // Скрываем кнопку +20 сек для финишного экрана
 
         }
     }

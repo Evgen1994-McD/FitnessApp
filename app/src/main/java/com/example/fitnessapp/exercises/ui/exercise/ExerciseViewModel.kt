@@ -27,6 +27,7 @@ class ExerciseViewModel @Inject constructor(
     var updateTime = MutableLiveData<Long>()
     var updateToolbar = MutableLiveData<String>()
     private var timer: CountDownTimer? = null // переменная для таймера
+    var currentTimerValue: Long? = null // текущее значение таймера
     var currentDay: DayModel? = null
     var nextDay: DayModel? = null
     var statisticModel: StatisticModel? = null // глобал переменная для получения статистики
@@ -151,6 +152,7 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
             (time + 1) * 1000, 1000 // интервал запускается каждую секунду
         ) { //мы сделали тут 100 мс для того чтобы прогресс бар шел плавно, вот и всё. Если бы было 1000, то были бы большие скачки.
             override fun onTick(restTime: Long) {
+                currentTimerValue = restTime // сохраняем текущее значение таймера
                 updateTime.value = restTime
                 speechLastDigits(restTime)
 
@@ -161,6 +163,26 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
                 nextExercise()
             } // тут мы переделали, он не вызывает фрагмент, а запускает следующее упражнение при завершении таймера
         }.start()  // обязательно указываем старт для нашего таймера
+    }
+
+    fun updateTimerValue(newTime: Long) {
+        currentTimerValue = newTime
+        updateTime.value = newTime
+        // Перезапускаем таймер с новым значением
+        timer?.cancel()
+        timer = object : CountDownTimer(
+            (newTime + 1) * 1000, 1000
+        ) {
+            override fun onTick(restTime: Long) {
+                currentTimerValue = restTime
+                updateTime.value = restTime
+                speechLastDigits(restTime)
+            }
+
+            override fun onFinish() {
+                nextExercise()
+            }
+        }.start()
     }
 
     fun nextExercise() {

@@ -21,7 +21,7 @@ val templist = ArrayList<ExerciseModel>()
                         context.getString(R.string.pre)
                     }
                             else{
-                        context.getString(R.string.recovery) // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
+                        context.getString(R.string.recovery) // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 40 СЕКУНД
 
                     },
 
