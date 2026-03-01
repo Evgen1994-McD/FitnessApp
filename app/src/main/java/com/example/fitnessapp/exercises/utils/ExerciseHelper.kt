@@ -75,16 +75,18 @@ val exercisesIdsArray = exercisesIds.split(",") // Это массив кото�
         for (i in exercisesIdsArray.indices){
             if (exercisesIdsArray[i].isNotEmpty()) {
                 val exerciseId = exercisesIdsArray[i].toInt()
-                val exercise = list.filter {
+                val filteredExercises = list.filter {
                     it.id == exerciseId
-                } [0]
-                tempList.add(
-                    exercise
-                    /*
+                }
+                if (filteredExercises.isNotEmpty()) {
+                    tempList.add(
+                        filteredExercises[0]
+                        /*
                 В данном методе получаем упражнения нужного дня путём разделения переданной строки из БД
                 по запятой.
                  */
-                )
+                    )
+                }
             }
         }
         return tempList

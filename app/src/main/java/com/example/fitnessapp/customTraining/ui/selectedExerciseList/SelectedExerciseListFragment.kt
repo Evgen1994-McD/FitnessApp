@@ -63,15 +63,27 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
 
     private fun dayObserver(){
         model.exerciseData.observe(viewLifecycleOwner){ list ->
-_binding.textEmpty.visibility = if(list.isEmpty()){
-    View.VISIBLE
-} else {
-    View.GONE
+            val isEmpty = list.isEmpty()
+            
+            // Управляем видимостью плейсхолдера и текстов
+            _binding.textEmpty.visibility = if(isEmpty) View.VISIBLE else View.GONE
+            _binding.imageEmpty.visibility = if(isEmpty) View.VISIBLE else View.GONE
+            _binding.textEmptySubtext.visibility = if(isEmpty) View.VISIBLE else View.GONE
 
-}
             val count = "${getString(R.string.selected_exercise_count)} ${list.size}"
             _binding.tvExCount.text = count
             adapter.submitList(list)
+        }
+        
+        model.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            _binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+            
+            // Во время загрузки скрываем плейсхолдер
+            if (isLoading) {
+                _binding.textEmpty.visibility = View.GONE
+                _binding.imageEmpty.visibility = View.GONE
+                _binding.textEmptySubtext.visibility = View.GONE
+            }
         }
     }
 
@@ -177,9 +189,7 @@ model.getExercises(dayId)
         }
         adapter.submitList(tempList)
 
-        if (tempList.isEmpty()) {
-            _binding.textEmpty.visibility = View.VISIBLE
-        }
+        // Видимость управляется в dayObserver, дублирование не нужно
     }
 
     override fun onInfoClick(exercise: ExerciseModel) {
@@ -220,9 +230,16 @@ model.getExercises(dayId)
 
     override fun addExerciseTime(pos:Int) {
         try {
-
+            // Инициализируем tempList текущими данными из адаптера
             tempList = ArrayList<ExerciseModel>(adapter.currentList)
-            val selectedExercise = let { tempList[pos].copy() }
+            
+            // Проверяем что позиция валидна
+            if (pos < 0 || pos >= tempList.size) {
+                Log.d("MyLog", "Неверный Индекс: $pos, размер списка: ${tempList.size}")
+                return
+            }
+            
+            val selectedExercise = tempList[pos].copy()
             var replacerWithoutX = ""
             var upX2 = ""
             var stringTime = ""
@@ -247,12 +264,10 @@ model.getExercises(dayId)
                 model.getExercises(dayId)
 
             }
-            if (tempList.isEmpty()) {
-                _binding.textEmpty.visibility = View.VISIBLE
-            }
+            // Видимость управляется в dayObserver, дублирование не нужно
         }
         catch (e: IndexOutOfBoundsException) {
-            Log.d("MyLog", "Неверный Индекс")
+            Log.d("MyLog", "Неверный Индекс: ${e.message}")
         } catch (e: NumberFormatException) {
             Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
@@ -266,16 +281,22 @@ model.getExercises(dayId)
          */
 
         try {
-
-
-        tempList = ArrayList<ExerciseModel>(adapter.currentList)
-        val selectedExercise = let {  tempList[pos].copy()}
-        var replacerWithoutX =""
-        var upX2 =""
-        var stringTime = ""
-        Log.d("MyLog", "Selected id = ${selectedExercise.id}")
-        if (selectedExercise.time.startsWith("x")) {
-            replacerWithoutX = ((selectedExercise.time).split("x"))[1]
+            // Инициализируем tempList текущими данными из адаптера
+            tempList = ArrayList<ExerciseModel>(adapter.currentList)
+            
+            // Проверяем что позиция валидна
+            if (pos < 0 || pos >= tempList.size) {
+                Log.d("MyLog", "Неверный Индекс: $pos, размер списка: ${tempList.size}")
+                return
+            }
+            
+            val selectedExercise = tempList[pos].copy()
+            var replacerWithoutX =""
+            var upX2 =""
+            var stringTime = ""
+            Log.d("MyLog", "Selected id = ${selectedExercise.id}")
+            if (selectedExercise.time.startsWith("x")) {
+                replacerWithoutX = ((selectedExercise.time).split("x"))[1]
              if (replacerWithoutX.toInt()/1.5 >0){
                 upX2 = (replacerWithoutX.toInt()/1.5).roundToInt().toString()
             } else upX2 = "1"
@@ -302,11 +323,10 @@ model.getExercises(dayId)
             model.getExercises(dayId)
 
         }
-        if (tempList.isEmpty()){
-            _binding.textEmpty.visibility = View.VISIBLE
-        } }
+        // Видимость управляется в dayObserver, дублирование не нужно
+        }
         catch (e: IndexOutOfBoundsException) {
-            Log.d("MyLog", "Неверный Индекс")
+            Log.d("MyLog", "Неверный Индекс: ${e.message}")
         } catch (e: NumberFormatException) {
             Toast.makeText(context, "Ошибка: Невозможно преобразовать строку в число.", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {

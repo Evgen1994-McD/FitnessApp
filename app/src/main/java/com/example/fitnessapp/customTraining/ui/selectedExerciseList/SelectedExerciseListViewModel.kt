@@ -19,9 +19,11 @@ class SelectedExerciseListViewModel @Inject constructor(
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
     val exerciseData = MutableLiveData<List<ExerciseModel>>()
+    val isLoading = MutableLiveData<Boolean>()
     private var dayModel: DayModel? = null
 
     fun getExercises(id: Int) = viewModelScope.launch {
+        isLoading.value = true
         delay(200)
         dayModel = customInteractor.getDayById(id)
         val exerciseList = customInteractor.getAllExercise()
@@ -29,6 +31,7 @@ class SelectedExerciseListViewModel @Inject constructor(
             dayModel?.exercises!!,
             exerciseList
         )
+        isLoading.value = false
     }
 
 

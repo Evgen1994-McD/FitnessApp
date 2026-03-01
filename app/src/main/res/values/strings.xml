@@ -52,6 +52,7 @@
     <string name="no_exercise">В данном дне нет упражнений.</string>
     <string name="relax">Отдохните</string>
     <string name="selected_empty">Упражнений пока нет...</string>
+    <string name="selected_empty_subtext">Скорее добавьте их!</string>
 
 <!--    Exercise Helper-->
     <string name="recovery">40</string>
