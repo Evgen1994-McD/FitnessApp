@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.fitnessapp.R
@@ -52,6 +53,10 @@ object DialogManager {   // Сначала сделал как класс, но 
         // Применяем цвета к тексту
         dialog.findViewById<TextView>(android.R.id.message)?.setTextColor(textColor)
         dialog.findViewById<TextView>(android.R.id.title)?.setTextColor(textColor)
+        
+        // Устанавливаем белый цвет для кнопок
+        dialog.findViewById<Button>(android.R.id.button1)?.setTextColor(android.graphics.Color.WHITE)
+        dialog.findViewById<Button>(android.R.id.button2)?.setTextColor(android.graphics.Color.WHITE)
         
     }
 
