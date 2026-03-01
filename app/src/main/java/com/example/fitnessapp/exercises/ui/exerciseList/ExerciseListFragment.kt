@@ -33,6 +33,7 @@ class ExerciseListFragment : Fragment() {
     private var ab: ActionBar? =
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
     private lateinit var sharedPreferences: SharedPreferences
+    private var isBottomSheetShowing = false // Флаг для дебаунса
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -171,6 +172,13 @@ progressbar.max = card.maxProgress * 100
     }
 
     private fun showExerciseBottomSheet(exercise: com.example.fitnessapp.db.ExerciseModel) {
+        // Проверяем флаг дебаунса
+        if (isBottomSheetShowing) {
+            return
+        }
+        
+        isBottomSheetShowing = true
+        
         val composeView = ComposeView(requireContext()).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -181,6 +189,8 @@ progressbar.max = card.maxProgress * 100
                     ExerciseBottomSheet(
                         exercise = exercise,
                         onDismiss = {
+                            // Сбрасываем флаг при закрытии
+                            isBottomSheetShowing = false
                             // Очищаем selectedExercise при закрытии
                             model.selectedExercise.value = null
                             // Удаляем ComposeView из parent

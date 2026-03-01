@@ -28,6 +28,10 @@ class ExerciseAdapter(
             checkBoxImage.visibility =
                 if (exercise.isDone) View.VISIBLE else View.INVISIBLE// Там где будет из isDone = true - то отметим чек бокс. ИЗИ
 
+            // Скрываем иконку информации если упражнение выполнено
+            infoIcon.visibility =
+                if (exercise.isDone) View.INVISIBLE else View.VISIBLE
+
             tvNameEx.text = exercise.name //Название упражнения
             tvcount.text = getTime(exercise.time)
             

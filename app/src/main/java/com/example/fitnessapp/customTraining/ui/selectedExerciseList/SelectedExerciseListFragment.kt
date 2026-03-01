@@ -26,14 +26,14 @@ import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Listener {
-private var dayId = -1
+    private var dayId = -1
     private var binding: FragmentSelectedExerciseListBinding? = null
     private val _binding get() = binding!!
     private lateinit var adapter: SelectedListExerciseAdapter
     private lateinit var tempList: ArrayList<ExerciseModel>
 
     private val model: SelectedExerciseListViewModel by viewModels()
-
+    private var isBottomSheetShowing = false // Флаг для дебаунса
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -187,6 +187,13 @@ model.getExercises(dayId)
     }
 
     private fun showExerciseBottomSheet(exercise: ExerciseModel) {
+        // Проверяем флаг дебаунса
+        if (isBottomSheetShowing) {
+            return
+        }
+        
+        isBottomSheetShowing = true
+        
         val composeView = ComposeView(requireContext()).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -197,6 +204,8 @@ model.getExercises(dayId)
                     ExerciseBottomSheet(
                         exercise = exercise,
                         onDismiss = {
+                            // Сбрасываем флаг при закрытии
+                            isBottomSheetShowing = false
                             // Удаляем ComposeView из parent
                             (parent as? ViewGroup)?.removeView(this)
                         }

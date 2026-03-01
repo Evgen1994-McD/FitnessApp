@@ -28,6 +28,7 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     
     // Состояние фильтров
     private val selectedZones = mutableSetOf<String>()
+    private var isBottomSheetShowing = false // Флаг для дебаунса
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -155,6 +156,13 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
 
     private fun showExerciseBottomSheet(exercise: ExerciseModel) {
+        // Проверяем флаг дебаунса
+        if (isBottomSheetShowing) {
+            return
+        }
+        
+        isBottomSheetShowing = true
+        
         val composeView = ComposeView(requireContext()).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -165,6 +173,8 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
                     ExerciseBottomSheet(
                         exercise = exercise,
                         onDismiss = {
+                            // Сбрасываем флаг при закрытии
+                            isBottomSheetShowing = false
                             // Удаляем ComposeView из parent
                             (parent as? ViewGroup)?.removeView(this)
                         }
