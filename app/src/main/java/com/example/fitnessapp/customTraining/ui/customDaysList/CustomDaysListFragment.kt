@@ -111,12 +111,16 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
 
     private fun daysListObserver(){
         model.daysListData.observe(viewLifecycleOwner){ list ->
+            val isEmpty = list.isEmpty()
+            
+            // Управляем видимостью плейсхолдера и текстов
+            binding.textEmpty.visibility = if(isEmpty) View.VISIBLE else View.GONE
+            binding.imageEmpty.visibility = if(isEmpty) View.VISIBLE else View.GONE
+            binding.textEmptySubtext.visibility = if(isEmpty) View.VISIBLE else View.GONE
+            
+
+            
             daysAdapter.submitList(list)
-            binding.tvEmpty.visibility = if (list.isEmpty()) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
-            }
         }
     }
 

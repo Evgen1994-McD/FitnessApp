@@ -32,14 +32,42 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/tvEmpty"
+        android:id="@+id/textEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="empty"
-        app:layout_constraintBottom_toTopOf="@+id/addNewDayButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center"
+        android:text="@string/custom_days_empty"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/rcView"
+        app:layout_constraintEnd_toEndOf="@+id/rcView"
+        app:layout_constraintStart_toStartOf="@+id/rcView"
+        app:layout_constraintTop_toTopOf="@+id/rcView" />
+
+    <ImageView
+        android:id="@+id/imageEmpty"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ph_no_exercise"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="@+id/rcView"
+        app:layout_constraintStart_toStartOf="@+id/rcView"
+        app:layout_constraintTop_toBottomOf="@+id/textEmpty" />
+
+    <TextView
+        android:id="@+id/textEmptySubtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/custom_days_empty_subtext"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/rcView"
+        app:layout_constraintStart_toStartOf="@+id/rcView"
+        app:layout_constraintTop_toBottomOf="@+id/imageEmpty" />
+
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
