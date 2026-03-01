@@ -53,10 +53,16 @@ class DaysViewModel @Inject constructor(
                 }
 
                 // Логика разблокировки дней: первый день всегда открыт, остальные открыты, если предыдущий выполнен
+                // Кастомные тренировки (zone.isNullOrEmpty) всегда открыты
                 val processedList = filteredList.mapIndexed { index, day ->
-                    if (index == 0) {
+                    if (day.zone.isNullOrEmpty()) {
+                        // Кастомная тренировка - всегда открыта
+                        day.copy(isOpen = true)
+                    } else if (index == 0) {
+                        // Первый обычный день - всегда открыт
                         day.copy(isOpen = true)
                     } else {
+                        // Остальные обычные дни - открыты если предыдущий выполнен
                         day.copy(isOpen = filteredList[index - 1].isDone)
                     }
                 }
