@@ -70,6 +70,9 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
 
             daysListObserver()
             initRcView()
+            
+            // Устанавливаем начальное состояние загрузки
+            model.setLoadingState(true)
 
         }
 
@@ -111,6 +114,9 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
 
     private fun daysListObserver(){
         model.daysListData.observe(viewLifecycleOwner){ list ->
+            // Останавливаем загрузку когда получены данные
+            model.setLoadingState(false)
+            
             val isEmpty = list.isEmpty()
             
             // Управляем видимостью плейсхолдера и текстов
@@ -118,16 +124,25 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
             binding.imageEmpty.visibility = if(isEmpty) View.VISIBLE else View.GONE
             binding.textEmptySubtext.visibility = if(isEmpty) View.VISIBLE else View.GONE
             
-
-            
             daysAdapter.submitList(list)
+        }
+        
+        model.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+            
+            // Во время загрузки скрываем плейсхолдер
+            if (isLoading) {
+                binding.textEmpty.visibility = View.GONE
+                binding.imageEmpty.visibility = View.GONE
+                binding.textEmptySubtext.visibility = View.GONE
+            }
         }
     }
 
     override fun onDestroyView() {
-            super.onDestroyView()
-            _binding = null
-        }
+        super.onDestroyView()
+        _binding = null
+    }
 
     override fun onClick(day: DayModel) {
         val bundle = Bundle().apply {

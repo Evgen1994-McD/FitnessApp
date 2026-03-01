@@ -1,5 +1,7 @@
 package com.example.fitnessapp.customTraining.ui.customDaysList
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -19,6 +21,9 @@ class CustomDaysListViewModel @Inject constructor(
     }
 
     val daysListData = customInteractor.getAllDaysByDifficulty(customDifficulty).asLiveData(Dispatchers.Main)
+    
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
 
     fun insertDay(dayModel: DayModel) = viewModelScope.launch {
        customInteractor.insertDay(dayModel)
@@ -26,5 +31,9 @@ class CustomDaysListViewModel @Inject constructor(
 
     fun deleteDay(day:DayModel)= viewModelScope.launch {
         customInteractor.deleteDay(day)
+    }
+    
+    fun setLoadingState(isLoading: Boolean) {
+        _isLoading.value = isLoading
     }
 }
