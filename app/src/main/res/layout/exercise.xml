@@ -144,4 +144,14 @@
         app:layout_constraintTop_toTopOf="@+id/tvTime"
         app:srcCompat="@drawable/ic_start" />
 
+    <ImageView
+        android:id="@+id/btHelp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_help_outline_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

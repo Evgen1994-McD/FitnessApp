@@ -189,6 +189,14 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         }.start()
     }
 
+    fun getNextExercise(): ExerciseModel? {
+        return if (doneExerciseCounter < exercisesStack.size) {
+            exercisesStack[doneExerciseCounter]
+        } else {
+            null
+        }
+    }
+
     fun nextExercise() {
         timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
         updateToolbar()

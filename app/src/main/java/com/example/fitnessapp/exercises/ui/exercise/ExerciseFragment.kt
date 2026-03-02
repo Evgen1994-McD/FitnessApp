@@ -20,8 +20,12 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
+import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
+import com.example.fitnessapp.exercises.ui.exercise.ExerciseViewModel
 import com.example.fitnessapp.utils.TimeUtils
 import com.example.fitnessapp.utils.getDayFromArguments
+import androidx.compose.ui.platform.ComposeView
+import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import pl.droidsonroids.gif.GifDrawable
 
@@ -33,6 +37,7 @@ class ExerciseFragment : Fragment() {
 
     private var currentDay: DayModel? = null
     private var ab: ActionBar? = null
+    private var isBottomSheetShowing = false // Флаг для дебаунса
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -126,6 +131,52 @@ class ExerciseFragment : Fragment() {
             model.currentTimerValue?.let { currentTime ->
                 val timeInSeconds = currentTime / 1000
                 model.updateTimerValue(timeInSeconds)
+            }
+        }
+        
+        // Обработчик для кнопки помощи
+        binding.btHelp.setOnClickListener {
+            val currentExercise = model.updateExercise.value
+            val isRest = currentExercise?.subtitle?.toString()?.startsWith(getString(R.string.relax)) == true
+            
+            // Определяем упражнение для показа
+            val exerciseToShow = if (isRest) {
+                // Если отдых, показываем следующее упражнение
+                model.getNextExercise()
+            } else {
+                // Если упражнение, показываем текущее
+                currentExercise
+            }
+            
+            exerciseToShow?.let { exercise ->
+                // Проверяем, нужно ли поставить на паузу таймер
+                val isTimerExercise = exercise.time.startsWith("x") == false && !exercise.time.isNullOrEmpty()
+                var wasTimerRunning = false
+                
+                if (isTimerExercise) {
+                    model.currentTimerValue?.let { currentTime ->
+                        if (currentTime > 0) {
+                            wasTimerRunning = true
+                            model.pauseTimer()
+                            // Скрываем время и показываем кнопку play
+                            binding.tvTime.visibility = View.INVISIBLE
+                            binding.icStart.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                
+                // Показываем bottom sheet с информацией
+                showExerciseBottomSheet(exercise, isRest) {
+                    // При закрытии bottom sheet возобновляем таймер если он был на паузе
+                    if (wasTimerRunning) {
+                        binding.tvTime.visibility = View.VISIBLE
+                        binding.icStart.visibility = View.INVISIBLE
+                        model.currentTimerValue?.let { currentTime ->
+                            val timeInSeconds = currentTime / 1000
+                            model.updateTimerValue(timeInSeconds)
+                        }
+                    }
+                }
             }
         }
     }
@@ -262,5 +313,39 @@ class ExerciseFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         model.onPause()
+    }
+    
+    private fun showExerciseBottomSheet(exercise: ExerciseModel, isRest: Boolean, onDismiss: () -> Unit) {
+        // Проверяем флаг дебаунса
+        if (isBottomSheetShowing) {
+            return
+        }
+        
+        isBottomSheetShowing = true
+        
+        val composeView = ComposeView(requireContext()).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            setContent {
+                FitnessAppTheme {
+                    ExerciseBottomSheet(
+                        exercise = exercise,
+                        onDismiss = {
+                            // Сбрасываем флаг при закрытии
+                            isBottomSheetShowing = false
+                            // Вызываем колбэк для возобновления таймера
+                            onDismiss()
+                            // Удаляем ComposeView из parent
+                            parent?.let { (it as ViewGroup).removeView(this) }
+                        }
+                    )
+                }
+            }
+        }
+        
+        // Добавляем ComposeView в корневой layout
+        binding.root.addView(composeView)
     }
 }
