@@ -33,7 +33,6 @@ class ExerciseFragment : Fragment() {
 
     private var currentDay: DayModel? = null
     private var ab: ActionBar? = null
-    private var additionalRestTime = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,10 +79,15 @@ class ExerciseFragment : Fragment() {
         binding.bAddTime?.setOnClickListener {
             val isRest = binding.subTitle.text.toString().startsWith(getString(R.string.relax))
             if (isRest) {
-                additionalRestTime += 20L
+                // Обновляем max значение прогресс бара
+                val currentMax = binding.progressBar.max
+                binding.progressBar.max = (currentMax + 20000).toInt()
+                
+                // Обновляем таймер в ViewModel - передаем время в секундах
                 model.currentTimerValue?.let { currentTime ->
-                    val newTime = currentTime + 20L
-                    model.updateTimerValue(newTime)
+                    val newTimeInSeconds = (currentTime + 20000L) / 1000
+                    android.util.Log.d("ExerciseFragment", "Updating timer: $currentTime ms -> $newTimeInSeconds s")
+                    model.updateTimerValue(newTimeInSeconds)
                 }
             }
         }
@@ -115,9 +119,9 @@ class ExerciseFragment : Fragment() {
 
     private fun updateTime() = with(binding) {
         model.updateTime.observe(viewLifecycleOwner) { time ->
-            val totalTime = time + additionalRestTime
-            tvTime.text = TimeUtils.getTime(totalTime)
-            animProgressBar(totalTime)
+            android.util.Log.d("ExerciseFragment", "Timer time: $time ms")
+            tvTime.text = TimeUtils.getTime(time)
+            animProgressBar(time)
         }
     }
 
@@ -129,16 +133,15 @@ class ExerciseFragment : Fragment() {
     }
 
     private fun showTime(exercise: ExerciseModel?) {
-        additionalRestTime = 0L
-        
         if (exercise?.time!!.startsWith("x") || exercise.time.isEmpty()) {
             binding.progressBar.visibility = View.INVISIBLE
             binding.tvTime.text = exercise.time
             binding.bAddTime?.visibility = View.INVISIBLE
         } else {
             binding.progressBar.visibility = View.VISIBLE
-            binding.progressBar.max = exercise.time.toInt() * 1000
-            binding.progressBar.progress = exercise.time.toInt() * 1000
+            val totalTime = exercise.time.toLong() * 1000 // Базовое время в миллисекундах
+            binding.progressBar.max = totalTime.toInt()
+            binding.progressBar.progress = totalTime.toInt()
             model.startTimer(exercise.time.toLong())
         }
     }

@@ -18,10 +18,16 @@ object TimeUtils {
 
 
     fun getTime(time:Long): String{
-        val cv = Calendar.getInstance()
-        cv.timeInMillis = time
-        return formatter.format(cv.time)
-    }  // Собственно, это функция для перевода времени в МС, урок 17.
+        val seconds = (time / 1000) % 60
+        val minutes = (time / (1000 * 60)) % 60
+        val hours = (time / (1000 * 60 * 60)) % 24
+        
+        return if (hours > 0) {
+            String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            String.format("%02d:%02d", minutes, seconds)
+        }
+    }  // Форматируем интервал времени в ММ:СС или ЧЧ:ММ:СС
 
     fun getWorkoutTime(time: Long): String {
         val cv = GregorianCalendar(TimeZone.getTimeZone("UTC"))
