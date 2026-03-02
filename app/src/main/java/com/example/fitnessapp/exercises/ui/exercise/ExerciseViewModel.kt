@@ -165,6 +165,10 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         }.start()  // обязательно указываем старт для нашего таймера
     }
 
+    fun pauseTimer() {
+        timer?.cancel()
+    }
+
     fun updateTimerValue(newTime: Long) {
         currentTimerValue = newTime
         updateTime.value = newTime

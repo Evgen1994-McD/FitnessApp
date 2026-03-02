@@ -48,7 +48,10 @@ class ExerciseFragment : Fragment() {
         ab = (activity as AppCompatActivity).supportActionBar
 
         // Инициализируем XML кнопку
-        binding.bAddTime?.visibility = View.INVISIBLE
+        binding.bAddTime?.visibility = View.GONE
+        
+        // Инициализируем кнопку play/pause
+        binding.icStart.visibility = View.INVISIBLE
 
         currentDay = getDayFromArguments()
         updateExercise()
@@ -89,6 +92,40 @@ class ExerciseFragment : Fragment() {
                     android.util.Log.d("ExerciseFragment", "Updating timer: $currentTime ms -> $newTimeInSeconds s")
                     model.updateTimerValue(newTimeInSeconds)
                 }
+            }
+        }
+        
+        // Обработчик для паузы таймера при клике на время
+        binding.tvTime.setOnClickListener {
+            // Проверяем, что это упражнение с таймером (не с повторениями)
+            val currentExercise = model.updateExercise.value
+            val isTimerExercise = currentExercise?.time?.startsWith("x") == false && !currentExercise?.time.isNullOrEmpty()
+            
+            if (isTimerExercise) {
+                model.currentTimerValue?.let { currentTime ->
+                    if (currentTime > 0) {
+                        // Останавливаем таймер
+                        model.pauseTimer()
+                        // Скрываем время и показываем кнопку play
+                        binding.tvTime.visibility = View.INVISIBLE
+                        binding.icStart.visibility = View.VISIBLE
+                        // Останавливаем прогресс бар
+                        binding.progressBar.clearAnimation()
+                    }
+                }
+            }
+        }
+        
+        // Обработчик для возобновления таймера при клике на ic_start
+        binding.icStart.setOnClickListener {
+            // Показываем время и скрываем кнопку play
+            binding.tvTime.visibility = View.VISIBLE
+            binding.icStart.visibility = View.INVISIBLE
+            
+            // Возобновляем таймер
+            model.currentTimerValue?.let { currentTime ->
+                val timeInSeconds = currentTime / 1000
+                model.updateTimerValue(timeInSeconds)
             }
         }
     }
