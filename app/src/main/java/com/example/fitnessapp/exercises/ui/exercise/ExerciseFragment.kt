@@ -201,6 +201,7 @@ class ExerciseFragment : Fragment() {
 
     private fun changeButtonText(title: String) {
         if (title == getString(R.string.day_finish_name)) {
+            binding.btHelp.visibility = View.INVISIBLE
             binding.bNext.text = getString(R.string.statistic)
         }
     }
