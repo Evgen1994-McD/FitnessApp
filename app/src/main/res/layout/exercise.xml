@@ -133,4 +133,15 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.53" />
 
+    <ImageView
+        android:id="@+id/ic_start"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTime"
+        app:layout_constraintEnd_toEndOf="@+id/tvTime"
+        app:layout_constraintStart_toStartOf="@+id/tvTime"
+        app:layout_constraintTop_toTopOf="@+id/tvTime"
+        app:srcCompat="@drawable/ic_start" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
