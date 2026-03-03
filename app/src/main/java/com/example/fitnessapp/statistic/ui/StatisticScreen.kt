@@ -12,9 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -26,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -141,17 +147,21 @@ Column(modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
-        IconButton(  modifier = Modifier
-            .size(52.dp)
-            .padding(end = 10.dp),
+        FloatingActionButton(
             onClick = {
-            showWeightDialog.value = true
-        },
-          ){
-           Icon(painter = painterResource(R.drawable.ic_add_weight_24),
-               contentDescription = null,
-               modifier = Modifier
-                   .fillMaxSize())
+                showWeightDialog.value = true
+            },
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .size(56.dp),
+            containerColor = Color(0xFF2196F3) // Blue color for better visibility
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_add_weight_24),
+                contentDescription = "Добавить вес",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 
