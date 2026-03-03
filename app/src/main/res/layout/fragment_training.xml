@@ -117,4 +117,14 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.23119015" />
 
+    <ImageView
+        android:id="@+id/bt_custom_edit"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

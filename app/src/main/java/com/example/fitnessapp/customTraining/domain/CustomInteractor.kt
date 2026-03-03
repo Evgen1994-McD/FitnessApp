@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface CustomInteractor {
 
     suspend fun getAllExercisesFromTo(from:Int, to:Int): List<ExerciseModel>
-    suspend fun getDayById(id: Int): DayModel
+    suspend fun getDayById(id: Int): DayModel?
     suspend fun insertDay(dayModel: DayModel)
 
     /*

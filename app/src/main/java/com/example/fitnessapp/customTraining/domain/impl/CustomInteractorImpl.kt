@@ -14,7 +14,7 @@ class CustomInteractorImpl @Inject constructor(
     return customRepository.getAllExercisesFromTo(from,to)
     }
 
-    override suspend fun getDayById(id: Int): DayModel {
+    override suspend fun getDayById(id: Int): DayModel? {
        return customRepository.getDayById(id)
     }
 

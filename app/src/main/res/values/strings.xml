@@ -17,6 +17,7 @@
     <string name="waiting_message">Начало упражнений через :</string>
     <string name="start">Начать</string>
     <string name="Next">Следующее</string>
+    <string name="done">Готово</string>
     <string name="GoodDone">Отлично,\nвы закончили\n тренировку!</string>
     <string name="Back">Назад в Меню</string>
     <string name="statistic">Статистика</string>

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentTrainingBinding
 import com.example.fitnessapp.exercises.ui.days.DaysFragment
@@ -37,6 +38,18 @@ private lateinit var binding: FragmentTrainingBinding
         // Получаем сложность и зону из аргументов
         val difficulty = arguments?.getString("difficulty") ?: TrainingUtils.EASY
         val zone = arguments?.getString("zone")
+        
+        // Показываем bt_custom_edit только для custom сложности
+        binding.btCustomEdit.visibility = if (difficulty == TrainingUtils.CUSTOM) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+        
+        // Добавляем обработчик нажатия на bt_custom_edit
+        binding.btCustomEdit.setOnClickListener {
+            findNavController().navigate(R.id.customDaysListFragment)
+        }
         
         // Находим соответствующий TrainingTopCardModel
         val topCardModel = TrainingUtils.topCardList.find { it.difficulty == difficulty }

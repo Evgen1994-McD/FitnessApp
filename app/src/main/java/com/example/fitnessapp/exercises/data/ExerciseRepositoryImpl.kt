@@ -45,7 +45,8 @@ class ExerciseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getDayById(dayId: Int): DayModel? {
-        return mainDb.daysDao.getDay(dayId)
+        val day = mainDb.daysDao.getDay(dayId)
+        return if (day != null) day else null
     }
 
     override suspend fun getExerciseById(exerciseId: Int): ExerciseModel {

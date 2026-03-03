@@ -16,7 +16,7 @@ interface DaysDao {
     suspend fun insertDay(dayModel: DayModel) // это функция для записи дня. Сюда мы передаём заполненный, но с идентификатором null, поэтому будет создан новый элемент
 
     @Query("SELECT * FROM day_model_table WHERE id =:dayId") // тут запрос в БД - выбрать всё ( * - всё) из таблицы деймоделтейбл где айди = ийди который передаём через функцию
-suspend fun getDay(dayId: Int) : DayModel
+    suspend fun getDay(dayId: Int) : DayModel?
 
     @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty") // тут мы выбираем и фильтруем себе дни по сложности
     fun getAllDaysByDifficulty(difficulty: String) : Flow<List<DayModel>>// выдасти нам лист с DayModel по сложности. Флоу обязательно из пакета корутин. Флоу сам следит за изменениями и обновляет при необходимости

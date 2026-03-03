@@ -92,4 +92,14 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.91" />
 
+    <ImageView
+        android:id="@+id/bt_start"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/ic_start"
+        app:layout_constraintBottom_toTopOf="@+id/guideline11"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

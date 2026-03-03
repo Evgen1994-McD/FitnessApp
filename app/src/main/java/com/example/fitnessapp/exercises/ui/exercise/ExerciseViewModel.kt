@@ -77,16 +77,20 @@ class ExerciseViewModel @Inject constructor(
         var kcal = 0.0
         var time = 0
 exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
-    kcal += (model.kcal)/2
-    /*
-    поделю статистику на 3( слишком много калорий считает)
-     */
+    val tempMultiplier = if (model.time.contains('x')) {
+
+//если содержит x значит нужно умножть колличество повторов на количество минут за одно исполненеия
+
+
+        model.time.substringAfter('x').toInt()
+    }
+    else model.time.toInt()/60
+    kcal += (model.kcal) * tempMultiplier
+
     time += getTimeFromExercise(model)
 
 }
-        /*
-        exercisesOfTheDay суб лист от 0 до элемента doneExerciseCounter мы перебираем с помощью цикла forEach
-         */
+
 
         return statisticModel?.copy(
             kcal = statisticModel!!.kcal+kcal,

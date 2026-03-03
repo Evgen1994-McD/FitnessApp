@@ -26,6 +26,14 @@ class SelectedExerciseListViewModel @Inject constructor(
         isLoading.value = true
         delay(200)
         dayModel = customInteractor.getDayById(id)
+        
+        // Handle case where dayModel is null
+        if (dayModel == null) {
+            exerciseData.value = emptyList()
+            isLoading.value = false
+            return@launch
+        }
+        
         val exerciseList = customInteractor.getAllExercise()
         exerciseData.value = exerciseHelper.getExercisesOfTheDay(
             dayModel?.exercises!!,

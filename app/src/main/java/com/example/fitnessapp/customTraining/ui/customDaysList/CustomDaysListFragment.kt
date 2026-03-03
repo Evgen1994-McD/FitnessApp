@@ -15,6 +15,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.FragmentCustomDaysListBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.dao.ExerciseDao
+import com.example.fitnessapp.exercises.utils.TrainingUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -66,6 +67,14 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
                     Но не заполняем его упражнениями, это будем делать позже
                      */
                 )
+            }
+            
+            // Добавляем обработчик нажатия на bt_start
+            binding.btStart.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putString("difficulty", TrainingUtils.CUSTOM)
+                }
+                findNavController().navigate(R.id.trainingListFragment, bundle)
             }
 
             daysListObserver()
