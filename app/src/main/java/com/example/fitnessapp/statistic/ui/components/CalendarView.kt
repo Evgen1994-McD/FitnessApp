@@ -19,9 +19,7 @@ fun CalendarView(
     AndroidView(factory = {
         CalendarView(it).apply {
             layoutParams = ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            if (eventList!=null) {
-                eventList?.let { it1 -> setEvents(it1) }
-            }
+            eventList?.let { setEvents(it) }
             setOnDayClickListener(object : OnDayClickListener {
                 override fun onDayClick(eventDay: EventDay) {
                     val selectedDate = TimeUtils.getDateFromCalendar(eventDay.calendar)
@@ -29,7 +27,8 @@ fun CalendarView(
                 }
             })
         }
+    }, update = { calendarView ->
+        eventList?.let { calendarView.setEvents(it) }
     })
-
 }
 
