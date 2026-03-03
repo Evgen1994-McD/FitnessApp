@@ -116,7 +116,7 @@ fun MainScreen(
                 val difficulties =
                     listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD)
 
-                zones.flatMap { zone ->
+                val allCards = zones.flatMap { zone ->
                     difficulties.map { difficulty -> "${difficulty}_$zone" }
                 }.filter { key ->
                     (progressMap[key]?.maxProgress ?: 0) > 0
@@ -138,6 +138,13 @@ fun MainScreen(
                         imageId = card.imageId
                     )
                 }
+
+                // Сортируем: сначала с прогрессом > 0, по убыванию прогресса, затем остальные
+                allCards.sortedWith(compareByDescending<OptimizedZoneCard> { 
+                    it.progress > 0 
+                }.thenByDescending { 
+                    it.progress 
+                })
             }
 
             // Row со статистикой
