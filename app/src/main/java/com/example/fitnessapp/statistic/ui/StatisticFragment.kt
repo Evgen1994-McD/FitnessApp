@@ -4,22 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.applandeo.materialcalendarview.EventDay
+import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
-import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class StatisticFragment : Fragment() {
@@ -37,52 +36,38 @@ class StatisticFragment : Fragment() {
             )
             setContent {
                 FitnessAppTheme {
-                    val weigthDialogueState by remember { mutableStateOf(false) }
                     // Получаем данные из StateFlow
-                    val eventList by viewModel.eventListData.collectAsState()
-                    val weightList by viewModel.weightListData.collectAsState()
-                    val statisticData by viewModel.statisticData.collectAsState()
-                    val selectedYear by viewModel.selectedYear.collectAsState()
-                    val selectedMonth by viewModel.selectedMonth.collectAsState()
+                    val bmiData by viewModel.bmiData.collectAsState()
+                    val workoutHistory by viewModel.workoutHistory.collectAsState()
+                    val weeklyCalories by viewModel.weeklyCalories.collectAsState()
+                    val calendarDays by viewModel.calendarDays.collectAsState()
 
-                    // Передача данных в экран статистики
-                    StatisticScreen(
-                        date = statisticData?.date ?: TimeUtils.getCurrentDate(),
-                        eventList = eventList,
-                        weightList = weightList,
-                        statisticData = statisticData,
-                        selectedYear = selectedYear,
-                        selectedMonth = selectedMonth,
-                        onDayClick = { selectedDate -> 
-                            viewModel.getStatisticByDate(selectedDate)
+                    // Загружаем новые данные при первом запуске
+                    LaunchedEffect(Unit) {
+                        viewModel.loadNewStatisticsData()
+                    }
+
+                    // Используем только новый дизайн экрана статистики
+                    NewStatisticScreen(
+                        bmiData = bmiData,
+                        workoutHistory = workoutHistory,
+                        weeklyCalories = weeklyCalories,
+                        calendarDays = calendarDays,
+                        onCalendarDayClick = { day ->
+                            viewModel.onCalendarDayClick(day)
                         },
-                        onWeightClick = { weightModel ->
-                            DialogManager.showWeightDialog(
-                                requireContext(),
-                                object : DialogManager.WeightListener {
-                                    override fun onClick(weight: String) {
-                                        if (weight.isNotEmpty()) {
-                                            try {
-                                                viewModel.updateWeight(weightModel.copy(
-                                                    weight = weight.toDouble()
-                                                ))
-                                            } catch (e: NumberFormatException) {
-                                                // Обработка ошибки формата
-                                            }
-                                        }
-                                    }
-                                },
-                                String.format("%.1f", weightModel.weight)
-                            )
+                        onWorkoutToggle = { workoutId ->
+                            viewModel.toggleWorkoutExpanded(workoutId)
                         },
-                        addWeightClick = { weight -> viewModel.saveWeight(weight) },
-                        onYearChange = { year -> viewModel.updateYear(year) },
-                        onMonthChange = { month -> viewModel.updateMonth(month) }
+                        onAddWeight = {
+//                            viewModel.showAddWeightDialog()
+                        }
                     )
                 }
             }
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
@@ -92,7 +77,5 @@ class StatisticFragment : Fragment() {
         // Загружаем данные при создании фрагмента
         viewModel.getStatisticEvents()
         viewModel.getStatisticByDate(TimeUtils.getCurrentDate())
-        viewModel.getWeightByYearAndMonth()
     }
-
 }

@@ -2,6 +2,9 @@ package com.example.fitnessapp.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.AutoMigration
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.fitnessapp.db.dao.DaysDao
 import com.example.fitnessapp.db.dao.ExerciseDao
 import com.example.fitnessapp.db.dao.StatisticDao
@@ -14,11 +17,15 @@ import com.example.fitnessapp.db.dao.WeightDao
         ExerciseModel::class,
         WeightModel::class,
         StatisticModel::class,
-        TrainingPlanModel::class,      // Новые сущности для AI планов
+        TrainingPlanModel::class,
         PlannedDayModel::class
-               // Таким образом при первом запуске приложения создадутся 6 таблиц и мы сможем в них записывать/считывать и ТД
+               // Таким образом при первом запуске приложения создадутся 5 таблиц и мы сможем в них записывать/считывать и ТД
                ],//Важно! Если выложить его, то пользователь не сможет увидеть обновления тк нет миграции
-    version = 5 // Увеличена версия для добавления поля advise в exercise_table
+    version = 6, // Увеличена версия для добавления полей height в weight_table и completedDate в day_model_table
+    exportSchema = true, // Экспортируем схему для миграций
+    autoMigrations = [
+        AutoMigration(from = 5, to = 6)
+    ]
 )
 abstract class MainDb: RoomDatabase()  {   // создаём базу данных она должна быть абстрактной
 abstract val daysDao: DaysDao // инициализируем ДАО в БД

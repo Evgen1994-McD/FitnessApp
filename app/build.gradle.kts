@@ -7,6 +7,7 @@ plugins {
 
     id("com.google.devtools.ksp")      // для KSP
     id("com.google.dagger.hilt.android") // для Dagger Hilt
+    // id("androidx.room")                // Room плагин не нужен, используем только KSP
 }
 
 android {
@@ -20,7 +21,7 @@ android {
         applicationId = "com.example.fitnessapp"
         minSdk = 29
         targetSdk = 33
-        versionCode = 9
+        versionCode = 10
         versionName = "1.81"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -54,6 +55,10 @@ android {
         viewBinding = true
     }
 
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
 }
 
 dependencies {
@@ -71,13 +76,11 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
 
     // Room
-    val roomVersion = "2.6.1"
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
     // Dagger Hilt
-    val daggerVersion = "2.56.1"
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

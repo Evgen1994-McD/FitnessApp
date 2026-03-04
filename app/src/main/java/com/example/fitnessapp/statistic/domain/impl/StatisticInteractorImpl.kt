@@ -38,11 +38,13 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun getAllExercise(): List<ExerciseModel>{
         return statisticRepository.getAllExercise()
     }
+    override suspend fun getAllDays(): List<DayModel>{
+        return statisticRepository.getAllDays()
+    }
     override suspend fun insertDay(dayModel: DayModel){
         statisticRepository.insertDay(dayModel)
     }
     override suspend fun insertExercise(exerciseModel: ExerciseModel): Long{
         return statisticRepository.insertExercise(exerciseModel)
     }
-
 }

@@ -15,5 +15,6 @@ data class DayModel(
     var dayNumber : Int, // будем передавать день по счетчику
     var doneExerciseCounter:Int,
     var isOpen:Boolean,
-    var zone: String?
+    var zone: String?,
+    var completedDate: String? // Дата выполнения тренировки в формате "dd.MM.yyyy"
 ) : Serializable // чтобы сделать бандл нужно подключить интерфейс сериализации

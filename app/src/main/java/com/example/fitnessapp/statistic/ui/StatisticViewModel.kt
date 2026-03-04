@@ -10,10 +10,19 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
+import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.statistic.domain.StatisticInteractor
 import com.example.fitnessapp.utils.TimeUtils
+import com.example.fitnessapp.statistic.ui.models.BMIModel
+import com.example.fitnessapp.statistic.ui.models.calculateBMI
+import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
+import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
+import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
+import com.example.fitnessapp.statistic.ui.models.generateWeekDays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -39,28 +48,38 @@ class StatisticViewModel @Inject constructor(
     private val _selectedMonth = MutableStateFlow(Calendar.getInstance().get(Calendar.MONTH))
     val selectedMonth: StateFlow<Int> = _selectedMonth.asStateFlow()
 
+    // Новые StateFlow для нового дизайна
+    private val _bmiData = MutableStateFlow<BMIModel?>(null)
+    val bmiData: StateFlow<BMIModel?> = _bmiData.asStateFlow()
+    
+    private val _workoutHistory = MutableStateFlow<List<WorkoutHistoryModel>>(emptyList())
+    val workoutHistory: StateFlow<List<WorkoutHistoryModel>> = _workoutHistory.asStateFlow()
+    
+    private val _weeklyCalories = MutableStateFlow<List<WeeklyCaloriesModel>>(emptyList())
+    val weeklyCalories: StateFlow<List<WeeklyCaloriesModel>> = _weeklyCalories.asStateFlow()
+    
+    private val _calendarDays = MutableStateFlow<List<DayCalendarModel>>(emptyList())
+    val calendarDays: StateFlow<List<DayCalendarModel>> = _calendarDays.asStateFlow()
+    
+    private val _selectedDate = MutableStateFlow(LocalDate.now())
+    val selectedDate: StateFlow<LocalDate> = _selectedDate.asStateFlow()
+
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
         val statisticList = statisticInteractor.getStatistic()
         statisticList.forEach { statisticModel ->
-eventList.add(
-    EventDay(
-        TimeUtils.getCalendarFromDate(statisticModel.date),
-        R.drawable.star
-    )
-)
-            /*
-            Здесь получаем статистику и она уходит по обсерверу на фрагмент
-             */
+            eventList.add(
+                EventDay(
+                    TimeUtils.getCalendarFromDate(statisticModel.date),
+                    R.drawable.star
+                )
+            )
         }
-_eventListData.value = eventList
-
+        _eventListData.value = eventList
     }
 
-
-
     fun getStatisticByDate(date: String) = viewModelScope.launch {
-_statisticData.value = statisticInteractor.getStatisticByDate(date)
+        _statisticData.value = statisticInteractor.getStatisticByDate(date)
 
 /*
 
@@ -101,9 +120,10 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
                 WeightModel(
                     null,
                     weight,
+                    null,
                     day,
                     month,
-                    year
+                    year = year
                 )
             )
         }
@@ -125,6 +145,104 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         month = newMonth
         _selectedMonth.value = newMonth
         getWeightByYearAndMonth()
+    }
+    
+    // Новые методы для нового дизайна
+    fun loadNewStatisticsData() = viewModelScope.launch {
+        loadBMIData()
+        loadWorkoutHistory()
+        loadWeeklyCalories()
+        updateCalendarDays()
+    }
+    
+    private fun loadBMIData() = viewModelScope.launch {
+        val weightList = statisticInteractor.getYearWeightList()
+        val latestWeight = weightList.maxByOrNull { it.weight }
+        latestWeight?.let { weight ->
+            weight.height?.let { height ->
+                _bmiData.value = calculateBMI(weight.weight, height)
+            }
+        }
+    }
+    
+    private fun loadWorkoutHistory() = viewModelScope.launch {
+        val allDays = statisticInteractor.getAllDays()
+            .filter { it.isDone && it.completedDate != null }
+            .sortedByDescending { it.completedDate }
+            .take(10) // Показываем последние 10 тренировок
+            
+        val exerciseList = statisticInteractor.getAllExercise()
+        val workoutHistoryList = allDays.mapNotNull { day ->
+            val exercises = getExercisesFromIds(day.exercises, exerciseList)
+            WorkoutHistoryModel(
+                id = day.id,
+                date = day.completedDate ?: "",
+                zone = day.zone,
+                difficulty = day.difficulty,
+                caloriesBurned = 0.0, // Будет получено из StatisticModel
+                duration = 0, // Будет получено из StatisticModel
+                exercises = exercises
+            )
+        }
+        _workoutHistory.value = workoutHistoryList
+    }
+    
+    private fun loadWeeklyCalories() = viewModelScope.launch {
+        val statisticList = statisticInteractor.getStatistic()
+        val currentDate = LocalDate.now()
+        val weekStart = currentDate.minusDays(6) // Последние 7 дней
+        
+        val weeklyData = (0..6).map { dayOffset ->
+            val date = weekStart.plusDays(dayOffset.toLong())
+            val dateString = TimeUtils.getCurrentDate() // TODO: Заменить на форматирование LocalDate
+            val dayStatistic = statisticList.find { it.date == dateString }
+            val dayName = when (dayOffset) {
+                0 -> "Пн"
+                1 -> "Вт"
+                2 -> "Ср"
+                3 -> "Чт"
+                4 -> "Пт"
+                5 -> "Сб"
+                6 -> "Вс"
+                else -> ""
+            }
+            
+            WeeklyCaloriesModel(
+                dayOfWeek = dayName,
+                calories = dayStatistic?.kcal?.toInt() ?: 0,
+                dayNumber = dayOffset
+            )
+        }
+        _weeklyCalories.value = weeklyData
+    }
+    
+    private fun updateCalendarDays() {
+        _calendarDays.value = generateWeekDays(_selectedDate.value)
+    }
+    
+    fun onCalendarDayClick(day: DayCalendarModel) {
+        _selectedDate.value = LocalDate.now().withDayOfMonth(day.dayNumber)
+        updateCalendarDays()
+        // Загружаем статистику для выбранной даты
+        getStatisticByDate(TimeUtils.getCurrentDate()) // TODO: Обновить для LocalDate
+    }
+    
+    fun toggleWorkoutExpanded(workoutId: Int) {
+        val currentList = _workoutHistory.value.toMutableList()
+        val workoutIndex = currentList.indexOfFirst { it.id == workoutId }
+        if (workoutIndex != -1) {
+            currentList[workoutIndex] = currentList[workoutIndex].copy(
+                isExpanded = !currentList[workoutIndex].isExpanded
+            )
+            _workoutHistory.value = currentList
+        }
+    }
+    
+    private fun getExercisesFromIds(exerciseIds: String, allExercises: List<ExerciseModel>): List<ExerciseModel> {
+        if (exerciseIds.isBlank()) return emptyList()
+        
+        val ids = exerciseIds.split(",").mapNotNull { it.trim().toIntOrNull() }
+        return allExercises.filter { it.id in ids }
     }
 
 }

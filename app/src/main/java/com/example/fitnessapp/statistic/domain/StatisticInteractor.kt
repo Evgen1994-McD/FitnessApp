@@ -15,6 +15,7 @@ interface StatisticInteractor {
     suspend fun getDontDoesDaysByDifficulty(difficulty: String): List<DayModel>
     suspend fun getDontDoesDaysByDifficultyAndZone(difficulty: String, zone: String? = null): List<DayModel>
     suspend fun getAllExercise(): List<ExerciseModel>
+    suspend fun getAllDays(): List<DayModel>
     suspend fun insertDay(dayModel: DayModel)
     suspend fun insertExercise(exerciseModel: ExerciseModel): Long
 }

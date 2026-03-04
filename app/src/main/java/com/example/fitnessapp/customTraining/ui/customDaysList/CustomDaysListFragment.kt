@@ -61,7 +61,8 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
                         0,
                         0,
                         true, // isOpen = true для кастомных тренировок
-                        zone = null)
+                        zone = null,
+                        completedDate = null)
                     /*
                     При нажатии на кнопку "Создать день создаём день.
                     Но не заполняем его упражнениями, это будем делать позже

@@ -60,6 +60,10 @@ class StatisticRepositoryImpl @Inject constructor(
      return mainDb.exerciseDao.getAllExercises()
     }
 
+    override suspend fun getAllDays():List<DayModel>{
+        return mainDb.daysDao.getAllDays()
+    }
+
     override suspend fun insertDay(dayModel: DayModel){
         mainDb.daysDao.insertDay(dayModel)
     }
