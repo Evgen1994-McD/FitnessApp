@@ -64,9 +64,6 @@ class StatisticFragment : Fragment() {
                         },
                         onUpdateBodyMetrics = { height, weight ->
                             viewModel.updateBodyMetrics(height, weight)
-                        },
-                        onLoadData = {
-                            viewModel.loadNewStatisticsData()
                         }
                     )
                 }

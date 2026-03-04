@@ -76,8 +76,7 @@ fun NewStatisticScreen(
     onCalendarDayClick: (DayCalendarModel) -> Unit,
     onWorkoutToggle: (Int) -> Unit,
     onAddWeight: () -> Unit,
-    onUpdateBodyMetrics: (height: Double, weight: Double) -> Unit,
-    onLoadData: () -> Unit
+    onUpdateBodyMetrics: (height: Double, weight: Double) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val showBottomSheet = remember { mutableStateOf(false) }
@@ -106,30 +105,16 @@ fun NewStatisticScreen(
             )
         },
         floatingActionButton = {
-            Row {
-                FloatingActionButton(
-                    onClick = { showBottomSheet.value = true },
-                    containerColor = Color(0xFF10B981), // green
-                    modifier = Modifier.padding(end = 8.dp, bottom = 24.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_add_weight_24),
-                        contentDescription = "Обновить данные",
-                        tint = Color.White
-                    )
-                }
-                
-                FloatingActionButton(
-                    onClick = { onLoadData() },
-                    containerColor = Color(0xFF2196F3), // blue
-                    modifier = Modifier.padding(end = 16.dp, bottom = 24.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_check_bx_im_24),
-                        contentDescription = "Загрузить данные",
-                        tint = Color.White
-                    )
-                }
+            FloatingActionButton(
+                onClick = { showBottomSheet.value = true },
+                containerColor = Color(0xFF10B981), // green
+                modifier = Modifier.padding(end = 16.dp, bottom = 24.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_add_weight_24),
+                    contentDescription = "Обновить данные",
+                    tint = Color.White
+                )
             }
         },
     ) { paddingValues ->

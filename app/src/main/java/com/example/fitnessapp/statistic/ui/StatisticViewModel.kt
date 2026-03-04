@@ -149,7 +149,6 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     // Новые методы для нового дизайна
     fun loadNewStatisticsData() = viewModelScope.launch {
-        println("DEBUG: loadNewStatisticsData() called")
         loadBMIData()
         loadWorkoutHistory()
         loadWeeklyCalories()
@@ -158,30 +157,11 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     private fun loadBMIData() = viewModelScope.launch {
         val weightList = statisticInteractor.getYearWeightList()
-        println("DEBUG: weightList size = ${weightList.size}")
-        
-        if (weightList.isEmpty()) {
-            println("DEBUG: No weight data found in database")
-            _bmiData.value = null
-            return@launch
-        }
-        
         val latestWeight = weightList.maxByOrNull { it.weight }
-        println("DEBUG: latestWeight = $latestWeight")
-        
         latestWeight?.let { weight ->
-            println("DEBUG: weight = ${weight.weight}, height = ${weight.height}")
             weight.height?.let { height ->
-                val bmi = calculateBMI(weight.weight, height)
-                println("DEBUG: Calculated BMI = $bmi")
-                _bmiData.value = bmi
-            } ?: run {
-                println("DEBUG: Height is null for latest weight")
-                _bmiData.value = null
+                _bmiData.value = calculateBMI(weight.weight, height)
             }
-        } ?: run {
-            println("DEBUG: latestWeight is null")
-            _bmiData.value = null
         }
     }
     
