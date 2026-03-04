@@ -48,7 +48,7 @@ fun WeeklyCaloriesChart(
                 text = "За неделю",
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.surfaceContainer
             )
         }
         

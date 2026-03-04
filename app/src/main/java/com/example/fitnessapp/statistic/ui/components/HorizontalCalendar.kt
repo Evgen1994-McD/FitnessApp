@@ -55,14 +55,14 @@ private fun DayCalendarItem(
     onClick: () -> Unit
 ) {
     val backgroundColor = when {
-        day.isSelected -> MaterialTheme.colorScheme.primary
+        day.isSelected -> MaterialTheme.colorScheme.surfaceContainer
         day.isToday -> MaterialTheme.colorScheme.surfaceVariant
         else -> MaterialTheme.colorScheme.surface
     }
     
     val contentColor = when {
         day.isSelected -> MaterialTheme.colorScheme.onPrimary
-        else -> MaterialTheme.colorScheme.onSurface
+        else -> MaterialTheme.colorScheme.surface
     }
 
     Column(

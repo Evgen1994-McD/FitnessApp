@@ -59,6 +59,7 @@ import com.example.fitnessapp.statistic.ui.components.HorizontalCalendar
 import com.example.fitnessapp.statistic.ui.components.BMICard
 import com.example.fitnessapp.statistic.ui.components.WeeklyCaloriesChart
 import com.example.fitnessapp.statistic.ui.components.WorkoutHistoryCard
+import com.example.fitnessapp.statistic.ui.components.UpdateBodyMetricsBottomSheet
 import com.example.fitnessapp.statistic.ui.models.BMIModel
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
 import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
@@ -74,9 +75,11 @@ fun NewStatisticScreen(
     calendarDays: List<DayCalendarModel>,
     onCalendarDayClick: (DayCalendarModel) -> Unit,
     onWorkoutToggle: (Int) -> Unit,
-    onAddWeight: () -> Unit
+    onAddWeight: () -> Unit,
+    onUpdateBodyMetrics: (height: Double, weight: Double) -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val showBottomSheet = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -103,13 +106,13 @@ fun NewStatisticScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddWeight,
+                onClick = { showBottomSheet.value = true },
                 containerColor = Color(0xFF10B981), // green
                 modifier = Modifier.padding(end = 16.dp, bottom = 24.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_add_weight_24),
-                    contentDescription = "Добавить вес",
+                    contentDescription = "Обновить данные",
                     tint = Color.White
                 )
             }
@@ -153,7 +156,7 @@ fun NewStatisticScreen(
                         text = "Все",
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.surfaceContainer
                     )
 
 
@@ -171,4 +174,14 @@ fun NewStatisticScreen(
         }
     }
 
+    // Bottom Sheet для обновления данных тела
+    if (showBottomSheet.value) {
+        UpdateBodyMetricsBottomSheet(
+            currentBMI = bmiData,
+            onDismiss = { showBottomSheet.value = false },
+            onSave = { height, weight ->
+                onUpdateBodyMetrics(height, weight)
+            }
+        )
+    }
 }

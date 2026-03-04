@@ -244,5 +244,28 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         val ids = exerciseIds.split(",").mapNotNull { it.trim().toIntOrNull() }
         return allExercises.filter { it.id in ids }
     }
+    
+    fun updateBodyMetrics(height: Double, weight: Double) = viewModelScope.launch {
+        val cv = Calendar.getInstance()
+        val day = cv.get(Calendar.DAY_OF_MONTH)
+        val month = cv.get(Calendar.MONTH)
+        val year = cv.get(Calendar.YEAR)
+        
+        // Сохраняем вес с ростом
+        statisticInteractor.insertWeight(
+            WeightModel(
+                null,
+                weight,
+                height, // Сохраняем рост для будущих расчетов ИМТ
+                day,
+                month,
+                year = year
+            )
+        )
+        
+        // Обновляем BMI данные
+        loadBMIData()
+        getWeightByYearAndMonth()
+    }
 
 }

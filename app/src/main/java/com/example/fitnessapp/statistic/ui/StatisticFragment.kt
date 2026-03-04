@@ -61,6 +61,9 @@ class StatisticFragment : Fragment() {
                         },
                         onAddWeight = {
 //                            viewModel.showAddWeightDialog()
+                        },
+                        onUpdateBodyMetrics = { height, weight ->
+                            viewModel.updateBodyMetrics(height, weight)
                         }
                     )
                 }
