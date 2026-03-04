@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -88,7 +89,7 @@ fun NewStatisticScreen(
                         onClick = { /* Уведомления */ }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Height,
+                            imageVector = Icons.Default.CalendarMonth,
                             contentDescription = "Уведомления",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
@@ -132,7 +133,6 @@ fun NewStatisticScreen(
             BMICard(bmiModel = bmiData)
 
 
-
             // График сожженных калорий
             WeeklyCaloriesChart(weeklyData = weeklyCalories)
 
@@ -155,168 +155,20 @@ fun NewStatisticScreen(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )
-    
 
-                Spacer(modifier = Modifier.height(16.dp))
 
-                workoutHistory.forEach { workout ->
-                    WorkoutHistoryCard(
-                        workout = workout,
-                        onToggleExpand = { onWorkoutToggle(workout.id ?: 0) },
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    workoutHistory.forEach { workout ->
+                        WorkoutHistoryCard(
+                            workout = workout,
+                            onToggleExpand = { onWorkoutToggle(workout.id ?: 0) },
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                    }
                 }
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun StatisticScreen(
-    date: String,
-    eventList: List<EventDay>,
-    weightList: List<WeightModel>,
-    statisticData: StatisticModel?,
-    selectedYear: Int,
-    selectedMonth: Int,
-    onDayClick: (String) -> Unit,
-    onWeightClick: (WeightModel) -> Unit,
-    addWeightClick: (Double) -> Unit,
-    onYearChange: (Int) -> Unit,
-    onMonthChange: (Int) -> Unit
-) {
-    Scaffold(
-        topBar = {
-            // Убираем TopAppBar так как заголовок уже установлен в тулбаре
-        }
-    ) { paddingValues ->
-        val scrollState = rememberScrollState()
-        val showWeightDialog = remember { mutableStateOf(false) }
-
-        Column(modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-        ) {
-
-            Text(text = if (date == TimeUtils.getCurrentDate()) "Сегодня" else date,
-                fontSize = 26.sp,
-                modifier = Modifier
-                    .padding(start = 15.dp,
-                        top = 30.dp,
-                        bottom = 50.dp)
-            )
-
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Column (modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = statisticData?.let { 
-                            TimeUtils.getWorkoutTime(it.workoutTime.toLong() * 1000)
-                        } ?: "00h:00m",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(bottom = 20.dp)
-                    )
-                    Text(text = "TIME")
-                }
-
-                Column (modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = statisticData?.kcal?.toInt()?.toString() ?: "0",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(bottom = 20.dp)
-                    )
-                    Text(text = "Kcal")
-                }
-            }
-
-            Text(text = stringResource(R.string.history),
-                fontSize = 26.sp,
-                modifier = Modifier
-                    .padding(start = 15.dp,
-                        top = 30.dp,
-                        bottom = 30.dp)
-            )
-            CalendarView(
-                eventList,
-                onDayClick)
-
-
-            Spacer(modifier = Modifier
-                .height(20.dp))
-            
-            Row(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        showWeightDialog.value = true
-                    },
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .size(56.dp),
-                    containerColor = Color(0xFF2196F3) // Blue color for better visibility
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_add_weight_24),
-                        contentDescription = "Добавить вес",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier
-                .height(10.dp))
-
-
-            // Добавляем DateSelector перед графиком
-            DateSelector(
-                selectedYear = selectedYear,
-                selectedMonth = selectedMonth,
-                onYearChange = onYearChange,
-                onMonthChange = onMonthChange
-            )
-
-            MpAndroidChart(
-                weightList = weightList,
-                onWeightClick = onWeightClick
-            )
-
-            AddWeightDialogue(
-                dialogState = showWeightDialog,
-                onSubmit = { weight ->
-                    addWeightClick(weight)
-                },
-                onDismiss = {}
-            )
-
-        }
-
-    }
-}
 
 }
-
-//
-//
-//@Preview(showSystemUi = true)
-//@Composable
-//fun StatisticPreview(){
-//    StatisticScreen(stringResource(R.string.today))
-//}
