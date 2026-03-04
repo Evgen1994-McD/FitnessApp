@@ -149,6 +149,7 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     // Новые методы для нового дизайна
     fun loadNewStatisticsData() = viewModelScope.launch {
+        println("DEBUG: loadNewStatisticsData() called")
         loadBMIData()
         loadWorkoutHistory()
         loadWeeklyCalories()
@@ -157,11 +158,30 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     private fun loadBMIData() = viewModelScope.launch {
         val weightList = statisticInteractor.getYearWeightList()
+        println("DEBUG: weightList size = ${weightList.size}")
+        
+        if (weightList.isEmpty()) {
+            println("DEBUG: No weight data found in database")
+            _bmiData.value = null
+            return@launch
+        }
+        
         val latestWeight = weightList.maxByOrNull { it.weight }
+        println("DEBUG: latestWeight = $latestWeight")
+        
         latestWeight?.let { weight ->
+            println("DEBUG: weight = ${weight.weight}, height = ${weight.height}")
             weight.height?.let { height ->
-                _bmiData.value = calculateBMI(weight.weight, height)
+                val bmi = calculateBMI(weight.weight, height)
+                println("DEBUG: Calculated BMI = $bmi")
+                _bmiData.value = bmi
+            } ?: run {
+                println("DEBUG: Height is null for latest weight")
+                _bmiData.value = null
             }
+        } ?: run {
+            println("DEBUG: latestWeight is null")
+            _bmiData.value = null
         }
     }
     
@@ -251,17 +271,38 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         val month = cv.get(Calendar.MONTH)
         val year = cv.get(Calendar.YEAR)
         
-        // Сохраняем вес с ростом
-        statisticInteractor.insertWeight(
-            WeightModel(
-                null,
-                weight,
-                height, // Сохраняем рост для будущих расчетов ИМТ
-                day,
-                month,
-                year = year
+        // Проверяем, есть ли уже запись веса на сегодня с ростом
+        val existingWeight = statisticInteractor.getWeightToday(year, month, day)
+        
+        if (existingWeight != null) {
+            // Если запись существует, обновляем её с ростом
+            statisticInteractor.insertWeight(
+                existingWeight.copy(weight = weight, height = height)
             )
-        )
+        } else {
+            // Проверяем, есть ли последняя запись без роста
+            val weightList = statisticInteractor.getYearWeightList()
+            val latestWeight = weightList.maxByOrNull { it.weight }
+            
+            if (latestWeight != null && latestWeight.height == null) {
+                // Обновляем последнюю запись, добавляя рост
+                statisticInteractor.insertWeight(
+                    latestWeight.copy(weight = weight, height = height)
+                )
+            } else {
+                // Создаем новую запись
+                statisticInteractor.insertWeight(
+                    WeightModel(
+                        null,
+                        weight,
+                        height, // Сохраняем рост для будущих расчетов ИМТ
+                        day,
+                        month,
+                        year = year
+                    )
+                )
+            }
+        }
         
         // Обновляем BMI данные
         loadBMIData()

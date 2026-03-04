@@ -53,9 +53,13 @@ fun UpdateBodyMetricsBottomSheet(
     onDismiss: () -> Unit,
     onSave: (height: Double, weight: Double) -> Unit
 ) {
+    println("DEBUG: Bottom Sheet received currentBMI = $currentBMI")
+    
     // Инициализируем состояние текущими значениями или значениями по умолчанию
     var height by remember { mutableStateOf(currentBMI?.height?.toString() ?: "170") }
     var weight by remember { mutableStateOf(currentBMI?.weight?.toString() ?: "70") }
+    
+    println("DEBUG: Initial height = $height, weight = $weight")
     
     // Рассчитываем BMI в реальном времени
     val currentHeight = height.toDoubleOrNull() ?: 170.0
@@ -270,6 +274,7 @@ fun UpdateBodyMetricsBottomSheet(
                 onClick = {
                     val heightValue = height.toDoubleOrNull() ?: currentBMI?.height ?: 170.0
                     val weightValue = weight.toDoubleOrNull() ?: currentBMI?.weight ?: 70.0
+                    println("DEBUG: Bottom Sheet onSave called with height=$heightValue, weight=$weightValue")
                     onSave(heightValue, weightValue)
                     onDismiss()
                 },
