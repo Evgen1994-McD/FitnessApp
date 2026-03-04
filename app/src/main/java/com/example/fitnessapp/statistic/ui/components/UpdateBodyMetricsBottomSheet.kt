@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.statistic.ui.models.BMIModel
 import com.example.fitnessapp.statistic.ui.models.calculateBMI
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +102,25 @@ fun UpdateBodyMetricsBottomSheet(
                     .padding(top = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier.height(20.dp))
+                IconButton(
+                    onClick = {
+                        val current = height.toIntOrNull() ?: 170
+                        if (current > 100) height = (current - 1).toString()
+                    },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Remove,
+                        contentDescription = "Уменьшить",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(12.dp))
+                
                 OutlinedTextField(
                     value = height,
                     onValueChange = { newValue ->
@@ -113,6 +132,25 @@ fun UpdateBodyMetricsBottomSheet(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true
                 )
+                
+                Spacer(modifier = Modifier.width(12.dp))
+                
+                IconButton(
+                    onClick = {
+                        val current = height.toIntOrNull() ?: 170
+                        if (current < 250) height = (current + 1).toString()
+                    },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Увеличить",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.height(20.dp))
@@ -134,7 +172,10 @@ fun UpdateBodyMetricsBottomSheet(
                 IconButton(
                     onClick = {
                         val current = weight.toDoubleOrNull() ?: 70.0
-                        if (current > 30) weight = String.format("%.1f", current - 1)
+                        if (current > 30) {
+                            val newValue = current - 0.1
+                            weight = String.format(Locale.US, "%.1f", newValue)
+                        }
                     },
                     modifier = Modifier
                         .size(40.dp)
@@ -161,12 +202,16 @@ fun UpdateBodyMetricsBottomSheet(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true
                 )
-
+                
                 Spacer(modifier = Modifier.width(12.dp))
+                
                 IconButton(
                     onClick = {
                         val current = weight.toDoubleOrNull() ?: 70.0
-                        if (current > 30) weight = String.format("%.1f", current - 1)
+                        if (current < 200) {
+                            val newValue = current + 0.1
+                            weight = String.format(Locale.US, "%.1f", newValue)
+                        }
                     },
                     modifier = Modifier
                         .size(40.dp)
