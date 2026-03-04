@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -127,35 +128,46 @@ private fun BMIStatusBadge(status: BMIStatus) {
 @Composable
 private fun BMIIndicator(bmiValue: Double) {
     Column {
-        // Фоновая полоса
+        // Фоновая полоса с цветными сегментами
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color(0xFFE5E7EB))
         ) {
-            // Цветные сегменты
+            // Цветные сегменты с правильными цветами
             Box(
                 modifier = Modifier
                     .weight(0.25f)
-                    .background(Color(0xFF93C5FD)) // blue-300
-            )
+                    .fillMaxHeight()
+                    .background(Color(0xFF3B82F6)) // UNDERWEIGHT blue
+            ) {
+                // Пустой контент для обеспечения отображения
+            }
             Box(
                 modifier = Modifier
                     .weight(0.25f)
-                    .background(Color(0xFF34D399)) // green-400
-            )
+                    .fillMaxHeight()
+                    .background(Color(0xFF10B981)) // NORMAL green
+            ) {
+                // Пустой контент для обеспечения отображения
+            }
             Box(
                 modifier = Modifier
                     .weight(0.25f)
-                    .background(Color(0xFFFCD34D)) // yellow-400
-            )
+                    .fillMaxHeight()
+                    .background(Color(0xFFF59E0B)) // OVERWEIGHT yellow
+            ) {
+                // Пустой контент для обеспечения отображения
+            }
             Box(
                 modifier = Modifier
                     .weight(0.25f)
-                    .background(Color(0xFFF87171)) // red-400
-            )
+                    .fillMaxHeight()
+                    .background(Color(0xFFEF4444)) // OBESE red
+            ) {
+                // Пустой контент для обеспечения отображения
+            }
         }
         
         // Подписи

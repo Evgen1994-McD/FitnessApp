@@ -81,12 +81,7 @@ fun NewStatisticScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Статистика",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+
                 },
                 actions = {
                     IconButton(
