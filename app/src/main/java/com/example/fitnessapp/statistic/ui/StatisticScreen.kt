@@ -116,7 +116,7 @@ fun NewStatisticScreen(
                     tint = Color.White
                 )
             }
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -133,9 +133,9 @@ fun NewStatisticScreen(
             )
 
             // Карточка ИМТ
-            bmiData?.let { bmi ->
-                BMICard(bmiModel = bmi)
-            }
+            BMICard(bmiModel = bmiData)
+
+
 
             // График сожженных калорий
             WeeklyCaloriesChart(weeklyData = weeklyCalories)
@@ -159,7 +159,7 @@ fun NewStatisticScreen(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )
-                }
+    
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -241,7 +241,6 @@ fun StatisticScreen(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .padding(bottom = 20.dp)
-
                     )
                     Text(text = "Kcal")
                 }
@@ -314,6 +313,8 @@ fun StatisticScreen(
         }
 
     }
+}
+
 }
 
 //

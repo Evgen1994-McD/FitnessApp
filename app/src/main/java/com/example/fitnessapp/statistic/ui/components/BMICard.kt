@@ -26,7 +26,7 @@ import com.example.fitnessapp.statistic.ui.models.BMIStatus
 
 @Composable
 fun BMICard(
-    bmiModel: BMIModel,
+    bmiModel: BMIModel?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -50,13 +50,15 @@ fun BMICard(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "На основе ваших данных",
+                    text = if (bmiModel != null) "На основе ваших данных" else "Введите данные для расчета",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             
-            BMIStatusBadge(status = bmiModel.status)
+            if (bmiModel != null) {
+                BMIStatusBadge(status = bmiModel.status)
+            }
         }
         
         // Значение ИМТ
@@ -64,22 +66,37 @@ fun BMICard(
             modifier = Modifier.padding(vertical = 24.dp),
             verticalAlignment = Alignment.Bottom
         ) {
-            Text(
-                text = String.format("%.1f", bmiModel.bmiValue),
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = "кг/м²",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
-            )
+            if (bmiModel != null) {
+                Text(
+                    text = String.format("%.1f", bmiModel.bmiValue),
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "кг/м²",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
+                )
+            } else {
+                Text(
+                    text = "--",
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "кг/м²",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
+                )
+            }
         }
         
         // Индикатор ИМТ
-        BMIIndicator(bmiModel.bmiValue)
+        BMIIndicator(bmiModel?.bmiValue ?: 22.0) // Показываем индикатор с значением по умолчанию для нормального диапазона
     }
 }
 
