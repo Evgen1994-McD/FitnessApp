@@ -158,17 +158,16 @@ fun NewStatisticScreen(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.surfaceContainer
                     )
-
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    workoutHistory.forEach { workout ->
-                        WorkoutHistoryCard(
-                            workout = workout,
-                            onToggleExpand = { onWorkoutToggle(workout.id ?: 0) },
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
-                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                workoutHistory.forEach { workout ->
+                    WorkoutHistoryCard(
+                        workout = workout,
+                        onToggleExpand = { onWorkoutToggle(workout.id ?: 0) },
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
                 }
             }
         }
