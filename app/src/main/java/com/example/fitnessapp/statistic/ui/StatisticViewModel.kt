@@ -181,11 +181,15 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         val statisticList = statisticInteractor.getStatistic()
         Log.d("StatisticViewModel", "DEBUG: Статистика: ${statisticList.size} записей")
         
-        val workoutHistoryList = lastDays.mapNotNull { day ->
+        val workoutHistoryList = lastDays.mapIndexedNotNull { index, day ->
             val exercises = getExercisesFromIds(day.exercises, exerciseList)
-            // Ищем статистику для этой даты чтобы получить калории и длительность
-            val dayStatistic = statisticList.find { it.date == day.completedDate }
-            Log.d("StatisticViewModel", "DEBUG: Для дня ${day.completedDate} найдена статистика: ${dayStatistic != null}")
+            // Ищем статистику для этой тренировки по индексу
+            val dayStatistic = if (index < statisticList.size) {
+                statisticList[index]
+            } else {
+                null
+            }
+            Log.d("StatisticViewModel", "DEBUG: Для тренировки $index (дата ${day.completedDate}) найдена статистика: ${dayStatistic != null}")
             
             WorkoutHistoryModel(
                 id = day.id,
@@ -213,7 +217,9 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
             val date = monday.plusDays(dayOffset.toLong())
             // Правильно форматируем дату для каждого дня
             val dateString = TimeUtils.formatLocalDate(date)
-            val dayStatistic = statisticList.find { it.date == dateString }
+            // Суммируем все калории за этот день
+            val dayStatistics = statisticList.filter { it.date == dateString }
+            val totalCalories = dayStatistics.sumOf { it.kcal }
             val dayName = when (dayOffset) {
                 0 -> "Пн"
                 1 -> "Вт"
@@ -227,7 +233,7 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
             
             WeeklyCaloriesModel(
                 dayOfWeek = dayName,
-                calories = dayStatistic?.kcal?.toInt() ?: 0,
+                calories = totalCalories.toInt(),
                 dayNumber = dayOffset
             )
         }

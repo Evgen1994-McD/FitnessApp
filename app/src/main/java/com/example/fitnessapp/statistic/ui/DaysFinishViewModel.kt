@@ -31,7 +31,24 @@ class DaysFinishViewModel @Inject constructor(
 
 
     fun getStatisticByDate(date: String) = viewModelScope.launch {
-        statisticData.value = statisticInteractor.getStatisticByDate(date)
+        val allStatistics = statisticInteractor.getStatistic()
+        val todayStatistics = allStatistics.filter { it.date == date }
+        
+        // Суммируем все данные за текущий день
+        val totalKcal = todayStatistics.sumOf { it.kcal }
+        val totalTime = todayStatistics.sumOf { it.workoutTime.toIntOrNull() ?: 0 }
+        val totalExercises = todayStatistics.sumOf { it.completedExercise }
+        
+        // Создаем агрегированную запись для отображения
+        val aggregatedStatistic = StatisticModel(
+            id = null,
+            date = date,
+            kcal = totalKcal,
+            workoutTime = totalTime.toString(),
+            completedExercise = totalExercises
+        )
+        
+        statisticData.value = aggregatedStatistic
     }
 
     private fun getWorkoutMonthStatistic(){

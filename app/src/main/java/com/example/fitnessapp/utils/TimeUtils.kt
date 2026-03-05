@@ -93,4 +93,13 @@ object TimeUtils {
             else -> "повторений"
         }
     }
+
+    fun getWorkoutWord(count: Int): String {
+        return when {
+            count % 100 in 11..19 -> "Тренировок"
+            count % 10 == 1 -> "Тренировка"
+            count % 10 in 2..4 -> "Тренировки"
+            else -> "Тренировок"
+        }
+    }
 }

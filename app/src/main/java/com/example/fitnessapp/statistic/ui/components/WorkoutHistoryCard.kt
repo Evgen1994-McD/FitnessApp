@@ -48,6 +48,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import pl.droidsonroids.gif.GifDrawable
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
+import com.example.fitnessapp.ui.theme.baseBlue
 import com.example.fitnessapp.utils.TimeUtils
 
 @Composable
@@ -121,7 +122,7 @@ fun WorkoutHistoryCard(
                         text = "${workout.caloriesBurned.toInt()} ккал",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = baseBlue
                     )
                 }
                 

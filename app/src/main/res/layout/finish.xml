@@ -91,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="5dp"
-                        android:text="Дней тренировались:"
+                        android:text="Всего тренировок :"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"

@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +41,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import com.example.fitnessapp.exercises.utils.TrainingUtils
+import com.example.fitnessapp.utils.TimeUtils
 
 // Вспомогательные функции для оптимизации
 private fun calculateProgress(progress: Int, maxProgress: Int): Float {
@@ -165,10 +165,7 @@ fun MainScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = pluralStringResource(
-                            id = R.plurals.workouts_count,
-                            count = totalWorkouts
-                        ),
+                        text = TimeUtils.getWorkoutWord(totalWorkouts),
                         fontSize = 14.sp
                     )
                 }

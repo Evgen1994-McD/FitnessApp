@@ -99,14 +99,10 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 }
 
 
-        return statisticModel?.copy(
-            kcal = statisticModel!!.kcal+kcal,
-            workoutTime = (statisticModel!!.workoutTime.toInt()+ time).toString(),
-            completedExercise = statisticModel!!.completedExercise + doneExerciseCounterToSave -1
-
-        ) ?: StatisticModel(
+        // Всегда создаем новую запись статистики для каждой тренировки
+        return StatisticModel(
             null,  // если id null то запишется новый id в статистик модел ( мы указали стратегию)
-            TimeUtils.getCurrentDate(),
+            currentDay?.completedDate ?: TimeUtils.getCurrentDate(), // Используем дату тренировки
             kcal = kcal,
             workoutTime = time.toString(),
             completedExercise = doneExerciseCounterToSave-1
