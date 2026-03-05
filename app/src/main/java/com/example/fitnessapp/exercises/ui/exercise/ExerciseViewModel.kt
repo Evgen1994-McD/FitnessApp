@@ -2,6 +2,7 @@ package com.example.fitnessapp.exercises.ui.exercise
 
 import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -54,13 +55,18 @@ class ExerciseViewModel @Inject constructor(
 
 
     private fun isDayDone() {
+        Log.d("ExerciseViewModel", "DEBUG: totalExerciseNumber = $totalExerciseNumber, doneExerciseCounterToSave = $doneExerciseCounterToSave")
         if (totalExerciseNumber == doneExerciseCounterToSave - 1) {
-            currentDay = currentDay?.copy(isDone = true)
+            Log.d("ExerciseViewModel", "DEBUG: Условие выполнено, устанавливаем isDone = true")
+            val todayDate = TimeUtils.getCurrentDate()
+            currentDay = currentDay?.copy(isDone = true, completedDate = todayDate)
             currentDay?.let {
                 updateDay(it)
             }
             getAndOpenNextDay()
 
+        } else {
+            Log.d("ExerciseViewModel", "DEBUG: Условие НЕ выполнено, isDone остается false")
         }
         /*
         currentDay передаём тот же, но перезапишем параметр isDone чтобы поставить галочку
@@ -74,6 +80,7 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private fun createStatistic() : StatisticModel {
+        Log.d("ExerciseViewModel", "DEBUG: Создаем статистику для даты: currentDay?.completedDate = ${currentDay?.completedDate}")
         var kcal = 0.0
         var time = 0
 exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->

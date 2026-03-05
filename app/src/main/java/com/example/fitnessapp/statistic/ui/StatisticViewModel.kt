@@ -1,5 +1,6 @@
 package com.example.fitnessapp.statistic.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -167,23 +168,37 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     private fun loadWorkoutHistory() = viewModelScope.launch {
         val allDays = statisticInteractor.getAllDays()
-            .filter { it.isDone && it.completedDate != null }
-            .sortedByDescending { it.completedDate }
-            .take(10) // Показываем последние 10 тренировок
+        Log.d("StatisticViewModel", "DEBUG: Всего дней в базе: ${allDays.size}")
+        
+        val completedDays = allDays.filter { it.isDone && it.completedDate != null }
+        Log.d("StatisticViewModel", "DEBUG: Завершенных дней: ${completedDays.size}")
+        Log.d("StatisticViewModel", "DEBUG: Завершенные дни: ${completedDays.map { "${it.completedDate} - ${it.isDone}" }}")
+        
+        val sortedDays = completedDays.sortedByDescending { it.completedDate }
+        val lastDays = sortedDays.take(10) // Показываем последние 10 тренировок
             
         val exerciseList = statisticInteractor.getAllExercise()
-        val workoutHistoryList = allDays.mapNotNull { day ->
+        val statisticList = statisticInteractor.getStatistic()
+        Log.d("StatisticViewModel", "DEBUG: Статистика: ${statisticList.size} записей")
+        
+        val workoutHistoryList = lastDays.mapNotNull { day ->
             val exercises = getExercisesFromIds(day.exercises, exerciseList)
+            // Ищем статистику для этой даты чтобы получить калории и длительность
+            val dayStatistic = statisticList.find { it.date == day.completedDate }
+            Log.d("StatisticViewModel", "DEBUG: Для дня ${day.completedDate} найдена статистика: ${dayStatistic != null}")
+            
             WorkoutHistoryModel(
                 id = day.id,
                 date = day.completedDate ?: "",
                 zone = day.zone,
                 difficulty = day.difficulty,
-                caloriesBurned = 0.0, // Будет получено из StatisticModel
-                duration = 0, // Будет получено из StatisticModel
+                caloriesBurned = dayStatistic?.kcal ?: 0.0, // Берем калории из статистики
+                duration = try { dayStatistic?.workoutTime?.toInt() ?: 0 } catch (e: Exception) { 0 }, // Берем длительность из статистики
                 exercises = exercises
             )
         }
+        
+        Log.d("StatisticViewModel", "DEBUG: История тренировок создана: ${workoutHistoryList.size} элементов")
         _workoutHistory.value = workoutHistoryList
     }
     
