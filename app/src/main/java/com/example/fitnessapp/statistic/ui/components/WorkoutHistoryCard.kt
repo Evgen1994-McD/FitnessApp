@@ -64,7 +64,7 @@ fun WorkoutHistoryCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .let { if (workout.isExpanded) it else it.clickable { onToggleExpand() } }
+            .clickable { onToggleExpand() } // Всегда кликабельна
     ) {
         // Основная информация карточки
         Row(
