@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -132,8 +136,8 @@ private fun BMIIndicator(bmiValue: Double) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(8.dp)
-                .clip(RoundedCornerShape(4.dp))
+                .height(12.dp)
+                .clip(RoundedCornerShape(6.dp))
         ) {
             // Цветные сегменты с правильными цветами
             Box(
@@ -141,33 +145,25 @@ private fun BMIIndicator(bmiValue: Double) {
                     .weight(0.25f)
                     .fillMaxHeight()
                     .background(Color(0xFF3B82F6)) // UNDERWEIGHT blue
-            ) {
-                // Пустой контент для обеспечения отображения
-            }
+            )
             Box(
                 modifier = Modifier
                     .weight(0.25f)
                     .fillMaxHeight()
                     .background(Color(0xFF10B981)) // NORMAL green
-            ) {
-                // Пустой контент для обеспечения отображения
-            }
+            )
             Box(
                 modifier = Modifier
                     .weight(0.25f)
                     .fillMaxHeight()
                     .background(Color(0xFFF59E0B)) // OVERWEIGHT yellow
-            ) {
-                // Пустой контент для обеспечения отображения
-            }
+            )
             Box(
                 modifier = Modifier
                     .weight(0.25f)
                     .fillMaxHeight()
                     .background(Color(0xFFEF4444)) // OBESE red
-            ) {
-                // Пустой контент для обеспечения отображения
-            }
+            )
         }
         
         // Подписи
@@ -195,6 +191,14 @@ private fun BMIIndicator(bmiValue: Double) {
                 else -> 0.75 + ((bmiValue - 30.0).coerceAtMost(10.0) / 10.0) * 0.25
             }.coerceIn(0.0, 1.0)
             
+            // Защита от отрицательного padding
+            val paddingValue = (position * 320f).dp - 12.dp
+            val safePadding = when {
+                paddingValue.value < 0 -> 0.dp
+                paddingValue.value > 308f -> 308.dp // Максимальная ширина минус размер ползунка
+                else -> paddingValue
+            }
+            
             Box(
                 modifier = Modifier
                     .size(12.dp)
@@ -204,7 +208,57 @@ private fun BMIIndicator(bmiValue: Double) {
                     )
                     .padding(horizontal = 1.dp)
                     .align(Alignment.CenterStart)
-                    .padding(start = (position * 320f).dp - 12.dp)
+                    .padding(start = safePadding)
+            )
+        }
+        
+        // Иконка человека под графиком в соответствии с ИМТ
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            val position = when {
+                bmiValue < 18.5 -> (bmiValue - 15.0) / 3.5 * 0.25
+                bmiValue < 25 -> 0.25 + (bmiValue - 18.5) / 6.5 * 0.25
+                bmiValue < 30 -> 0.5 + (bmiValue - 25.0) / 5.0 * 0.25
+                else -> 0.75 + ((bmiValue - 30.0).coerceAtMost(10.0) / 10.0) * 0.25
+            }.coerceIn(0.0, 1.0)
+            
+            val bmiStatus = when {
+                bmiValue < 18.5 -> BMIStatus.UNDERWEIGHT
+                bmiValue < 25 -> BMIStatus.NORMAL
+                bmiValue < 30 -> BMIStatus.OVERWEIGHT
+                else -> BMIStatus.OBESE
+            }
+            
+            val iconColor = when (bmiStatus) {
+                BMIStatus.UNDERWEIGHT -> Color(0xFF3B82F6)  // blue
+                BMIStatus.NORMAL -> Color(0xFF10B981)      // green
+                BMIStatus.OVERWEIGHT -> Color(0xFFF59E0B)   // yellow
+                BMIStatus.OBESE -> Color(0xFFEF4444)       // red
+            }
+            
+            // Вычисляем позицию в dp (ширина экрана минус отступы)
+            val screenWidth = 320f // Примерная ширина контента
+            val iconPosition = (position * screenWidth).dp
+            
+            // Защита от отрицательных и слишком больших значений
+            val safeIconPosition = when {
+                iconPosition.value < 0 -> 0.dp
+                iconPosition.value > 296f -> 296.dp // Максимальная ширина минус размер иконки
+                else -> iconPosition
+            }
+            
+            Spacer(modifier = Modifier.width(safeIconPosition))
+            
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "BMI Status",
+                tint = iconColor,
+                modifier = Modifier.size(24.dp)
             )
         }
     }
