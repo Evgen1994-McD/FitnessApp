@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
+import com.example.fitnessapp.ui.theme.baseGray
 
 @Composable
 fun WeeklyCaloriesChart(
@@ -89,12 +91,27 @@ private fun BarChartItem(
     modifier: Modifier = Modifier
 ) {
     val heightPercentage = if (maxCalories > 0) calories.toFloat() / maxCalories else 0f
+    val hasWorkout = calories > 0 // Была тренировка если сожжены калории
     
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
+        // Значение калорий над столбцом (только если были тренировки)
+        if (hasWorkout) {
+            Text(
+                text = "$calories",
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF3B82F6), // синий цвет для цифр
+                style = MaterialTheme.typography.labelSmall
+            )
+        } else {
+            // Пустое место для сохранения высоты
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        
         // Столбик графика
         Box(
             modifier = Modifier
@@ -109,7 +126,10 @@ private fun BarChartItem(
                     .align(Alignment.BottomCenter)
                     .height((120.dp * heightPercentage).coerceAtLeast(4.dp))
                     .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(
+                        if (hasWorkout) Color(0xFF3B82F6) // синий если были тренировки
+                        else baseGray // обычный цвет если нет
+                    )
             )
         }
         

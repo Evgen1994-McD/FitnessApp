@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.icu.util.Calendar
 import androidx.compose.ui.text.intl.Locale
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.TimeZone
@@ -64,6 +66,11 @@ object TimeUtils {
             Здесб передали дату в String, и он выдал календарь на основе этого стринг
              */
         }
+    }
+
+    // Новый метод для форматирования LocalDate в тот же формат что и остальные
+    fun formatLocalDate(date: LocalDate): String {
+        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     }
 
 

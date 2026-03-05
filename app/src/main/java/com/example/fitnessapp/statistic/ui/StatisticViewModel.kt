@@ -190,11 +190,14 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     private fun loadWeeklyCalories() = viewModelScope.launch {
         val statisticList = statisticInteractor.getStatistic()
         val currentDate = LocalDate.now()
-        val weekStart = currentDate.minusDays(6) // Последние 7 дней
+        
+        // Начинаем с понедельника текущей недели
+        val monday = currentDate.minusDays(currentDate.dayOfWeek.value - 1L)
         
         val weeklyData = (0..6).map { dayOffset ->
-            val date = weekStart.plusDays(dayOffset.toLong())
-            val dateString = TimeUtils.getCurrentDate() // TODO: Заменить на форматирование LocalDate
+            val date = monday.plusDays(dayOffset.toLong())
+            // Правильно форматируем дату для каждого дня
+            val dateString = TimeUtils.formatLocalDate(date)
             val dayStatistic = statisticList.find { it.date == dateString }
             val dayName = when (dayOffset) {
                 0 -> "Пн"
