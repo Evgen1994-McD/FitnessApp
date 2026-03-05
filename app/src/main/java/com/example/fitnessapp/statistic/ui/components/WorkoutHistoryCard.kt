@@ -1,5 +1,6 @@
 package com.example.fitnessapp.statistic.ui.components
 
+import android.widget.ImageView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -43,9 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import androidx.compose.ui.viewinterop.AndroidView
+import pl.droidsonroids.gif.GifDrawable
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
 import com.example.fitnessapp.utils.TimeUtils
@@ -195,16 +195,22 @@ private fun ExerciseListDetail(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // GIF упражнения вместо иконки (анимированный через Coil)
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data("file:///android_asset/${exercise.image}")
-                                .build(),
-                            contentDescription = exercise.name,
+                        // GIF упражнения вместо иконки (анимированный через GifDrawable)
+                        AndroidView(
+                            factory = { context ->
+                                android.widget.ImageView(context).apply {
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    adjustViewBounds = true
+                                    try {
+                                        setImageDrawable(GifDrawable(context.assets, exercise.image))
+                                    } catch (e: Exception) {
+                                        // Обработка ошибки загрузки GIF
+                                    }
+                                }
+                            },
                             modifier = Modifier
                                 .size(48.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop
+                                .clip(RoundedCornerShape(8.dp))
                         )
                         
                         Column {
