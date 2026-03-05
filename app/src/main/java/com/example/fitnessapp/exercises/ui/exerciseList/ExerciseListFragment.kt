@@ -51,7 +51,24 @@ class ExerciseListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dayModel = getDayFromArguments() // Вызвавли функци получания Деймодел и открытия нужного объекта
+        
+        // Проверяем что передано - day_id или готовый DayModel
+        dayModel = getDayFromArguments() 
+        if (dayModel == null) {
+            // Если dayModel не передан, пробуем получить day_id
+            val dayId = arguments?.getInt("day_id") ?: -1
+            if (dayId != -1) {
+                // Загружаем DayModel по day_id через ViewModel
+                model.getDayById(dayId).observe(viewLifecycleOwner) { day ->
+                    dayModel = day
+                    // Обновляем заголовок с правильным номером дня
+                    ab?.title = ("День: ${day?.dayNumber ?: "?"}. Список упражнений.")
+                    day?.let {
+                        model.getDayExerciseList(it)
+                    }
+                }
+            }
+        }
 
         // Инициализируем SharedPreferences
         sharedPreferences = requireContext().getSharedPreferences("exercise_prefs", Context.MODE_PRIVATE)
@@ -68,7 +85,7 @@ class ExerciseListFragment : Fragment() {
  */
 
         ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = ("День: ${dayModel?.dayNumber}. Список упражнений.")
+        ab?.title = ("День: ${dayModel?.dayNumber ?: "?"}. Список упражнений.")
 
     }
 
@@ -87,7 +104,9 @@ class ExerciseListFragment : Fragment() {
         rcView.adapter = adapter // Назначили адаптер
         
         // Загружаем список упражнений при инициализации
-        model.getDayExerciseList(dayModel)
+        dayModel?.let { day ->
+            model.getDayExerciseList(day)
+        }
         
         bStart.setOnClickListener {
             val bundle = Bundle().apply {

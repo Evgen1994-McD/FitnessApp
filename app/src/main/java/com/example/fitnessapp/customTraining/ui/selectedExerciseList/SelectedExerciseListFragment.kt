@@ -59,6 +59,14 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
             }
             findNavController().navigate(R.id.chooseExercisesFragment, bundle)
         }
+        
+        // Обработчик для кнопки Start
+        _binding.start.setOnClickListener {
+            val bundle = Bundle().apply {
+                putInt("day_id", dayId)
+            }
+            findNavController().navigate(R.id.exListFragment, bundle)
+        }
     }
 
     private fun dayObserver(){
@@ -70,19 +78,23 @@ class SelectedExerciseListFragment : Fragment(), SelectedListExerciseAdapter.Lis
             _binding.imageEmpty.visibility = if(isEmpty) View.VISIBLE else View.GONE
             _binding.textEmptySubtext.visibility = if(isEmpty) View.VISIBLE else View.GONE
 
+            // Управляем видимостью кнопки Start
+            _binding.start.visibility = if(isEmpty) View.GONE else View.VISIBLE
+
             val count = "${getString(R.string.selected_exercise_count)} ${list.size}"
             _binding.tvExCount.text = count
             adapter.submitList(list)
         }
         
         model.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            _binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+            _binding.progressLoading.visibility = if(isLoading) View.VISIBLE else View.GONE
             
             // Во время загрузки скрываем плейсхолдер
             if (isLoading) {
                 _binding.textEmpty.visibility = View.GONE
                 _binding.imageEmpty.visibility = View.GONE
                 _binding.textEmptySubtext.visibility = View.GONE
+                _binding.start.visibility = View.GONE
             }
         }
     }

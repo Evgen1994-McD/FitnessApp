@@ -134,17 +134,21 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
             binding.imageEmpty.visibility = if(isEmpty) View.VISIBLE else View.GONE
             binding.textEmptySubtext.visibility = if(isEmpty) View.VISIBLE else View.GONE
             
+            // Управляем видимостью кнопки bt_start
+            binding.btStart.visibility = if(isEmpty) View.GONE else View.VISIBLE
+            
             daysAdapter.submitList(list)
         }
         
         model.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
             
-            // Во время загрузки скрываем плейсхолдер
+            // Во время загрузки скрываем плейсхолдер и кнопку
             if (isLoading) {
                 binding.textEmpty.visibility = View.GONE
                 binding.imageEmpty.visibility = View.GONE
                 binding.textEmptySubtext.visibility = View.GONE
+                binding.btStart.visibility = View.GONE
             }
         }
     }

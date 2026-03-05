@@ -200,9 +200,22 @@ class ExerciseFragment : Fragment() {
     }
 
     private fun changeButtonText(title: String) {
-        if (title == getString(R.string.day_finish_name)) {
-            binding.btHelp.visibility = View.INVISIBLE
-            binding.bNext.text = getString(R.string.statistic)
+        val subtitleText = binding.subTitle.text.toString()
+        
+        when {
+            title == getString(R.string.day_finish_name) -> {
+                binding.btHelp.visibility = View.INVISIBLE
+                binding.bNext.text = getString(R.string.statistic)
+            }
+            subtitleText.startsWith(getString(R.string.Waiting)) -> {
+                binding.bNext.text = getString(R.string.Next)
+            }
+            subtitleText.startsWith(getString(R.string.relax)) -> {
+                binding.bNext.text = getString(R.string.Next)
+            }
+            else -> {
+                binding.bNext.text = getString(R.string.done)
+            }
         }
     }
 

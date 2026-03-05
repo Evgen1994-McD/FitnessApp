@@ -147,7 +147,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tvTime"
         app:layout_constraintStart_toStartOf="@+id/tvTime"
         app:layout_constraintTop_toTopOf="@+id/tvTime"
-        app:srcCompat="@drawable/ic_start" />
+        app:srcCompat="@drawable/ic_play" />
 
     <ImageView
         android:id="@+id/btHelp"
