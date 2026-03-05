@@ -123,8 +123,9 @@ class CactusAiRepository(
                     Log.d(TAG, "   - Модель уже скачана, пропускаем downloadModel()")
                     Log.d(TAG, "   - Файлы в директории: ${modelDir.listFiles()?.size}")
                 } else {
-                    Log.d(TAG, "   - Модель не найдена, начинаем скачивание...")
-                    lm?.downloadModel(MODEL_SLUG)
+                    Log.d(TAG, "   - Модель не найдена, но автоматическое скачивание отключено")
+                    Log.d(TAG, "   - Для скачивания вручную используйте AI функции в приложении")
+                    // lm?.downloadModel(MODEL_SLUG) // ОТКЛЮЧЕНО
                 }
                 
                 val downloadTime = System.currentTimeMillis() - downloadStart
@@ -242,6 +243,23 @@ class CactusAiRepository(
      */
     suspend fun generateResponse(userMessage: String): String {
         return generateResponse(userMessage, null)
+    }
+
+    /**
+     * Ручное скачивание модели
+     */
+    suspend fun downloadModelManually() {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "🚀 Начинаем ручное скачивание модели $MODEL_SLUG...")
+                lm?.downloadModel(MODEL_SLUG)
+                Log.d(TAG, "   ✅ Модель скачана вручную")
+                true
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Ошибка ручного скачивания: ${e.message}")
+                false
+            }
+        }
     }
 
     /**

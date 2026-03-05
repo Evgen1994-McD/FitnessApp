@@ -35,6 +35,13 @@ class TrainingPlanAiService(
     private val exerciseDao: ExerciseDao
 ) {
     
+    /**
+     * Ручное скачивание модели
+     */
+    suspend fun downloadModelManually() {
+        return cactusRepository.downloadModelManually()
+    }
+    
     suspend fun getExerciseRecommendations(
         targetZone: String,
         excludeIds: List<Int> = emptyList()

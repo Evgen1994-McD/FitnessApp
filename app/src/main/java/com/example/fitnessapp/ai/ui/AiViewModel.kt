@@ -20,6 +20,14 @@ class AiViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
+
+    /**
+     * Ручное скачивание модели
+     */
+    suspend fun downloadModelManually() {
+        aiRepository.downloadModelManually()
+    }
+
     val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
