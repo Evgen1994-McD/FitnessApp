@@ -73,5 +73,24 @@ object TimeUtils {
         return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     }
 
+    fun formatExerciseTime(time: String): String {
+        return if (time.startsWith("x")) {
+            val count = time.substringAfter("x").toInt()
+            "$count ${getRepetitionWord(count)}"
+        } else {
+            val seconds = time.toInt()
+            val minutes = seconds / 60
+            val remainingSeconds = seconds % 60
+            String.format("%02d:%02d", minutes, remainingSeconds)
+        }
+    }
 
+    private fun getRepetitionWord(count: Int): String {
+        return when {
+            count % 100 in 11..19 -> "повторений"
+            count % 10 == 1 -> "повторение"
+            count % 10 in 2..4 -> "повторения"
+            else -> "повторений"
+        }
+    }
 }

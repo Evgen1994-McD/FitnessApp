@@ -112,6 +112,9 @@ dependencies {
     //Lottie Animation
     implementation("com.airbnb.android:lottie:6.1.0")
 
+    // Coil for image loading (including GIF from assets)
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
     // Other libraries
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

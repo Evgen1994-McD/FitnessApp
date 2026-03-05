@@ -3,6 +3,7 @@ package com.example.fitnessapp.statistic.ui.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,12 +37,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
+import com.example.fitnessapp.utils.TimeUtils
 
 @Composable
 fun WorkoutHistoryCard(
@@ -150,6 +157,11 @@ private fun ExerciseListDetail(
     exercises: List<ExerciseModel>,
     modifier: Modifier = Modifier
 ) {
+    android.util.Log.d("WorkoutHistoryCard", "DEBUG: ExerciseListDetail вызван с ${exercises.size} упражнениями")
+    exercises.forEach { exercise ->
+        android.util.Log.d("WorkoutHistoryCard", "DEBUG: Упражнение - ${exercise.name}")
+    }
+    
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -163,47 +175,74 @@ private fun ExerciseListDetail(
         )
         
         // Список упражнений
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            // Иконки упражнений (показываем первые 3)
-            exercises.take(3).forEach { exercise ->
-                Box(
+            // Показываем все упражнения в виде списка
+            exercises.forEach { exercise ->
+                Row(
                     modifier = Modifier
-                        .size(32.dp)
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.FitnessCenter,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp)
-                    )
+                    // Иконка и название упражнения
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // GIF упражнения вместо иконки (анимированный через Coil)
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("file:///android_asset/${exercise.image}")
+                                .build(),
+                            contentDescription = exercise.name,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                        
+                        Column {
+                            Text(
+                                text = exercise.name,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = TimeUtils.formatExerciseTime(exercise.time),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
-            
-            Spacer(modifier = Modifier.weight(1f))
-            
-            // Текст о количестве упражнений
-            Text(
-                text = "${exercises.size} упражнений завершено",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.End,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
         }
     }
 }
 
 private fun getWorkoutTitle(zone: String?, difficulty: String): String {
-    return if (zone.isNullOrEmpty()) {
-        "Все тело • $difficulty"
+    val translatedZone = if (zone.isNullOrEmpty()) {
+        "Все тело"
     } else {
-        "$zone • $difficulty"
+        translateZoneToRussian(zone)
+    }
+    return "$translatedZone • $difficulty"
+}
+
+private fun translateZoneToRussian(zone: String?): String {
+    return when (zone?.lowercase()) {
+        "hands" -> "Руки"
+        "legs" -> "Ноги"
+        "back" -> "Спина"
+        "cardio" -> "Кардио"
+        else -> zone ?: "Все тело"
     }
 }
 
