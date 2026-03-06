@@ -15,8 +15,6 @@ import com.example.fitnessapp.db.dao.WeightDao
 import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.customTraining.domain.CustomRepository
 import com.example.fitnessapp.customTraining.domain.impl.CustomInteractorImpl
-import com.example.fitnessapp.db.MIGRATION_5_7
-import com.example.fitnessapp.db.MIGRATION_6_7
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.data.ExerciseRepositoryImpl
 import com.example.fitnessapp.exercises.domain.DaysInteractor
@@ -53,7 +51,6 @@ object MainModule {
             "fitness.db" //Имя
         )
          .createFromAsset("db/fitness.db") // Используем предустановленную БД с правильной схемой
-         .addMigrations(MIGRATION_5_7, MIGRATION_6_7) // Добавляем наши миграции
          .build() // Room создаст новую базу с правильной схемой
         //Поэтому сначала возьмём из ассетс, потом вызовем Билд
     //здесь требуется передать контекст. Но у нас это App, а он уже есть в даггер
