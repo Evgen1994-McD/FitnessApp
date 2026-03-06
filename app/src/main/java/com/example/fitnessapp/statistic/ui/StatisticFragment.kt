@@ -4,25 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.fitnessapp.db.StatisticModel
-import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import com.example.fitnessapp.utils.TimeUtils
-import com.example.fitnessapp.statistic.ui.models.BMIModel
-import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
-import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
-import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
-import com.applandeo.materialcalendarview.EventDay
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -50,7 +42,12 @@ class StatisticFragment : Fragment() {
                     val calendarDays by viewModel.calendarDays.collectAsState()
                     val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState()
                     val eventList by viewModel.eventListData.collectAsState()
-                    val filterText = viewModel.getFilterText()
+                    val workoutFilterType by viewModel.workoutFilterType.collectAsState()
+                    val filterText = when (workoutFilterType) {
+                        WorkoutFilterType.ALL -> "Все"
+                        WorkoutFilterType.WEEK -> "За неделю"
+                        WorkoutFilterType.DAY -> "За день"
+                    }
 
                     // Загружаем новые данные при первом запуске
                     LaunchedEffect(Unit) {
@@ -75,7 +72,7 @@ class StatisticFragment : Fragment() {
                             viewModel.toggleWorkoutExpanded(workoutId)
                         },
                         onCycleWorkoutFilter = {
-                            viewModel.cycleWorkoutFilter()
+                            viewModel.cycleWorkoutFilterSafe()
                         },
                         onAddWeight = {
                             showAddWeightDialog(context, viewModel)

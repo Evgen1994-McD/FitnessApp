@@ -23,11 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitnessapp.R
 import com.example.fitnessapp.statistic.ui.models.BMIModel
 import com.example.fitnessapp.statistic.ui.models.BMIStatus
+import com.example.fitnessapp.ui.theme.baseGreen
 
 @Composable
 fun BMICard(
@@ -69,35 +72,44 @@ fun BMICard(
         // Значение ИМТ
         Row(
             modifier = Modifier.padding(vertical = 24.dp),
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (bmiModel != null) {
-                Text(
-                    text = String.format("%.1f", bmiModel.bmiValue),
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = "кг/м²",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
-                )
-            } else {
-                Text(
-                    text = "--",
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "кг/м²",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
-                )
+            Row() {
+                if (bmiModel != null) {
+                    Text(
+                        text = String.format("%.1f", bmiModel.bmiValue),
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "кг/м²",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
+                    )
+                } else {
+                    Text(
+                        text = "--",
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "кг/м²",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
+                    )
+                }
             }
+                Box(){
+                    Icon(painter = painterResource(R.drawable.ic_add_weight_24), "Добавить вес",
+                        Modifier.size(60.dp),
+                        tint = baseGreen
+                    )
+                }
         }
         
         // Индикатор ИМТ

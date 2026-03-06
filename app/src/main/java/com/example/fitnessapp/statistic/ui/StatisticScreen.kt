@@ -1,6 +1,5 @@
 package com.example.fitnessapp.statistic.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +22,6 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -114,7 +112,7 @@ fun NewStatisticScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
+                    containerColor = Color(0xFF10B981),
                     titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
@@ -148,8 +146,7 @@ fun NewStatisticScreen(
             )
 
             // Карточка ИМТ
-            BMICard(bmiModel = bmiData)
-
+            BMICard(bmiModel = bmiData, onAddWeight = { showBottomSheet.value = true })
 
             // График сожженных калорий
             WeeklyCaloriesChart(
@@ -183,12 +180,36 @@ fun NewStatisticScreen(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                workoutHistory.forEach { workout ->
-                    WorkoutHistoryCard(
-                        workout = workout,
-                        onToggleExpand = { onWorkoutToggle(workout.id ?: 0) },
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
+                if (workoutHistory.isEmpty()) {
+                    // Показываем сообщение когда нет тренировок
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = when (filterText) {
+                                "За день" -> "На выбранный день тренировок нет"
+                                "За неделю" -> "На выбранную неделю тренировок нет"
+                                else -> "Тренировок пока нет"
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    workoutHistory.forEach { workout ->
+                        WorkoutHistoryCard(
+                            workout = workout,
+                            onToggleExpand = { onWorkoutToggle(workout.id ?: 0) },
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                    }
                 }
             }
         }

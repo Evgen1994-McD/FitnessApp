@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import com.applandeo.materialcalendarview.EventDay
 import com.example.fitnessapp.R
-import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.db.DayModel
@@ -91,6 +90,9 @@ class StatisticViewModel @Inject constructor(
     private val _workoutFilterType = MutableStateFlow(WorkoutFilterType.ALL)
     val workoutFilterType: StateFlow<WorkoutFilterType> = _workoutFilterType.asStateFlow()
     
+    // Защита от быстрых двойных кликов
+    private var lastFilterChangeTime = 0L
+    
     // StateFlow для отфильтрованной истории тренировок
     private val _filteredWorkoutHistory = MutableStateFlow<List<WorkoutHistoryModel>>(emptyList())
     val filteredWorkoutHistory: StateFlow<List<WorkoutHistoryModel>> = _filteredWorkoutHistory.asStateFlow()
@@ -120,9 +122,6 @@ class StatisticViewModel @Inject constructor(
 
  */
     }
-
-
-
 
     fun getWeightByYearAndMonth() = viewModelScope.launch {
 _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
@@ -382,11 +381,36 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     // Методы для фильтрации тренировок
     fun cycleWorkoutFilter() {
-        _workoutFilterType.value = when (_workoutFilterType.value) {
+        val currentFilter = _workoutFilterType.value
+        val newFilter = when (currentFilter) {
             WorkoutFilterType.ALL -> WorkoutFilterType.WEEK
             WorkoutFilterType.WEEK -> WorkoutFilterType.DAY
             WorkoutFilterType.DAY -> WorkoutFilterType.ALL
         }
+        _workoutFilterType.value = newFilter
+        Log.d("StatisticViewModel", "Filter changed from $currentFilter to $newFilter")
+        applyWorkoutFilter()
+    }
+    
+    // Обновленный метод с защитой от двойных кликов
+    fun cycleWorkoutFilterSafe() {
+        val currentTime = System.currentTimeMillis()
+        
+        // Защита от быстрых двойных кликов (500ms)
+        if (currentTime - lastFilterChangeTime < 500) {
+            Log.d("StatisticViewModel", "Ignoring rapid filter click")
+            return
+        }
+        
+        val currentFilter = _workoutFilterType.value
+        val newFilter = when (currentFilter) {
+            WorkoutFilterType.ALL -> WorkoutFilterType.WEEK
+            WorkoutFilterType.WEEK -> WorkoutFilterType.DAY
+            WorkoutFilterType.DAY -> WorkoutFilterType.ALL
+        }
+        _workoutFilterType.value = newFilter
+        lastFilterChangeTime = currentTime
+        Log.d("StatisticViewModel", "Filter changed from $currentFilter to $newFilter")
         applyWorkoutFilter()
     }
     
@@ -422,9 +446,15 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         val selectedDate = _selectedDate.value
         val selectedDateString = TimeUtils.formatLocalDate(selectedDate)
         
-        return workouts.filter { workout ->
+        Log.d("StatisticViewModel", "Filtering by day: looking for date '$selectedDateString' in ${workouts.size} workouts")
+        Log.d("StatisticViewModel", "Available workout dates: ${workouts.map { it.date }}")
+        
+        val filtered = workouts.filter { workout ->
             workout.date == selectedDateString
         }
+        
+        Log.d("StatisticViewModel", "Day filter result: ${filtered.size} workouts found")
+        return filtered
     }
     
     fun getFilterText(): String {
