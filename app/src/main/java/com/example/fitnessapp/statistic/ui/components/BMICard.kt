@@ -1,6 +1,7 @@
 package com.example.fitnessapp.statistic.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import com.example.fitnessapp.ui.theme.baseGreen
 @Composable
 fun BMICard(
     bmiModel: BMIModel?,
+    onAddWeight: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -72,10 +74,10 @@ fun BMICard(
         // Значение ИМТ
         Row(
             modifier = Modifier.padding(vertical = 24.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            verticalAlignment = Alignment.Bottom
         ) {
-            Row() {
+            // Левая группа: текст ИМТ
+            Row(verticalAlignment = Alignment.Bottom) {
                 if (bmiModel != null) {
                     Text(
                         text = String.format("%.1f", bmiModel.bmiValue),
@@ -104,12 +106,20 @@ fun BMICard(
                     )
                 }
             }
-                Box(){
-                    Icon(painter = painterResource(R.drawable.ic_add_weight_24), "Добавить вес",
-                        Modifier.size(60.dp),
-                        tint = baseGreen
-                    )
-                }
+            
+            Spacer(modifier = Modifier.weight(1f))
+            
+            // Правая группа: иконка
+            Box(
+                modifier = Modifier
+                    .clickable { onAddWeight() }
+                    .padding(end = 12.dp)
+            ) {
+                Icon(painter = painterResource(R.drawable.ic_add_weight_24), "Добавить вес",
+                    Modifier.size(60.dp),
+                    tint = baseGreen
+                )
+            }
         }
         
         // Индикатор ИМТ

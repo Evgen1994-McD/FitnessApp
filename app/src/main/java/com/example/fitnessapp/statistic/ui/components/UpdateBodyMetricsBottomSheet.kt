@@ -273,7 +273,8 @@ fun UpdateBodyMetricsBottomSheet(
                     onSave(heightValue, weightValue)
                     onDismiss()
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .height(60.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF2196F3)
                 )

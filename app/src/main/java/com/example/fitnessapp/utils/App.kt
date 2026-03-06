@@ -11,8 +11,8 @@ class App:Application() {
     
     companion object {
         // Реальный ID для релиза
-//        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
-        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846022121212121280-2"
+        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
+//        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846022121212121280-2"
 
         @Volatile
         private var appOpenAdManager: AppOpenAdManager? = null

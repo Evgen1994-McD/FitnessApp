@@ -42,6 +42,7 @@ class StatisticFragment : Fragment() {
                     val calendarDays by viewModel.calendarDays.collectAsState()
                     val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState()
                     val eventList by viewModel.eventListData.collectAsState()
+                    val selectedDate by viewModel.selectedDate.collectAsState()
                     val workoutFilterType by viewModel.workoutFilterType.collectAsState()
                     val filterText = when (workoutFilterType) {
                         WorkoutFilterType.ALL -> "Все"
@@ -62,6 +63,7 @@ class StatisticFragment : Fragment() {
                         monthlyCalories = monthlyCalories,
                         calendarPeriod = calendarPeriod,
                         calendarDays = calendarDays,
+                        selectedDate = selectedDate,
                         showTopSheetCalendar = showTopSheetCalendar,
                         eventList = eventList,
                         filterText = filterText,

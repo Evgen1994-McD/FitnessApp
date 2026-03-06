@@ -1,5 +1,6 @@
 package com.example.fitnessapp.statistic.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,8 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Height
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -67,7 +66,9 @@ import com.example.fitnessapp.statistic.ui.models.MonthlyCaloriesModel
 import com.example.fitnessapp.statistic.ui.models.CalendarPeriod
 import com.example.fitnessapp.statistic.ui.components.TopSheetCalendar
 import com.example.fitnessapp.ui.theme.baseBlue
-import com.example.fitnessapp.utils.TimeUtils
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +79,7 @@ fun NewStatisticScreen(
     monthlyCalories: List<MonthlyCaloriesModel>,
     calendarPeriod: CalendarPeriod,
     calendarDays: List<DayCalendarModel>,
+    selectedDate: LocalDate,
     showTopSheetCalendar: Boolean,
     eventList: List<com.applandeo.materialcalendarview.EventDay>,
     filterText: String,
@@ -98,7 +100,25 @@ fun NewStatisticScreen(
         topBar = {
             TopAppBar(
                 title = {
-
+                    Text(
+                        text = when (selectedDate.monthValue) {
+                            1 -> "Январь"
+                            2 -> "Февраль"
+                            3 -> "Март"
+                            4 -> "Апрель"
+                            5 -> "Май"
+                            6 -> "Июнь"
+                            7 -> "Июль"
+                            8 -> "Август"
+                            9 -> "Сентябрь"
+                            10 -> "Октябрь"
+                            11 -> "Ноябрь"
+                            12 -> "Декабрь"
+                            else -> ""
+                        } + " ${selectedDate.year}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 },
                 actions = {
                     IconButton(
@@ -112,23 +132,10 @@ fun NewStatisticScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF10B981),
+                    containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showBottomSheet.value = true },
-                containerColor = Color(0xFF10B981), // green
-                modifier = Modifier.padding(end = 16.dp, bottom = 24.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_add_weight_24),
-                    contentDescription = "Обновить данные",
-                    tint = Color.White
-                )
-            }
         },
     ) { paddingValues ->
         Column(
