@@ -64,6 +64,12 @@ class StatisticViewModel @Inject constructor(
     
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate: StateFlow<LocalDate> = _selectedDate.asStateFlow()
+    
+    private val _showTopSheetCalendar = MutableStateFlow(false)
+    val showTopSheetCalendar: StateFlow<Boolean> = _showTopSheetCalendar.asStateFlow()
+    
+    private val _selectedWeekStart = MutableStateFlow(LocalDate.now())
+    val selectedWeekStart: StateFlow<LocalDate> = _selectedWeekStart.asStateFlow()
 
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
@@ -208,13 +214,10 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     private fun loadWeeklyCalories() = viewModelScope.launch {
         val statisticList = statisticInteractor.getStatistic()
-        val currentDate = LocalDate.now()
-        
-        // Начинаем с понедельника текущей недели
-        val monday = currentDate.minusDays(currentDate.dayOfWeek.value - 1L)
+        val weekStart = _selectedWeekStart.value
         
         val weeklyData = (0..6).map { dayOffset ->
-            val date = monday.plusDays(dayOffset.toLong())
+            val date = weekStart.plusDays(dayOffset.toLong())
             // Правильно форматируем дату для каждого дня
             val dateString = TimeUtils.formatLocalDate(date)
             // Суммируем все калории за этот день
@@ -241,14 +244,14 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     }
     
     private fun updateCalendarDays() {
-        _calendarDays.value = generateWeekDays(_selectedDate.value)
+        _calendarDays.value = generateWeekDays(_selectedWeekStart.value)
     }
     
     fun onCalendarDayClick(day: DayCalendarModel) {
-        _selectedDate.value = LocalDate.now().withDayOfMonth(day.dayNumber)
+        _selectedDate.value = _selectedWeekStart.value.withDayOfMonth(day.dayNumber)
         updateCalendarDays()
         // Загружаем статистику для выбранной даты
-        getStatisticByDate(TimeUtils.getCurrentDate()) // TODO: Обновить для LocalDate
+        getStatisticByDate(TimeUtils.formatLocalDate(_selectedDate.value))
     }
     
     fun toggleWorkoutExpanded(workoutId: Int) {
@@ -312,5 +315,26 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         loadBMIData()
         getWeightByYearAndMonth()
     }
-
+    
+    // Методы для TopSheet календаря
+    fun showTopSheetCalendar() {
+        _showTopSheetCalendar.value = true
+    }
+    
+    fun hideTopSheetCalendar() {
+        _showTopSheetCalendar.value = false
+    }
+    
+    fun onDateSelected(selectedDate: LocalDate) {
+        val weekStart = getWeekStartDate(selectedDate)
+        _selectedWeekStart.value = weekStart
+        _selectedDate.value = selectedDate
+        updateCalendarDays()
+        loadWeeklyCalories()
+        hideTopSheetCalendar()
+    }
+    
+    private fun getWeekStartDate(selectedDate: LocalDate): LocalDate {
+        return selectedDate.minusDays(selectedDate.dayOfWeek.value - 1L)
+    }
 }

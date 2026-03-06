@@ -41,6 +41,8 @@ class StatisticFragment : Fragment() {
                     val workoutHistory by viewModel.workoutHistory.collectAsState()
                     val weeklyCalories by viewModel.weeklyCalories.collectAsState()
                     val calendarDays by viewModel.calendarDays.collectAsState()
+                    val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState()
+                    val eventList by viewModel.eventListData.collectAsState()
 
                     // Загружаем новые данные при первом запуске
                     LaunchedEffect(Unit) {
@@ -53,6 +55,8 @@ class StatisticFragment : Fragment() {
                         workoutHistory = workoutHistory,
                         weeklyCalories = weeklyCalories,
                         calendarDays = calendarDays,
+                        showTopSheetCalendar = showTopSheetCalendar,
+                        eventList = eventList,
                         onCalendarDayClick = { day ->
                             viewModel.onCalendarDayClick(day)
                         },
@@ -64,6 +68,15 @@ class StatisticFragment : Fragment() {
                         },
                         onUpdateBodyMetrics = { height, weight ->
                             viewModel.updateBodyMetrics(height, weight)
+                        },
+                        onShowCalendar = {
+                            viewModel.showTopSheetCalendar()
+                        },
+                        onCalendarDismiss = {
+                            viewModel.hideTopSheetCalendar()
+                        },
+                        onDateSelected = { date ->
+                            viewModel.onDateSelected(date)
                         }
                     )
                 }

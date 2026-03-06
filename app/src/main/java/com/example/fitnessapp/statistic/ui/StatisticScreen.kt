@@ -64,6 +64,7 @@ import com.example.fitnessapp.statistic.ui.models.BMIModel
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
 import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
 import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
+import com.example.fitnessapp.statistic.ui.components.TopSheetCalendar
 import com.example.fitnessapp.utils.TimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,10 +74,15 @@ fun NewStatisticScreen(
     workoutHistory: List<WorkoutHistoryModel>,
     weeklyCalories: List<WeeklyCaloriesModel>,
     calendarDays: List<DayCalendarModel>,
+    showTopSheetCalendar: Boolean,
+    eventList: List<com.applandeo.materialcalendarview.EventDay>,
     onCalendarDayClick: (DayCalendarModel) -> Unit,
     onWorkoutToggle: (Int) -> Unit,
     onAddWeight: () -> Unit,
-    onUpdateBodyMetrics: (height: Double, weight: Double) -> Unit
+    onUpdateBodyMetrics: (height: Double, weight: Double) -> Unit,
+    onShowCalendar: () -> Unit,
+    onCalendarDismiss: () -> Unit,
+    onDateSelected: (java.time.LocalDate) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val showBottomSheet = remember { mutableStateOf(false) }
@@ -89,11 +95,11 @@ fun NewStatisticScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { /* Уведомления */ }
+                        onClick = { onShowCalendar() }
                     ) {
                         Icon(
                             imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "Уведомления",
+                            contentDescription = "Календарь",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -172,6 +178,14 @@ fun NewStatisticScreen(
             }
         }
     }
+
+    // TopSheet календарь
+    TopSheetCalendar(
+        isVisible = showTopSheetCalendar,
+        onDismiss = onCalendarDismiss,
+        onDateSelected = onDateSelected,
+        eventList = eventList
+    )
 
     // Bottom Sheet для обновления данных тела
     if (showBottomSheet.value) {
