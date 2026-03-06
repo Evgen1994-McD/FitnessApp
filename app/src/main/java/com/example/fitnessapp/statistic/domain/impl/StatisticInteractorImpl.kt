@@ -17,6 +17,9 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun getStatisticByDate(date: String): StatisticModel{
         return statisticRepository.getStatisticByDate(date)
     }
+    override suspend fun getStatisticByDayId(dayId: Int): StatisticModel? {
+        return statisticRepository.getStatisticByDayId(dayId)
+    }
     override suspend fun getYearWeightList(): List<WeightModel>{
         return statisticRepository.getYearWeightList()
     }

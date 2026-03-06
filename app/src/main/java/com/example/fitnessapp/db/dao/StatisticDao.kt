@@ -14,6 +14,9 @@ interface StatisticDao {
 
     @Query("SELECT * FROM statistic_table WHERE date=:date") //Выбрать один конкретный день по дате которую передали
     suspend fun getStatisticByDate(date: String) : StatisticModel? // передаем дату получаем статистик модел по дате
+    
+    @Query("SELECT * FROM statistic_table WHERE dayId=:dayId LIMIT 1") //Выбрать статистику по ID тренировки
+    suspend fun getStatisticByDayId(dayId: Int): StatisticModel? // получить статистику по ID тренировки
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDayStatistic(statisticModel: StatisticModel)

@@ -8,6 +8,7 @@ import com.example.fitnessapp.db.WeightModel
 interface StatisticRepository {
     suspend fun getStatistic(): List<StatisticModel>
     suspend fun getStatisticByDate(date: String): StatisticModel
+    suspend fun getStatisticByDayId(dayId: Int): StatisticModel?
     suspend fun getYearWeightList(): List<WeightModel>
     suspend fun getWeightByYearAndMonth(year: Int, month: Int): List<WeightModel>
     suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel?

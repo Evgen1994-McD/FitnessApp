@@ -15,6 +15,8 @@ import com.example.fitnessapp.db.dao.WeightDao
 import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.customTraining.domain.CustomRepository
 import com.example.fitnessapp.customTraining.domain.impl.CustomInteractorImpl
+import com.example.fitnessapp.db.MIGRATION_5_7
+import com.example.fitnessapp.db.MIGRATION_6_7
 import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.data.ExerciseRepositoryImpl
 import com.example.fitnessapp.exercises.domain.DaysInteractor
@@ -44,19 +46,19 @@ import javax.inject.Singleton
 object MainModule {
     @Provides
     @Singleton // Синглтон мы создаём один раз, чтобы не создавать каждый раз, не захламлять память
-    fun provideMainDb(app: Application): MainDb { //MainDb это не сама база данных, а просто шаблон, и мы передедим настройки чтобы получить БД
+    fun provideMainDb(app: Application): MainDb { //MainDb это не сама база данных, а просто шаблон, и мы передаём настройки чтобы получить БД
         return Room.databaseBuilder(
             app,//Контекст
             MainDb::class.java, //Класс
             "fitness.db" //Имя
         )
-         .createFromAsset("db/fitness.db") // Временно отключено - файл базы имеет старую схему
-        .fallbackToDestructiveMigration() // Разрешаем деструктивные миграции при изменении схемы
-        .build() // Room создаст новую базу с правильной схемой
+         .createFromAsset("db/fitness.db") // Используем предустановленную БД с правильной схемой
+         .addMigrations(MIGRATION_5_7, MIGRATION_6_7) // Добавляем наши миграции
+         .build() // Room создаст новую базу с правильной схемой
         //Поэтому сначала возьмём из ассетс, потом вызовем Билд
     //здесь требуется передать контекст. Но у нас это App, а он уже есть в даггер
 //если нужен другой класс, то так просто не получится
-            //Теперь с помощью ДаггерХилт мы сможем получить экземплят БД в любом месте приложения
+            //Теперь с помощью ДаггерХилт мы сможем получить экземпляр БД в любом месте приложения
         //Он будет уже инициализирован
 
 

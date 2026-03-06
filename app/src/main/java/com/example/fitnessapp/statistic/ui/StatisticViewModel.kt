@@ -188,15 +188,11 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         val statisticList = statisticInteractor.getStatistic()
         Log.d("StatisticViewModel", "DEBUG: Статистика: ${statisticList.size} записей")
         
-        val workoutHistoryList = lastDays.mapIndexedNotNull { index, day ->
+        val workoutHistoryList = lastDays.map { day ->
             val exercises = getExercisesFromIds(day.exercises, exerciseList)
-            // Ищем статистику для этой тренировки по индексу
-            val dayStatistic = if (index < statisticList.size) {
-                statisticList[index]
-            } else {
-                null
-            }
-            Log.d("StatisticViewModel", "DEBUG: Для тренировки $index (дата ${day.completedDate}) найдена статистика: ${dayStatistic != null}")
+            // Ищем статистику по dayId вместо индекса
+            val dayStatistic = statisticList.find { it.dayId == day.id }
+            Log.d("StatisticViewModel", "DEBUG: Для тренировки с ID ${day.id} (дата ${day.completedDate}) найдена статистика: ${dayStatistic != null}")
             
             WorkoutHistoryModel(
                 id = day.id,

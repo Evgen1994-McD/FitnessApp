@@ -18,6 +18,7 @@ class StatisticRepositoryImpl @Inject constructor(
     override suspend fun getStatisticByDate(date:String):StatisticModel{
         return mainDb.statisticDao.getStatisticByDate(date) ?: StatisticModel(
             null,
+            null,
             date,
             0.0,
             "0",
@@ -26,6 +27,9 @@ class StatisticRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getStatisticByDayId(dayId: Int): StatisticModel? {
+        return mainDb.statisticDao.getStatisticByDayId(dayId)
+    }
 
     override suspend fun getYearWeightList():List<WeightModel> {
         return mainDb.weightDao.getAllWeightList()
