@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
+import com.example.fitnessapp.ui.theme.baseBlue
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -55,53 +58,69 @@ private fun DayCalendarItem(
     onClick: () -> Unit
 ) {
     val backgroundColor = when {
-        day.isSelected -> MaterialTheme.colorScheme.surfaceContainer
+        day.isSelected -> baseBlue
         day.isToday -> MaterialTheme.colorScheme.surfaceVariant
-        else -> MaterialTheme.colorScheme.surface
+        else -> MaterialTheme.colorScheme.primary
     }
     
     val contentColor = when {
-        day.isSelected -> MaterialTheme.colorScheme.onPrimary
-        else -> MaterialTheme.colorScheme.surface
+        day.isSelected -> MaterialTheme.colorScheme.surface
+        else -> MaterialTheme.colorScheme.onSurface
     }
 
-    Column(
+    Card(
         modifier = Modifier
             .width(50.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(backgroundColor)
-            .clickable { onClick() }
-            .padding(vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 8.dp
+        ),
+        shape = RoundedCornerShape(16.dp)
     ) {
-        Text(
-            text = day.dayName,
-            fontSize = 10.sp,
-            color = if (day.isSelected) 
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
-            else 
-                MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        
-        Text(
-            text = day.dayNumber.toString(),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = contentColor,
-            textAlign = TextAlign.Center
-        )
-        
-        if (day.isSelected) {
-            Box(
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = day.dayName,
+                fontSize = 10.sp,
+                color = if (day.isSelected) 
+                    MaterialTheme.colorScheme.surface
+                else 
+                    MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .size(4.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        shape = RoundedCornerShape(2.dp)
-                    )
-                    .padding(top = 4.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp)
             )
+            
+            Text(
+                text = day.dayNumber.toString(),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = contentColor,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            
+            if (day.isSelected) {
+                Box(
+                    modifier = Modifier
+                        .size(4.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(2.dp)
+                        )
+                        .padding(top = 4.dp)
+                )
+            }
         }
     }
 }

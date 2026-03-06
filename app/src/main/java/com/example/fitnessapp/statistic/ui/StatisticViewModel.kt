@@ -68,7 +68,8 @@ class StatisticViewModel @Inject constructor(
     private val _showTopSheetCalendar = MutableStateFlow(false)
     val showTopSheetCalendar: StateFlow<Boolean> = _showTopSheetCalendar.asStateFlow()
     
-    private val _selectedWeekStart = MutableStateFlow(LocalDate.now())
+    // Инициализируем начало недели на основе текущей даты
+    private val _selectedWeekStart = MutableStateFlow(getWeekStartDate(LocalDate.now()))
     val selectedWeekStart: StateFlow<LocalDate> = _selectedWeekStart.asStateFlow()
 
     fun getStatisticEvents() = viewModelScope.launch {
@@ -244,11 +245,25 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     }
     
     private fun updateCalendarDays() {
-        _calendarDays.value = generateWeekDays(_selectedWeekStart.value)
+        _calendarDays.value = generateWeekDays(_selectedDate.value)
     }
     
     fun onCalendarDayClick(day: DayCalendarModel) {
-        _selectedDate.value = _selectedWeekStart.value.withDayOfMonth(day.dayNumber)
+        // Находим день недели по имени (Пн, Вт, Ср, Чт, Пт, Сб, Вс)
+        val dayOfWeekIndex = when (day.dayName) {
+            "Пн" -> 0
+            "Вт" -> 1
+            "Ср" -> 2
+            "Чт" -> 3
+            "Пт" -> 4
+            "Сб" -> 5
+            "Вс" -> 6
+            else -> 0
+        }
+        
+        // Вычисляем точную дату выбранного дня
+        val selectedDate = _selectedWeekStart.value.plusDays(dayOfWeekIndex.toLong())
+        _selectedDate.value = selectedDate
         updateCalendarDays()
         // Загружаем статистику для выбранной даты
         getStatisticByDate(TimeUtils.formatLocalDate(_selectedDate.value))
