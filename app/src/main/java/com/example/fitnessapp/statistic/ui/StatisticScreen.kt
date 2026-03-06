@@ -1,6 +1,7 @@
 package com.example.fitnessapp.statistic.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,7 @@ import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
 import com.example.fitnessapp.statistic.ui.models.MonthlyCaloriesModel
 import com.example.fitnessapp.statistic.ui.models.CalendarPeriod
 import com.example.fitnessapp.statistic.ui.components.TopSheetCalendar
+import com.example.fitnessapp.ui.theme.baseBlue
 import com.example.fitnessapp.utils.TimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,13 +77,15 @@ fun NewStatisticScreen(
     bmiData: BMIModel?,
     workoutHistory: List<WorkoutHistoryModel>,
     weeklyCalories: List<WeeklyCaloriesModel>,
-    monthlyCalories: List<MonthlyCaloriesModel> = emptyList(),
-    calendarPeriod: CalendarPeriod = CalendarPeriod.WEEK,
+    monthlyCalories: List<MonthlyCaloriesModel>,
+    calendarPeriod: CalendarPeriod,
     calendarDays: List<DayCalendarModel>,
     showTopSheetCalendar: Boolean,
     eventList: List<com.applandeo.materialcalendarview.EventDay>,
+    filterText: String,
     onCalendarDayClick: (DayCalendarModel) -> Unit,
     onWorkoutToggle: (Int) -> Unit,
+    onCycleWorkoutFilter: () -> Unit,
     onAddWeight: () -> Unit,
     onUpdateBodyMetrics: (height: Double, weight: Double) -> Unit,
     onShowCalendar: () -> Unit,
@@ -169,10 +173,11 @@ fun NewStatisticScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Все",
+                        text = filterText,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.surfaceContainer
+                        color = baseBlue,
+                        modifier = Modifier.clickable { onCycleWorkoutFilter() }
                     )
                 }
                 

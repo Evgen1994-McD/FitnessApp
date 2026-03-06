@@ -220,7 +220,7 @@ fun MainScreen(
                         pressedElevation = 12.dp
                     ),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onSurface
                     )
                 ) {

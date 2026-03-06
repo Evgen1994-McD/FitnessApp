@@ -18,8 +18,6 @@ import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import com.example.fitnessapp.utils.TimeUtils
-import com.example.fitnessapp.statistic.ui.models.MonthlyCaloriesModel
-import com.example.fitnessapp.statistic.ui.models.CalendarPeriod
 import com.example.fitnessapp.statistic.ui.models.BMIModel
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
 import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
@@ -44,14 +42,15 @@ class StatisticFragment : Fragment() {
             setContent {
                 FitnessAppTheme {
                     // Получаем данные из StateFlow
-                    val bmiData by viewModel.bmiData.collectAsState<BMIModel?>()
-                    val workoutHistory by viewModel.workoutHistory.collectAsState<List<WorkoutHistoryModel>>()
-                    val weeklyCalories by viewModel.weeklyCalories.collectAsState<List<WeeklyCaloriesModel>>()
-                    val monthlyCalories by viewModel.monthlyCalories.collectAsState<List<MonthlyCaloriesModel>>()
-                    val calendarDays by viewModel.calendarDays.collectAsState<List<DayCalendarModel>>()
-                    val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState<Boolean>()
-                    val eventList by viewModel.eventListData.collectAsState<List<EventDay>>()
-                    val calendarPeriod by viewModel.calendarPeriod.collectAsState<CalendarPeriod>()
+                    val bmiData by viewModel.bmiData.collectAsState()
+                    val workoutHistory by viewModel.filteredWorkoutHistory.collectAsState()
+                    val weeklyCalories by viewModel.weeklyCalories.collectAsState()
+                    val monthlyCalories by viewModel.monthlyCalories.collectAsState()
+                    val calendarPeriod by viewModel.calendarPeriod.collectAsState()
+                    val calendarDays by viewModel.calendarDays.collectAsState()
+                    val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState()
+                    val eventList by viewModel.eventListData.collectAsState()
+                    val filterText = viewModel.getFilterText()
 
                     // Загружаем новые данные при первом запуске
                     LaunchedEffect(Unit) {
@@ -68,11 +67,15 @@ class StatisticFragment : Fragment() {
                         calendarDays = calendarDays,
                         showTopSheetCalendar = showTopSheetCalendar,
                         eventList = eventList,
+                        filterText = filterText,
                         onCalendarDayClick = { day ->
                             viewModel.onCalendarDayClick(day)
                         },
                         onWorkoutToggle = { workoutId ->
                             viewModel.toggleWorkoutExpanded(workoutId)
+                        },
+                        onCycleWorkoutFilter = {
+                            viewModel.cycleWorkoutFilter()
                         },
                         onAddWeight = {
                             showAddWeightDialog(context, viewModel)

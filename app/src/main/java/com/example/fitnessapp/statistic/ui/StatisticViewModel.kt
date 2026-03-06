@@ -29,6 +29,12 @@ import java.time.LocalDate
 import java.util.Calendar
 import javax.inject.Inject
 
+enum class WorkoutFilterType {
+    ALL,
+    WEEK,
+    DAY
+}
+
 @HiltViewModel
 class StatisticViewModel @Inject constructor(
     private val statisticInteractor: StatisticInteractor
@@ -80,6 +86,14 @@ class StatisticViewModel @Inject constructor(
     
     private val _monthlyCalories = MutableStateFlow<List<MonthlyCaloriesModel>>(emptyList())
     val monthlyCalories: StateFlow<List<MonthlyCaloriesModel>> = _monthlyCalories.asStateFlow()
+    
+    // StateFlow для фильтрации тренировок
+    private val _workoutFilterType = MutableStateFlow(WorkoutFilterType.ALL)
+    val workoutFilterType: StateFlow<WorkoutFilterType> = _workoutFilterType.asStateFlow()
+    
+    // StateFlow для отфильтрованной истории тренировок
+    private val _filteredWorkoutHistory = MutableStateFlow<List<WorkoutHistoryModel>>(emptyList())
+    val filteredWorkoutHistory: StateFlow<List<WorkoutHistoryModel>> = _filteredWorkoutHistory.asStateFlow()
 
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
@@ -169,6 +183,7 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         loadBMIData()
         loadWorkoutHistory()
         loadWeeklyCalories()
+        loadMonthlyCalories()
         updateCalendarDays()
     }
     
@@ -188,20 +203,18 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         
         val completedDays = allDays.filter { it.isDone && it.completedDate != null }
         Log.d("StatisticViewModel", "DEBUG: Завершенных дней: ${completedDays.size}")
-        Log.d("StatisticViewModel", "DEBUG: Завершенные дни: ${completedDays.map { "${it.completedDate} - ${it.isDone}" }}")
         
         val sortedDays = completedDays.sortedByDescending { it.completedDate }
-        val lastDays = sortedDays.take(10) // Показываем последние 10 тренировок
+        // Загружаем все тренировки для фильтрации
             
         val exerciseList = statisticInteractor.getAllExercise()
         val statisticList = statisticInteractor.getStatistic()
         Log.d("StatisticViewModel", "DEBUG: Статистика: ${statisticList.size} записей")
         
-        val workoutHistoryList = lastDays.map { day ->
+        val workoutHistoryList = sortedDays.map { day ->
             val exercises = getExercisesFromIds(day.exercises, exerciseList)
             // Ищем статистику по dayId вместо индекса
             val dayStatistic = statisticList.find { it.dayId == day.id }
-            Log.d("StatisticViewModel", "DEBUG: Для тренировки с ID ${day.id} (дата ${day.completedDate}) найдена статистика: ${dayStatistic != null}")
             
             WorkoutHistoryModel(
                 id = day.id,
@@ -216,6 +229,8 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         
         Log.d("StatisticViewModel", "DEBUG: История тренировок создана: ${workoutHistoryList.size} элементов")
         _workoutHistory.value = workoutHistoryList
+        // Применяем текущий фильтр после загрузки данных
+        applyWorkoutFilter()
     }
     
     private fun loadWeeklyCalories() = viewModelScope.launch {
@@ -272,6 +287,8 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         updateCalendarDays()
         // Загружаем статистику для выбранной даты
         getStatisticByDate(TimeUtils.formatLocalDate(_selectedDate.value))
+        // Применяем фильтр тренировок после изменения даты
+        applyWorkoutFilter()
     }
     
     fun toggleWorkoutExpanded(workoutId: Int) {
@@ -282,6 +299,8 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
                 isExpanded = !currentList[workoutIndex].isExpanded
             )
             _workoutHistory.value = currentList
+            // Применяем фильтр после обновления состояния expanded
+            applyWorkoutFilter()
         }
     }
     
@@ -351,11 +370,69 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
         _selectedDate.value = selectedDate
         updateCalendarDays()
         loadWeeklyCalories()
+        loadMonthlyCalories()
         hideTopSheetCalendar()
+        // Применяем фильтр тренировок после изменения даты
+        applyWorkoutFilter()
     }
     
     private fun getWeekStartDate(selectedDate: LocalDate): LocalDate {
         return selectedDate.minusDays(selectedDate.dayOfWeek.value - 1L)
+    }
+    
+    // Методы для фильтрации тренировок
+    fun cycleWorkoutFilter() {
+        _workoutFilterType.value = when (_workoutFilterType.value) {
+            WorkoutFilterType.ALL -> WorkoutFilterType.WEEK
+            WorkoutFilterType.WEEK -> WorkoutFilterType.DAY
+            WorkoutFilterType.DAY -> WorkoutFilterType.ALL
+        }
+        applyWorkoutFilter()
+    }
+    
+    private fun applyWorkoutFilter() {
+        val allWorkouts = _workoutHistory.value
+        val filteredWorkouts = when (_workoutFilterType.value) {
+            WorkoutFilterType.ALL -> allWorkouts
+            WorkoutFilterType.WEEK -> filterWorkoutsByWeek(allWorkouts)
+            WorkoutFilterType.DAY -> filterWorkoutsByDay(allWorkouts)
+        }
+        _filteredWorkoutHistory.value = filteredWorkouts
+    }
+    
+    private fun filterWorkoutsByWeek(workouts: List<WorkoutHistoryModel>): List<WorkoutHistoryModel> {
+        val weekStart = _selectedWeekStart.value
+        val weekEnd = weekStart.plusDays(6)
+        
+        return workouts.filter { workout ->
+            try {
+                val workoutDate = LocalDate.parse(
+                    workout.date, 
+                    java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                )
+                workoutDate.isAfter(weekStart.minusDays(1)) && workoutDate.isBefore(weekEnd.plusDays(1))
+            } catch (e: Exception) {
+                Log.e("StatisticViewModel", "Error parsing workout date: ${workout.date}", e)
+                false
+            }
+        }
+    }
+    
+    private fun filterWorkoutsByDay(workouts: List<WorkoutHistoryModel>): List<WorkoutHistoryModel> {
+        val selectedDate = _selectedDate.value
+        val selectedDateString = TimeUtils.formatLocalDate(selectedDate)
+        
+        return workouts.filter { workout ->
+            workout.date == selectedDateString
+        }
+    }
+    
+    fun getFilterText(): String {
+        return when (_workoutFilterType.value) {
+            WorkoutFilterType.ALL -> "Все"
+            WorkoutFilterType.WEEK -> "За неделю"
+            WorkoutFilterType.DAY -> "За день"
+        }
     }
     
     // Методы для работы с месячными данными
