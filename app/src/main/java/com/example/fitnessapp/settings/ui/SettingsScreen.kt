@@ -92,7 +92,7 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                 .fillMaxWidth()
                 .padding(top = 40.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .clickable {
                     onOpenAllTrainingsClick()
@@ -118,7 +118,7 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                 .fillMaxWidth()
                 .padding(top = 40.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .clickable {
                     onClearedDataClick()

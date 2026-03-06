@@ -64,6 +64,8 @@ import com.example.fitnessapp.statistic.ui.models.BMIModel
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
 import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
 import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
+import com.example.fitnessapp.statistic.ui.models.MonthlyCaloriesModel
+import com.example.fitnessapp.statistic.ui.models.CalendarPeriod
 import com.example.fitnessapp.statistic.ui.components.TopSheetCalendar
 import com.example.fitnessapp.utils.TimeUtils
 
@@ -73,6 +75,8 @@ fun NewStatisticScreen(
     bmiData: BMIModel?,
     workoutHistory: List<WorkoutHistoryModel>,
     weeklyCalories: List<WeeklyCaloriesModel>,
+    monthlyCalories: List<MonthlyCaloriesModel> = emptyList(),
+    calendarPeriod: CalendarPeriod = CalendarPeriod.WEEK,
     calendarDays: List<DayCalendarModel>,
     showTopSheetCalendar: Boolean,
     eventList: List<com.applandeo.materialcalendarview.EventDay>,
@@ -82,7 +86,8 @@ fun NewStatisticScreen(
     onUpdateBodyMetrics: (height: Double, weight: Double) -> Unit,
     onShowCalendar: () -> Unit,
     onCalendarDismiss: () -> Unit,
-    onDateSelected: (java.time.LocalDate) -> Unit
+    onDateSelected: (java.time.LocalDate) -> Unit,
+    onTogglePeriod: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     val showBottomSheet = remember { mutableStateOf(false) }
@@ -143,7 +148,12 @@ fun NewStatisticScreen(
 
 
             // График сожженных калорий
-            WeeklyCaloriesChart(weeklyData = weeklyCalories)
+            WeeklyCaloriesChart(
+                weeklyData = weeklyCalories,
+                monthlyData = monthlyCalories,
+                calendarPeriod = calendarPeriod,
+                onPeriodClick = onTogglePeriod
+            )
 
             // История тренировок
             Column {

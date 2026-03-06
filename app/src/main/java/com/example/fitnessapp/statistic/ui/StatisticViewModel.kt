@@ -20,6 +20,8 @@ import com.example.fitnessapp.statistic.ui.models.calculateBMI
 import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
 import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
 import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
+import com.example.fitnessapp.statistic.ui.models.MonthlyCaloriesModel
+import com.example.fitnessapp.statistic.ui.models.CalendarPeriod
 import com.example.fitnessapp.statistic.ui.models.generateWeekDays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -71,6 +73,13 @@ class StatisticViewModel @Inject constructor(
     // Инициализируем начало недели на основе текущей даты
     private val _selectedWeekStart = MutableStateFlow(getWeekStartDate(LocalDate.now()))
     val selectedWeekStart: StateFlow<LocalDate> = _selectedWeekStart.asStateFlow()
+    
+    // Новые StateFlow для переключения периодов
+    private val _calendarPeriod = MutableStateFlow(CalendarPeriod.WEEK)
+    val calendarPeriod: StateFlow<CalendarPeriod> = _calendarPeriod.asStateFlow()
+    
+    private val _monthlyCalories = MutableStateFlow<List<MonthlyCaloriesModel>>(emptyList())
+    val monthlyCalories: StateFlow<List<MonthlyCaloriesModel>> = _monthlyCalories.asStateFlow()
 
     fun getStatisticEvents() = viewModelScope.launch {
         val eventList = ArrayList<EventDay>()
@@ -347,5 +356,78 @@ _weightListData.value = statisticInteractor.getWeightByYearAndMonth(
     
     private fun getWeekStartDate(selectedDate: LocalDate): LocalDate {
         return selectedDate.minusDays(selectedDate.dayOfWeek.value - 1L)
+    }
+    
+    // Методы для работы с месячными данными
+    private fun getMonthStart(selectedDate: LocalDate): LocalDate {
+        return selectedDate.withDayOfMonth(1)
+    }
+    
+    private fun getMonthEnd(selectedDate: LocalDate): LocalDate {
+        return selectedDate.withDayOfMonth(selectedDate.lengthOfMonth())
+    }
+    
+    private fun loadMonthlyCalories() = viewModelScope.launch {
+        val statisticList = statisticInteractor.getStatistic()
+        val monthStart = getMonthStart(_selectedDate.value)
+        val monthEnd = getMonthEnd(_selectedDate.value)
+        
+        // Фильтруем статистику за выбранный месяц
+        val monthStatisticList = statisticList.filter { statistic ->
+            val date = LocalDate.parse(statistic.date, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            date.isAfter(monthStart.minusDays(1)) && date.isBefore(monthEnd.plusDays(1))
+        }
+        
+        // Группируем по неделям
+        val monthlyData = mutableListOf<MonthlyCaloriesModel>()
+        var currentWeekStart = monthStart
+        
+        while (currentWeekStart.isBefore(monthEnd.plusDays(1))) {
+            val currentWeekEnd = currentWeekStart.plusDays(6).coerceAtMost(monthEnd)
+            
+            // Суммируем калории за неделю
+            val weekCalories = monthStatisticList.filter { statistic ->
+                val date = LocalDate.parse(statistic.date, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                date.isAfter(currentWeekStart.minusDays(1)) && date.isBefore(currentWeekEnd.plusDays(1))
+            }.sumOf { it.kcal }
+            
+            // Формируем диапазон недели
+            val weekRange = "${currentWeekStart.dayOfMonth}-${currentWeekEnd.dayOfMonth} ${getMonthName(currentWeekStart.monthValue)}"
+            
+            monthlyData.add(
+                MonthlyCaloriesModel(
+                    weekNumber = monthlyData.size + 1,
+                    weekRange = weekRange,
+                    calories = weekCalories.toInt(),
+                    weekStart = TimeUtils.formatLocalDate(currentWeekStart),
+                    weekEnd = TimeUtils.formatLocalDate(currentWeekEnd)
+                )
+            )
+            
+            currentWeekStart = currentWeekStart.plusDays(7)
+        }
+        
+        _monthlyCalories.value = monthlyData
+    }
+    
+    private fun getMonthName(monthValue: Int): String {
+        val months = arrayOf("янв", "фев", "мар", "апр", "май", "июн", 
+                         "июл", "авг", "сен", "окт", "ноя", "дек")
+        return months[monthValue - 1]
+    }
+    
+    fun toggleCalendarPeriod() = viewModelScope.launch {
+        _calendarPeriod.value = if (_calendarPeriod.value == CalendarPeriod.WEEK) {
+            CalendarPeriod.MONTH
+        } else {
+            CalendarPeriod.WEEK
+        }
+        
+        // Перезагружаем данные в зависимости от периода
+        if (_calendarPeriod.value == CalendarPeriod.WEEK) {
+            loadWeeklyCalories()
+        } else {
+            loadMonthlyCalories()
+        }
     }
 }

@@ -38,7 +38,7 @@ fun BMICard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.primary)
             .padding(20.dp)
     ) {
         // Заголовок и статус

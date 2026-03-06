@@ -3,13 +3,13 @@
     >
 
     <item
-        android:title="Training"
+        android:title="Тренировка"
         android:id="@+id/trainingFragment"
         android:icon="@drawable/ic_bottom_sport"
         />
 
     <item
-        android:title="Statistic"
+        android:title="Статистика"
         android:id="@+id/statisticFragment"
         android:icon="@drawable/ic_bottom_statistic"
         />
@@ -21,7 +21,7 @@
         />
 
     <item
-        android:title="Settings"
+        android:title="Настройки"
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_bottom_settings"
         />

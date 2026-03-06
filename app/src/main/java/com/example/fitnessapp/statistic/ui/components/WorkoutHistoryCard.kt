@@ -64,7 +64,7 @@ fun WorkoutHistoryCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.primary)
             .clickable { onToggleExpand() } // Всегда кликабельна
     ) {
         // Основная информация карточки

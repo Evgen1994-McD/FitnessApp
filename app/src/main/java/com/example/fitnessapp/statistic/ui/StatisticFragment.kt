@@ -18,6 +18,13 @@ import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import com.example.fitnessapp.utils.TimeUtils
+import com.example.fitnessapp.statistic.ui.models.MonthlyCaloriesModel
+import com.example.fitnessapp.statistic.ui.models.CalendarPeriod
+import com.example.fitnessapp.statistic.ui.models.BMIModel
+import com.example.fitnessapp.statistic.ui.models.WorkoutHistoryModel
+import com.example.fitnessapp.statistic.ui.models.WeeklyCaloriesModel
+import com.example.fitnessapp.statistic.ui.models.DayCalendarModel
+import com.applandeo.materialcalendarview.EventDay
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,12 +44,14 @@ class StatisticFragment : Fragment() {
             setContent {
                 FitnessAppTheme {
                     // Получаем данные из StateFlow
-                    val bmiData by viewModel.bmiData.collectAsState()
-                    val workoutHistory by viewModel.workoutHistory.collectAsState()
-                    val weeklyCalories by viewModel.weeklyCalories.collectAsState()
-                    val calendarDays by viewModel.calendarDays.collectAsState()
-                    val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState()
-                    val eventList by viewModel.eventListData.collectAsState()
+                    val bmiData by viewModel.bmiData.collectAsState<BMIModel?>()
+                    val workoutHistory by viewModel.workoutHistory.collectAsState<List<WorkoutHistoryModel>>()
+                    val weeklyCalories by viewModel.weeklyCalories.collectAsState<List<WeeklyCaloriesModel>>()
+                    val monthlyCalories by viewModel.monthlyCalories.collectAsState<List<MonthlyCaloriesModel>>()
+                    val calendarDays by viewModel.calendarDays.collectAsState<List<DayCalendarModel>>()
+                    val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState<Boolean>()
+                    val eventList by viewModel.eventListData.collectAsState<List<EventDay>>()
+                    val calendarPeriod by viewModel.calendarPeriod.collectAsState<CalendarPeriod>()
 
                     // Загружаем новые данные при первом запуске
                     LaunchedEffect(Unit) {
@@ -54,6 +63,8 @@ class StatisticFragment : Fragment() {
                         bmiData = bmiData,
                         workoutHistory = workoutHistory,
                         weeklyCalories = weeklyCalories,
+                        monthlyCalories = monthlyCalories,
+                        calendarPeriod = calendarPeriod,
                         calendarDays = calendarDays,
                         showTopSheetCalendar = showTopSheetCalendar,
                         eventList = eventList,
@@ -64,7 +75,7 @@ class StatisticFragment : Fragment() {
                             viewModel.toggleWorkoutExpanded(workoutId)
                         },
                         onAddWeight = {
-//                            viewModel.showAddWeightDialog()
+                            showAddWeightDialog(context, viewModel)
                         },
                         onUpdateBodyMetrics = { height, weight ->
                             viewModel.updateBodyMetrics(height, weight)
@@ -75,8 +86,11 @@ class StatisticFragment : Fragment() {
                         onCalendarDismiss = {
                             viewModel.hideTopSheetCalendar()
                         },
-                        onDateSelected = { date ->
-                            viewModel.onDateSelected(date)
+                        onDateSelected = { selectedDate ->
+                            viewModel.onDateSelected(selectedDate)
+                        },
+                        onTogglePeriod = {
+                            viewModel.toggleCalendarPeriod()
                         }
                     )
                 }
@@ -93,5 +107,10 @@ class StatisticFragment : Fragment() {
         // Загружаем данные при создании фрагмента
         viewModel.getStatisticEvents()
         viewModel.getStatisticByDate(TimeUtils.getCurrentDate())
+    }
+    
+    private fun showAddWeightDialog(context: android.content.Context, viewModel: StatisticViewModel) {
+        // Здесь можно показать диалог для добавления веса
+        // Реализация зависит от ваших требований
     }
 }

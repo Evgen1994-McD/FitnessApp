@@ -220,7 +220,7 @@ fun ExerciseBottomSheet(
                                 .joinToString("\n"),
                             fontSize = 16.sp,
                             lineHeight = 24.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
