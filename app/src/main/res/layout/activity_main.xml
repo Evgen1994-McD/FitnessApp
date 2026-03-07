@@ -5,16 +5,15 @@
     android:id="@+id/placeholder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-android:theme="@style/Theme.FitnessApp"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:layout_marginTop="16dp"
+        android:background="?attr/colorSurface"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,6 +42,8 @@ android:theme="@style/Theme.FitnessApp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation" />
+        app:menu="@menu/bottom_navigation"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

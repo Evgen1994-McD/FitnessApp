@@ -8,7 +8,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.fitnessapp.utils.App
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,9 +22,6 @@ class SplashActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash)
         
-        // Устанавливаем текущую активность для менеджера рекламы
-        App.getAppOpenAdManager(application).setCurrentActivity(this)
-
         lifecycleScope.launch {
             model.controlFirstCheck()
 
@@ -38,23 +34,14 @@ class SplashActivity : ComponentActivity() {
             }.start()
 
         }
-
-
-
-
     }
     
     override fun onResume() {
         super.onResume()
-        // Обновляем текущую активность при возврате на экран
-        App.getAppOpenAdManager(application).setCurrentActivity(this)
     }
 
     override fun onDestroy() { // это остановит таймер и закроет приложение если пользователь зашел и сразу вышел
         super.onDestroy()
         timer.cancel()
-        // Не очищаем активность здесь - MainActivity установит свою активность
-        // Очистка произойдет автоматически когда MainActivity установит свою активность
     }
 }
-

@@ -5,6 +5,8 @@ data class TrainingTopCardModel(
     val difficultyTitle : Int,
     val maxProgress : Int,
     val progress : Int,
-    val difficulty : String
+    val difficulty : String,
+    val zone: String="",
+    val title: String=""
 
 )

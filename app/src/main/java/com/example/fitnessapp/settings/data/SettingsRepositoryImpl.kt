@@ -127,4 +127,30 @@ class SettingsRepositoryImpl @Inject constructor(
         }
         mainDb.statisticDao.clearStatistic()
     }
+
+    override suspend fun openAllTrainings(onProgress: (Float) -> Unit) {
+        val daysList = mainDb.daysDao.getAllDays()
+        val totalDays = daysList.size
+        
+        daysList.forEachIndexed { index, day ->
+            // Открываем только те дни что были закрыты (кроме кастомных)
+            val updatedDay = if (day.zone.isNullOrEmpty()) {
+                // Кастомная тренировка - всегда открыта
+                day.copy(isOpen = true)
+            } else {
+                // Обычная тренировка - открываем только если была закрыта
+                if (!day.isOpen) {
+                    day.copy(isOpen = true)
+                } else {
+                    day // Уже открыта, оставляем как есть
+                }
+            }
+            
+            mainDb.daysDao.insertDay(updatedDay)
+            
+            // Обновляем прогресс
+            val progress = (index + 1).toFloat() / totalDays.toFloat()
+            onProgress(progress)
+        }
+    }
 }

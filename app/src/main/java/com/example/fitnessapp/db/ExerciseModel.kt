@@ -12,5 +12,10 @@ data class ExerciseModel(
     var time: String,
     var isDone: Boolean, // выполнено упражнение или нет ( для чек боксов)
     var image: String,
-    var kcal: Double  // килокалории
+    var kcal: Double,  // килокалории
+    var muscleZone: String,        // зона воздействия (hands/body/back/legs)
+    var description: String,       // краткое описание упражнения
+    var instruction: String,       // пошаговая инструкция выполнения
+    var mistakes: String = "",      // распространенные ошибки выполнения (разделитель ||)
+    var advise: String = ""         // советы по правильному выполнению (разделитель ||)
 )

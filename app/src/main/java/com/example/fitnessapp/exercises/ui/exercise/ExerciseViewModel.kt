@@ -2,6 +2,7 @@ package com.example.fitnessapp.exercises.ui.exercise
 
 import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,7 @@ class ExerciseViewModel @Inject constructor(
     var updateTime = MutableLiveData<Long>()
     var updateToolbar = MutableLiveData<String>()
     private var timer: CountDownTimer? = null // переменная для таймера
+    var currentTimerValue: Long? = null // текущее значение таймера
     var currentDay: DayModel? = null
     var nextDay: DayModel? = null
     var statisticModel: StatisticModel? = null // глобал переменная для получения статистики
@@ -45,28 +47,26 @@ class ExerciseViewModel @Inject constructor(
     }
 
     fun getAndOpenNextDay()= viewModelScope.launch {
-        var nextId = ((currentDay?.id)?.plus(1)) ?: 0
-        if (nextId!=0) {
-            try {
-                nextDay = execiseInteractor.getDayById(nextId)
-                    nextDay = nextDay!!.copy(isOpen = true)
-                    updateDay(nextDay!!)
-            }catch (e:Exception){
-
-            }
+        currentDay?.let { day ->
+            execiseInteractor.getAndOpenNextDay(day)
         }
     }
 
 
 
     private fun isDayDone() {
+        Log.d("ExerciseViewModel", "DEBUG: totalExerciseNumber = $totalExerciseNumber, doneExerciseCounterToSave = $doneExerciseCounterToSave")
         if (totalExerciseNumber == doneExerciseCounterToSave - 1) {
-            currentDay = currentDay?.copy(isDone = true)
+            Log.d("ExerciseViewModel", "DEBUG: Условие выполнено, устанавливаем isDone = true")
+            val todayDate = TimeUtils.getCurrentDate()
+            currentDay = currentDay?.copy(isDone = true, completedDate = todayDate)
             currentDay?.let {
                 updateDay(it)
             }
             getAndOpenNextDay()
 
+        } else {
+            Log.d("ExerciseViewModel", "DEBUG: Условие НЕ выполнено, isDone остается false")
         }
         /*
         currentDay передаём тот же, но перезапишем параметр isDone чтобы поставить галочку
@@ -80,28 +80,30 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private fun createStatistic() : StatisticModel {
+        Log.d("ExerciseViewModel", "DEBUG: Создаем статистику для даты: currentDay?.completedDate = ${currentDay?.completedDate}")
         var kcal = 0.0
         var time = 0
 exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
-    kcal += (model.kcal)/2
-    /*
-    поделю статистику на 3( слишком много калорий считает)
-     */
+    val tempMultiplier = if (model.time.contains('x')) {
+
+//если содержит x значит нужно умножть колличество повторов на количество минут за одно исполненеия
+
+
+        model.time.substringAfter('x').toInt()
+    }
+    else model.time.toInt()/60
+    kcal += (model.kcal) * tempMultiplier
+
     time += getTimeFromExercise(model)
 
 }
-        /*
-        exercisesOfTheDay суб лист от 0 до элемента doneExerciseCounter мы перебираем с помощью цикла forEach
-         */
 
-        return statisticModel?.copy(
-            kcal = statisticModel!!.kcal+kcal,
-            workoutTime = (statisticModel!!.workoutTime.toInt()+ time).toString(),
-            completedExercise = statisticModel!!.completedExercise + doneExerciseCounterToSave -1
 
-        ) ?: StatisticModel(
+        // Всегда создаем новую запись статистики для каждой тренировки
+        return StatisticModel(
             null,  // если id null то запишется новый id в статистик модел ( мы указали стратегию)
-            TimeUtils.getCurrentDate(),
+            dayId = currentDay?.id, // Устанавливаем связь с тренировкой
+            currentDay?.completedDate ?: TimeUtils.getCurrentDate(), // Используем дату тренировки
             kcal = kcal,
             workoutTime = time.toString(),
             completedExercise = doneExerciseCounterToSave-1
@@ -158,6 +160,7 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
             (time + 1) * 1000, 1000 // интервал запускается каждую секунду
         ) { //мы сделали тут 100 мс для того чтобы прогресс бар шел плавно, вот и всё. Если бы было 1000, то были бы большие скачки.
             override fun onTick(restTime: Long) {
+                currentTimerValue = restTime // сохраняем текущее значение таймера
                 updateTime.value = restTime
                 speechLastDigits(restTime)
 
@@ -170,12 +173,51 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         }.start()  // обязательно указываем старт для нашего таймера
     }
 
+    fun pauseTimer() {
+        timer?.cancel()
+    }
+
+    fun updateTimerValue(newTime: Long) {
+        currentTimerValue = newTime
+        updateTime.value = newTime
+        // Перезапускаем таймер с новым значением
+        timer?.cancel()
+        timer = object : CountDownTimer(
+            (newTime + 1) * 1000, 1000
+        ) {
+            override fun onTick(restTime: Long) {
+                currentTimerValue = restTime
+                updateTime.value = restTime
+                speechLastDigits(restTime)
+            }
+
+            override fun onFinish() {
+                nextExercise()
+            }
+        }.start()
+    }
+
+    fun getNextExercise(): ExerciseModel? {
+        return if (doneExerciseCounter < exercisesStack.size) {
+            exercisesStack[doneExerciseCounter]
+        } else {
+            null
+        }
+    }
+
     fun nextExercise() {
         timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
         updateToolbar()
-        val exercise = exercisesStack[doneExerciseCounter++]
-        speechExercise(exercise)
-        updateExercise.value = exercise
+        
+        // Проверяем, что есть еще упражнения для показа
+        if (doneExerciseCounter < exercisesStack.size) {
+            val exercise = exercisesStack[doneExerciseCounter++]
+            speechExercise(exercise)
+            updateExercise.value = exercise
+        } else {
+            // Если упражнений больше нет, не делаем ничего
+            // Фрагмент сам перейдет на экран статистики
+        }
 
         /*
         будем запускать и передавать по обсерверу следующее упражнение на View через лайв дата.

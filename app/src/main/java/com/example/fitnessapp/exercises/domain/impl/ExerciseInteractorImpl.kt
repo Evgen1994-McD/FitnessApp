@@ -38,4 +38,8 @@ class ExerciseInteractorImpl @Inject constructor(
     override suspend fun getAllExerciseList(): List<ExerciseModel> {
      return exerciseRepository.getAllExerciseList()
     }
+
+    override suspend fun getExerciseById(exerciseId: Int): ExerciseModel {
+        return exerciseRepository.getExerciseById(exerciseId)
+    }
 }

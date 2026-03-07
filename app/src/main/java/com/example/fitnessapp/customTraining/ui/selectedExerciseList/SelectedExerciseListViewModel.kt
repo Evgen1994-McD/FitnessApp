@@ -7,12 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.customTraining.domain.CustomInteractor
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
-import com.example.fitnessapp.db.MainDb
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class SelectedExerciseListViewModel @Inject constructor(
@@ -20,16 +19,27 @@ class SelectedExerciseListViewModel @Inject constructor(
     private val exerciseHelper: ExerciseHelper
 ) : ViewModel() {
     val exerciseData = MutableLiveData<List<ExerciseModel>>()
+    val isLoading = MutableLiveData<Boolean>()
     private var dayModel: DayModel? = null
 
     fun getExercises(id: Int) = viewModelScope.launch {
+        isLoading.value = true
         delay(200)
         dayModel = customInteractor.getDayById(id)
+        
+        // Handle case where dayModel is null
+        if (dayModel == null) {
+            exerciseData.value = emptyList()
+            isLoading.value = false
+            return@launch
+        }
+        
         val exerciseList = customInteractor.getAllExercise()
         exerciseData.value = exerciseHelper.getExercisesOfTheDay(
             dayModel?.exercises!!,
             exerciseList
         )
+        isLoading.value = false
     }
 
 

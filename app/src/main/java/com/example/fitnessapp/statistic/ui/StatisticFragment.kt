@@ -4,21 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.applandeo.materialcalendarview.EventDay
-import com.example.fitnessapp.db.WeightModel
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
-import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class StatisticFragment : Fragment() {
@@ -36,59 +33,86 @@ class StatisticFragment : Fragment() {
             )
             setContent {
                 FitnessAppTheme {
-                    val weigthDialogueState by remember { mutableStateOf(false) }
                     // Получаем данные из StateFlow
+                    val bmiData by viewModel.bmiData.collectAsState()
+                    val workoutHistory by viewModel.filteredWorkoutHistory.collectAsState()
+                    val weeklyCalories by viewModel.weeklyCalories.collectAsState()
+                    val monthlyCalories by viewModel.monthlyCalories.collectAsState()
+                    val calendarPeriod by viewModel.calendarPeriod.collectAsState()
+                    val calendarDays by viewModel.calendarDays.collectAsState()
+                    val showTopSheetCalendar by viewModel.showTopSheetCalendar.collectAsState()
                     val eventList by viewModel.eventListData.collectAsState()
-                    val weightList by viewModel.weightListData.collectAsState()
-                    val statisticData by viewModel.statisticData.collectAsState()
-                    val selectedYear by viewModel.selectedYear.collectAsState()
-                    val selectedMonth by viewModel.selectedMonth.collectAsState()
+                    val selectedDate by viewModel.selectedDate.collectAsState()
+                    val workoutFilterType by viewModel.workoutFilterType.collectAsState()
+                    val filterText = when (workoutFilterType) {
+                        WorkoutFilterType.ALL -> "Все"
+                        WorkoutFilterType.WEEK -> "За неделю"
+                        WorkoutFilterType.DAY -> "За день"
+                    }
 
-                    // Передача данных в экран статистики
-                    StatisticScreen(
-                        date = statisticData?.date ?: TimeUtils.getCurrentDate(),
+                    // Загружаем новые данные при первом запуске
+                    LaunchedEffect(Unit) {
+                        viewModel.loadNewStatisticsData()
+                    }
+
+                    // Используем только новый дизайн экрана статистики
+                    NewStatisticScreen(
+                        bmiData = bmiData,
+                        workoutHistory = workoutHistory,
+                        weeklyCalories = weeklyCalories,
+                        monthlyCalories = monthlyCalories,
+                        calendarPeriod = calendarPeriod,
+                        calendarDays = calendarDays,
+                        selectedDate = selectedDate,
+                        showTopSheetCalendar = showTopSheetCalendar,
                         eventList = eventList,
-                        weightList = weightList,
-                        statisticData = statisticData,
-                        selectedYear = selectedYear,
-                        selectedMonth = selectedMonth,
-                        onDayClick = { selectedDate -> 
-                            viewModel.getStatisticByDate(selectedDate)
+                        filterText = filterText,
+                        onCalendarDayClick = { day ->
+                            viewModel.onCalendarDayClick(day)
                         },
-                        onWeightClick = { weightModel ->
-                            DialogManager.showWeightDialog(
-                                requireContext(),
-                                object : DialogManager.WeightListener {
-                                    override fun onClick(weight: String) {
-                                        if (weight.isNotEmpty()) {
-                                            try {
-                                                viewModel.updateWeight(weightModel.copy(
-                                                    weight = weight.toDouble()
-                                                ))
-                                            } catch (e: NumberFormatException) {
-                                                // Обработка ошибки формата
-                                            }
-                                        }
-                                    }
-                                },
-                                String.format("%.1f", weightModel.weight)
-                            )
+                        onWorkoutToggle = { workoutId ->
+                            viewModel.toggleWorkoutExpanded(workoutId)
                         },
-                        addWeightClick = { weight -> viewModel.saveWeight(weight) },
-                        onYearChange = { year -> viewModel.updateYear(year) },
-                        onMonthChange = { month -> viewModel.updateMonth(month) }
+                        onCycleWorkoutFilter = {
+                            viewModel.cycleWorkoutFilterSafe()
+                        },
+                        onAddWeight = {
+                            showAddWeightDialog(context, viewModel)
+                        },
+                        onUpdateBodyMetrics = { height, weight ->
+                            viewModel.updateBodyMetrics(height, weight)
+                        },
+                        onShowCalendar = {
+                            viewModel.showTopSheetCalendar()
+                        },
+                        onCalendarDismiss = {
+                            viewModel.hideTopSheetCalendar()
+                        },
+                        onDateSelected = { selectedDate ->
+                            viewModel.onDateSelected(selectedDate)
+                        },
+                        onTogglePeriod = {
+                            viewModel.toggleCalendarPeriod()
+                        }
                     )
                 }
             }
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Устанавливаем заголовок
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Статистика"
         
         // Загружаем данные при создании фрагмента
         viewModel.getStatisticEvents()
         viewModel.getStatisticByDate(TimeUtils.getCurrentDate())
-        viewModel.getWeightByYearAndMonth()
     }
-
+    
+    private fun showAddWeightDialog(context: android.content.Context, viewModel: StatisticViewModel) {
+        // Здесь можно показать диалог для добавления веса
+        // Реализация зависит от ваших требований
+    }
 }

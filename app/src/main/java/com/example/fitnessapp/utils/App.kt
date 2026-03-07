@@ -10,10 +10,10 @@ import dagger.hilt.android.HiltAndroidApp
 class App:Application() {
     
     companion object {
-        // Демонстрационный ID для тестирования
-        // Замените на реальный ID из Рекламной сети Яндекса перед релизом
-        private const val APP_OPEN_AD_UNIT_ID = "R-M-18059682-1"
-        
+        // Реальный ID для релиза
+        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
+//        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846022121212121280-2"
+
         @Volatile
         private var appOpenAdManager: AppOpenAdManager? = null
         
@@ -28,6 +28,15 @@ class App:Application() {
     
     override fun onCreate() {
         super.onCreate()
+        
+        // Инициализируем Cactus AI (без автоматического скачивания)
+        try {
+            // Инициализация Cactus AI
+            com.cactus.CactusContextInitializer.initialize(this)
+        } catch (e: Exception) {
+            // Логируем ошибку, но не падаем приложение
+            e.printStackTrace()
+        }
         
         // Инициализируем тему при запуске приложения
         val prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)

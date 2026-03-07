@@ -1,4 +1,4 @@
-package com.example.fitnessapp.db
+package com.example.fitnessapp.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.fitnessapp.db.DayModel
 import kotlinx.coroutines.flow.Flow
 import java.nio.charset.CodingErrorAction.REPLACE
 
@@ -15,21 +16,26 @@ interface DaysDao {
     suspend fun insertDay(dayModel: DayModel) // это функция для записи дня. Сюда мы передаём заполненный, но с идентификатором null, поэтому будет создан новый элемент
 
     @Query("SELECT * FROM day_model_table WHERE id =:dayId") // тут запрос в БД - выбрать всё ( * - всё) из таблицы деймоделтейбл где айди = ийди который передаём через функцию
-suspend fun getDay(dayId: Int) : DayModel
+    suspend fun getDay(dayId: Int) : DayModel?
 
     @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty") // тут мы выбираем и фильтруем себе дни по сложности
     fun getAllDaysByDifficulty(difficulty: String) : Flow<List<DayModel>>// выдасти нам лист с DayModel по сложности. Флоу обязательно из пакета корутин. Флоу сам следит за изменениями и обновляет при необходимости
 
 
     @Query("SELECT * FROM day_model_table")
-   suspend fun getAllDays() : List<DayModel>
+    suspend fun getAllDays() : List<DayModel>
 
-   @Delete
-   suspend fun deleteDay(dayModel: DayModel)
+    @Delete
+    suspend fun deleteDay(dayModel: DayModel)
 
 
     @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty AND isDone = 0") // тут мы выбираем и фильтруем себе дни по сложности
-   suspend fun getDontDonesDayByDifficulty(difficulty: String) : List<DayModel>// выдасти нам лист с DayModel по сложности. Флоу обязательно из пакета корутин. Флоу сам следит за изменениями и обновляет при необходимости
+    suspend fun getDontDonesDayByDifficulty(difficulty: String) : List<DayModel>// выдасти нам лист с DayModel по сложности. Флоу обязательно из пакета корутин. Флоу сам следит за изменениями и обновляет при необходимости
 
+    @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty AND zone =:zone AND isDone = 0") // выбираем дни по сложности и зоне
+    suspend fun getDontDonesDayByDifficultyAndZone(difficulty: String, zone: String) : List<DayModel>
+
+    @Query("SELECT * FROM day_model_table WHERE difficulty =:difficulty AND (zone IS NULL OR zone = '') AND isDone = 0") // выбираем дни по сложности без зоны
+    suspend fun getDontDonesDayByDifficultyAndNoZone(difficulty: String) : List<DayModel>
 
 }

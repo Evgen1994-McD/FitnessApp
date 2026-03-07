@@ -1,0 +1,287 @@
+package com.example.fitnessapp.statistic.ui.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.fitnessapp.R
+import com.example.fitnessapp.statistic.ui.models.BMIModel
+import com.example.fitnessapp.statistic.ui.models.BMIStatus
+import com.example.fitnessapp.ui.theme.baseGreen
+
+@Composable
+fun BMICard(
+    bmiModel: BMIModel?,
+    onAddWeight: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(20.dp)
+    ) {
+        // Заголовок и статус
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top
+        ) {
+            Column {
+                Text(
+                    text = "Ваш ИМТ",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = if (bmiModel != null) "На основе ваших данных" else "Введите данные для расчета",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            if (bmiModel != null) {
+                BMIStatusBadge(status = bmiModel.status)
+            }
+        }
+        
+        // Значение ИМТ
+        Row(
+            modifier = Modifier.padding(vertical = 24.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            // Левая группа: текст ИМТ
+            Row(verticalAlignment = Alignment.Bottom) {
+                if (bmiModel != null) {
+                    Text(
+                        text = String.format("%.1f", bmiModel.bmiValue),
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "кг/м²",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
+                    )
+                } else {
+                    Text(
+                        text = "--",
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "кг/м²",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.weight(1f))
+            
+            // Правая группа: иконка
+            Box(
+                modifier = Modifier
+                    .clickable { onAddWeight() }
+                    .padding(end = 12.dp)
+            ) {
+                Icon(painter = painterResource(R.drawable.ic_add_weight_24), "Добавить вес",
+                    Modifier.size(60.dp),
+                    tint = baseGreen
+                )
+            }
+        }
+        
+        // Индикатор ИМТ
+        BMIIndicator(bmiModel?.bmiValue ?: 22.0) // Показываем индикатор с значением по умолчанию для нормального диапазона
+    }
+}
+
+@Composable
+private fun BMIStatusBadge(status: BMIStatus) {
+    val backgroundColor = when (status) {
+        BMIStatus.UNDERWEIGHT -> Color(0xFF3B82F6)  // blue
+        BMIStatus.NORMAL -> Color(0xFF10B981)      // green
+        BMIStatus.OVERWEIGHT -> Color(0xFFF59E0B)   // yellow
+        BMIStatus.OBESE -> Color(0xFFEF4444)       // red
+    }
+    
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(backgroundColor.copy(alpha = 0.1f))
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text = status.displayName,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = backgroundColor
+        )
+    }
+}
+
+@Composable
+private fun BMIIndicator(bmiValue: Double) {
+    Column {
+        // Фоновая полоса с цветными сегментами
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp)
+                .clip(RoundedCornerShape(6.dp))
+        ) {
+            // Цветные сегменты с правильными цветами
+            Box(
+                modifier = Modifier
+                    .weight(0.25f)
+                    .fillMaxHeight()
+                    .background(Color(0xFF3B82F6)) // UNDERWEIGHT blue
+            )
+            Box(
+                modifier = Modifier
+                    .weight(0.25f)
+                    .fillMaxHeight()
+                    .background(Color(0xFF10B981)) // NORMAL green
+            )
+            Box(
+                modifier = Modifier
+                    .weight(0.25f)
+                    .fillMaxHeight()
+                    .background(Color(0xFFF59E0B)) // OVERWEIGHT yellow
+            )
+            Box(
+                modifier = Modifier
+                    .weight(0.25f)
+                    .fillMaxHeight()
+                    .background(Color(0xFFEF4444)) // OBESE red
+            )
+        }
+        
+        // Подписи
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("15", style = MaterialTheme.typography.labelSmall, color = Color(0xFF9CA3AF))
+            Text("18.5", style = MaterialTheme.typography.labelSmall, color = Color(0xFF9CA3AF))
+            Text("25", style = MaterialTheme.typography.labelSmall, color = Color(0xFF9CA3AF))
+            Text("30", style = MaterialTheme.typography.labelSmall, color = Color(0xFF9CA3AF))
+            Text("40", style = MaterialTheme.typography.labelSmall, color = Color(0xFF9CA3AF))
+        }
+        
+        // Индикатор текущего значения
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+        ) {
+            val position = when {
+                bmiValue < 18.5 -> (bmiValue - 15.0) / 3.5 * 0.25
+                bmiValue < 25 -> 0.25 + (bmiValue - 18.5) / 6.5 * 0.25
+                bmiValue < 30 -> 0.5 + (bmiValue - 25.0) / 5.0 * 0.25
+                else -> 0.75 + ((bmiValue - 30.0).coerceAtMost(10.0) / 10.0) * 0.25
+            }.coerceIn(0.0, 1.0)
+            
+            // Защита от отрицательного padding
+            val paddingValue = (position * 320f).dp - 12.dp
+            val safePadding = when {
+                paddingValue.value < 0 -> 0.dp
+                paddingValue.value > 308f -> 308.dp // Максимальная ширина минус размер ползунка
+                else -> paddingValue
+            }
+            
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .padding(horizontal = 1.dp)
+                    .align(Alignment.CenterStart)
+                    .padding(start = safePadding)
+            )
+        }
+        
+        // Иконка человека под графиком в соответствии с ИМТ
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            val position = when {
+                bmiValue < 18.5 -> (bmiValue - 15.0) / 3.5 * 0.25
+                bmiValue < 25 -> 0.25 + (bmiValue - 18.5) / 6.5 * 0.25
+                bmiValue < 30 -> 0.5 + (bmiValue - 25.0) / 5.0 * 0.25
+                else -> 0.75 + ((bmiValue - 30.0).coerceAtMost(10.0) / 10.0) * 0.25
+            }.coerceIn(0.0, 1.0)
+            
+            val bmiStatus = when {
+                bmiValue < 18.5 -> BMIStatus.UNDERWEIGHT
+                bmiValue < 25 -> BMIStatus.NORMAL
+                bmiValue < 30 -> BMIStatus.OVERWEIGHT
+                else -> BMIStatus.OBESE
+            }
+            
+            val iconColor = when (bmiStatus) {
+                BMIStatus.UNDERWEIGHT -> Color(0xFF3B82F6)  // blue
+                BMIStatus.NORMAL -> Color(0xFF10B981)      // green
+                BMIStatus.OVERWEIGHT -> Color(0xFFF59E0B)   // yellow
+                BMIStatus.OBESE -> Color(0xFFEF4444)       // red
+            }
+            
+            // Вычисляем позицию в dp (ширина экрана минус отступы)
+            val screenWidth = 320f // Примерная ширина контента
+            val iconPosition = (position * screenWidth).dp
+            
+            // Защита от отрицательных и слишком больших значений
+            val safeIconPosition = when {
+                iconPosition.value < 0 -> 0.dp
+                iconPosition.value > 296f -> 296.dp // Максимальная ширина минус размер иконки
+                else -> iconPosition
+            }
+            
+            Spacer(modifier = Modifier.width(safeIconPosition))
+            
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "BMI Status",
+                tint = iconColor,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+    }
+}

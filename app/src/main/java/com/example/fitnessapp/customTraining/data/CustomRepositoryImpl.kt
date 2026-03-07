@@ -14,7 +14,7 @@ class CustomRepositoryImpl @Inject constructor(
         return mainDb.exerciseDao.getAllExercisesFromTo(from,to)
     }
 
-    override suspend fun getDayById(id: Int): DayModel {
+    override suspend fun getDayById(id: Int): DayModel? {
         return mainDb.daysDao.getDay(id)
     }
 

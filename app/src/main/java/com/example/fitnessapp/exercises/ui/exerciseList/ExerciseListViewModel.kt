@@ -1,7 +1,9 @@
 package com.example.fitnessapp.exercises.ui.exerciseList
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
@@ -9,8 +11,8 @@ import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.exercises.domain.models.TrainingTopCardModel
 import com.example.fitnessapp.exercises.utils.TrainingUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /* для каждого объекта будет свой вью модел */
 @HiltViewModel //анннотация Хилт вьюмодел
@@ -28,6 +30,13 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
     val exerciseList =
         MutableLiveData<List<ExerciseModel>>() // сюда мы с базы данных будем передавать данные, а затем получать список с помощью обсервера уже на фрагменте
     val topCardUpdate = MutableLiveData<TrainingTopCardModel>()
+    val selectedExercise = MutableLiveData<ExerciseModel>() // для хранения выбранного упражнения
+
+    fun getDayById(dayId: Int): LiveData<DayModel?> = 
+        liveData {
+            val day = exerciseInteractor.getDayById(dayId)
+            emit(day)
+        } // Возвращаем LiveData из interactor
 
     fun getDayExerciseList(dayModel: DayModel?) =
         viewModelScope.launch { // запускаем в корутине, потому что сложная операция
@@ -88,5 +97,10 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
 
 
               */
+    }
+
+    fun getExerciseById(exerciseId: Int) = viewModelScope.launch {
+        val exercise = exerciseInteractor.getExerciseById(exerciseId)
+        selectedExercise.value = exercise
     }
 }

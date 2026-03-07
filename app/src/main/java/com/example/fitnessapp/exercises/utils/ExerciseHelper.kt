@@ -21,7 +21,7 @@ val templist = ArrayList<ExerciseModel>()
                         context.getString(R.string.pre)
                     }
                             else{
-                        context.getString(R.string.recovery) // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 10 СЕКУНД
+                        context.getString(R.string.recovery) // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 40 СЕКУНД
 
                     },
 
@@ -53,7 +53,10 @@ val templist = ArrayList<ExerciseModel>()
             "", // это финиш тут заполнили просто так, тут не важно
             true, // это финиш тут заполнили просто так, тут не важно
             context.getString(R.string.day_finish_fire), // из папки ассетс
-            0.0
+            0.0,
+            "",
+            "",
+            ""
         )
     )
         /*
@@ -72,16 +75,18 @@ val exercisesIdsArray = exercisesIds.split(",") // Это массив кото�
         for (i in exercisesIdsArray.indices){
             if (exercisesIdsArray[i].isNotEmpty()) {
                 val exerciseId = exercisesIdsArray[i].toInt()
-                val exercise = list.filter {
+                val filteredExercises = list.filter {
                     it.id == exerciseId
-                } [0]
-                tempList.add(
-                    exercise
-                    /*
+                }
+                if (filteredExercises.isNotEmpty()) {
+                    tempList.add(
+                        filteredExercises[0]
+                        /*
                 В данном методе получаем упражнения нужного дня путём разделения переданной строки из БД
                 по запятой.
                  */
-                )
+                    )
+                }
             }
         }
         return tempList
