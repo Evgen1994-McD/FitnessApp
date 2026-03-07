@@ -38,7 +38,7 @@ class AppOpenAdManager(
     
     // Минимальное время в фоне перед показом рекламы (30 секунд)
     // При первом запуске реклама показывается сразу
-    private val MIN_BACKGROUND_TIME_MS = 30_000L
+    private val MIN_BACKGROUND_TIME_MS = 10_000L
     
     private val prefs: SharedPreferences = 
         application.getSharedPreferences("app_open_ad_prefs", android.content.Context.MODE_PRIVATE)
