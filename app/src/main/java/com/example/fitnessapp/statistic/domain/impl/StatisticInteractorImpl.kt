@@ -17,11 +17,17 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun getStatisticByDate(date: String): StatisticModel{
         return statisticRepository.getStatisticByDate(date)
     }
+    override suspend fun getStatisticByDayId(dayId: Int): StatisticModel? {
+        return statisticRepository.getStatisticByDayId(dayId)
+    }
     override suspend fun getYearWeightList(): List<WeightModel>{
         return statisticRepository.getYearWeightList()
     }
     override suspend fun getWeightByYearAndMonth(year: Int, month: Int): List<WeightModel>{
         return statisticRepository.getWeightByYearAndMonth(year,month)
+    }
+    override suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel? {
+        return statisticRepository.getWeightToday(year, month, day)
     }
     override suspend fun insertWeight(weightModel: WeightModel){
         statisticRepository.insertWeight(weightModel)
@@ -29,8 +35,14 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun getDontDoesDaysByDifficulty(difficulty: String): List<DayModel>{
         return statisticRepository.getDontDoesDaysByDifficulty(difficulty)
     }
+    override suspend fun getDontDoesDaysByDifficultyAndZone(difficulty: String, zone: String?): List<DayModel>{
+        return statisticRepository.getDontDoesDaysByDifficultyAndZone(difficulty, zone)
+    }
     override suspend fun getAllExercise(): List<ExerciseModel>{
         return statisticRepository.getAllExercise()
+    }
+    override suspend fun getAllDays(): List<DayModel>{
+        return statisticRepository.getAllDays()
     }
     override suspend fun insertDay(dayModel: DayModel){
         statisticRepository.insertDay(dayModel)
@@ -38,5 +50,4 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun insertExercise(exerciseModel: ExerciseModel): Long{
         return statisticRepository.insertExercise(exerciseModel)
     }
-
 }

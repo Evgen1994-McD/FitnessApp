@@ -10,6 +10,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.SelectedExerciseListItemBinding
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.utils.TimeUtils
+import com.example.fitnessapp.utils.ZoneUtils
 import pl.droidsonroids.gif.GifDrawable
 
 // Мы скопировали DaysAdapter и переделали его чтобы не писать заново
@@ -24,27 +25,31 @@ class SelectedListExerciseAdapter( val listener: Listener) :
 
 
             tvNameEx.text = exercise.name //Название упражнения
-            tvcount.text =
-                getTime(exercise.time)
+            tvcount.text = getTime(exercise.time)
+            
+            // Показываем зоны на русском
+            tvZones.text = ZoneUtils.getZonesDisplayNames(exercise.muscleZone)
+            
             imExercise.setImageDrawable(
                 GifDrawable(
                     root.context.assets,
                     exercise.image
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
-delete.setOnClickListener {
-
-    listener.onDelete(adapterPosition)
-}
-            up.setOnClickListener{
-
-                    listener.addExerciseTime(adapterPosition)
-
+            
+            // Корзина теперь показывает информацию
+            delete.setOnClickListener {
+                listener.onInfoClick(exercise)
             }
+            
+            // up - это кнопка +
+            up.setOnClickListener {
+                listener.addExerciseTime(adapterPosition)
+            }
+            
+            // down - это кнопка -
             down.setOnClickListener {
-
-                    listener.decreaseExerciseTime(adapterPosition)
-
+                listener.decreaseExerciseTime(adapterPosition)
             }
         }
 
@@ -85,8 +90,8 @@ delete.setOnClickListener {
     }
 
     interface Listener{
-        fun onDelete(pos: Int)
-       fun addExerciseTime(pos:Int)
+        fun onInfoClick(exercise: ExerciseModel)
+        fun addExerciseTime(pos:Int)
         fun decreaseExerciseTime(pos:Int)
     }
 }

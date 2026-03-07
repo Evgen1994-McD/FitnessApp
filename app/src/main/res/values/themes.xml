@@ -9,6 +9,7 @@
 
     <style name="Theme.FitnessApp" parent="Theme.MaterialComponents.DayNight.NoActionBar" >
         <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
         <item name="colorSecondary">@color/secondary</item>
         <item name="android:windowFullscreen">true</item>
         <item name="backgroundColor"> @color/white</item>

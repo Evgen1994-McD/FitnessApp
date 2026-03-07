@@ -2,20 +2,18 @@ package com.example.fitnessapp.utils
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
+import android.util.TypedValue
 import android.view.LayoutInflater
-import androidx.appcompat.view.ContextThemeWrapper
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.fitnessapp.R
 import com.example.fitnessapp.databinding.AfterTrainingDialogueBinding
 import com.example.fitnessapp.databinding.WeightDialogBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Job
 
 object DialogManager {   // Сначала сделал как класс, но он работает только если обджект. Как и фрагмент менеджер. Если мы укажем обжект - сможем добраться без инициализации класса. Если как класс - сначала надо его инициализировать.
 
@@ -24,12 +22,7 @@ object DialogManager {   // Сначала сделал как класс, но 
         mId: Int,
         listener: Listener,
     ) {  // передаём контекст, mId - messageId ( это сообщение) - Так как ресурсы у нас это ИНТ!!!
-        val builder = MaterialAlertDialogBuilder(
-            ContextThemeWrapper(
-                context,
-                R.style.AlertDialog_AppCompat_
-            )
-        ) // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
+        val builder = MaterialAlertDialogBuilder(context) // Возвращаем к стандартной теме
         var dialog: Dialog? =
             null // типа инициализировали диалог, изначально он равен null, а ниже мы используем его
         builder.setTitle(R.string.alert)
@@ -40,12 +33,31 @@ object DialogManager {   // Сначала сделал как класс, но 
             dialog?.dismiss()
 
         }
-        builder.setNegativeButton(R.string.back) { _, _ ->
+        builder.setNegativeButton(R.string.backoff) { _, _ ->
             dialog?.dismiss()  // Просто отменяем диалог если не согласны
         }
         dialog = builder.create()
-        dialog.show() // показываем диалог, иначе его не будет видно
-
+        dialog.show()
+        
+        // Устанавливаем черный фон диалога
+        dialog.window?.setBackgroundDrawableResource(android.R.color.black)
+        
+        // Получаем цвета из темы приложения
+        val typedValue = android.util.TypedValue()
+        context.theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+        val backgroundColor = typedValue.data
+        
+        context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+        val textColor = typedValue.data
+        
+        // Применяем цвета к тексту
+        dialog.findViewById<TextView>(android.R.id.message)?.setTextColor(textColor)
+        dialog.findViewById<TextView>(android.R.id.title)?.setTextColor(textColor)
+        
+        // Устанавливаем белый цвет для кнопок
+        dialog.findViewById<Button>(android.R.id.button1)?.setTextColor(android.graphics.Color.WHITE)
+        dialog.findViewById<Button>(android.R.id.button2)?.setTextColor(android.graphics.Color.WHITE)
+        
     }
 
     fun showWeightDialog(
@@ -53,8 +65,7 @@ object DialogManager {   // Сначала сделал как класс, но 
         listener: WeightListener,
         weight : String = ""
     ) {  // передаём контекст, mId - messageId ( это сообщение) - Так как ресурсы у нас это ИНТ!!!
-        val builder =
-            MaterialAlertDialogBuilder(context) // мы делаем Диалоговое окно при попытке сбросить. ПОзитив баттон - согласиться, негатив - отменить
+        val builder = MaterialAlertDialogBuilder(context) // Используем стандартную тему
         val dialog = builder.create()
         val binding = WeightDialogBinding.inflate(LayoutInflater.from(context))
         dialog.setView(binding.root)
@@ -88,14 +99,15 @@ object DialogManager {   // Сначала сделал как класс, но 
 
 
     interface OnDifficultySelectedListener {
-        fun onDifficultySelected(difficultyLevel: Int)
+        fun onDifficultySelected(difficultyLevel: Int, zone: String? = null)
     }
 
     fun showAfterTrainingDialog(
         context: Context,
-        listener: OnDifficultySelectedListener
+        listener: OnDifficultySelectedListener,
+        zone: String? = null
     ) {
-        val builder = MaterialAlertDialogBuilder(context)
+        val builder = MaterialAlertDialogBuilder(context) // Используем стандартную тему
         val dialog = builder.create()
         val binding = AfterTrainingDialogueBinding.inflate(LayoutInflater.from(context))
         dialog.setView(binding.root)
@@ -113,7 +125,7 @@ object DialogManager {   // Сначала сделал как класс, но 
                 tvTitle.setText("Усложнить тренировку?")
                 btSoEasy.setText("Да, усложнить вызов!")
                 btSoEasy.setOnClickListener {
-                    listener.onDifficultySelected(DIFFICULTY_UP)
+                    listener.onDifficultySelected(DIFFICULTY_UP, zone)
                     tvTitle.setText("Работаем...\n" +
                             "Пожалуйста, подождите...")
                     btSoEasy.isVisible = false
@@ -164,7 +176,7 @@ object DialogManager {   // Сначала сделал как класс, но 
                 tvTitle.setText("Упростить тренировку?")
                 btSoHard.setText("Да, сделать проще!")
                 btSoHard.setOnClickListener {
-                    listener.onDifficultySelected(DIFFICULTY_DOWN)
+                    listener.onDifficultySelected(DIFFICULTY_DOWN, zone)
                     tvTitle.setText("Работаем...\n" +
                             "Пожалуйста, подождите...")
                     btSoHard.isVisible = false

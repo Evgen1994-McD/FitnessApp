@@ -12,4 +12,5 @@ interface ExerciseInteractor {
     suspend fun getDayById(dayId:Int): DayModel?
     suspend  fun insertStatistic(statisticModel: StatisticModel)
     suspend fun getAllExerciseList():List<ExerciseModel>
+    suspend fun getExerciseById(exerciseId: Int): ExerciseModel
 }

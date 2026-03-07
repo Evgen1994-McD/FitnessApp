@@ -16,10 +16,12 @@
     <string name="exercises">Упражнений</string>
     <string name="waiting_message">Начало упражнений через :</string>
     <string name="start">Начать</string>
+    <string name="start_now">Начать сейчас</string>
     <string name="Next">Следующее</string>
+    <string name="done">Готово</string>
     <string name="GoodDone">Отлично,\nвы закончили\n тренировку!</string>
     <string name="Back">Назад в Меню</string>
-    <string name="Done">Статистика</string>
+    <string name="statistic">Статистика</string>
     <string name="Waiting">Приготовьтесь</string>
     <string name="listExercise">Список упражнений</string>
     <string name="PrefForDoing">main</string>
@@ -27,7 +29,17 @@
     <string name="rest_days"> дней </string>
     <string name="reset">Сбросить </string>
     <string name="alert">Внимание! </string>
-    <string name="back">Отмена</string>
+    <string name="backoff">Отмена</string>
+    <string name="today">Сегодня</string>
+    <string name="history">История</string>
+    <string name="ok">OK</string>
+
+    <plurals name="workouts_count">
+        <item quantity="one">День</item>
+        <item quantity="few">Дня</item>
+        <item quantity="many">Дней</item>
+        <item quantity="other">День</item>
+    </plurals>
 
 <!--    Тренировки-->
     <string name="reset_days_message">Вы действительно желаете обнулить весь прогресс тренировок?</string>
@@ -42,6 +54,9 @@
     <string name="no_exercise">В данном дне нет упражнений.</string>
     <string name="relax">Отдохните</string>
     <string name="selected_empty">Упражнений пока нет...</string>
+    <string name="selected_empty_subtext">Скорее добавьте их!</string>
+    <string name="custom_days_empty">Тренировок пока нет...</string>
+    <string name="custom_days_empty_subtext">Скорее добавьте их!</string>
 
 <!--    Exercise Helper-->
     <string name="recovery">40</string>
@@ -62,22 +77,37 @@
 
 
 
-    <!--  Финишный фрагмент статистики-->
+    <!--  Финишный фрагмент + статистики-->
     <string name="kcal">Калории</string>
     <string name="exercise">Упражнения</string>
     <string name="time">Время</string>
-    <string name="how_your_training">Как вам тренировка?</string>
+    <string name="how_your_training">Желаете изменить тренировки?</string>
 
     <string name="after_so_hard">Слишком сложно</string>
     <string name="after_so_easy">Слишком просто</string>
     <string name="after_nothing">Нет, всё Ок, зашел случайно</string>
-    <string name="after_question">Что вам не понравилось?</string>
+    <string name="after_question">Что будем менять?</string>
+    <string name="weight_input_title">Введите текущий вес.</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="all_body">Всё тело</string>
+    <string name="hands">Руки</string>
+    <string name="body">Корпус</string>
+    <string name="back">Спина</string>
+    <string name="legs">Ноги</string>
 
 
 <!--ActionBars-->
 
     <string name="settings">Настройки</string>
 
+
+
+
+    <!--Настройки-->
+    <string name="dark_theme">Тёмная тема</string>
+    <string name="custom_training">Своя тренировка</string>
+    <string name="clean_data">Очистить данные</string>
 
 
 </resources>

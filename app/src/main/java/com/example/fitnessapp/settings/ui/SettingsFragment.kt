@@ -1,94 +1,115 @@
 package com.example.fitnessapp.settings.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
-import com.example.fitnessapp.databinding.FragmentSettingsBinding
-import com.example.fitnessapp.utils.DialogManager
+import com.example.fitnessapp.settings.ui.OpenAllTrainingsDialog
+import com.example.fitnessapp.settings.ui.SettingsScreen
+import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
-    private var _binding: FragmentSettingsBinding? = null //ЭТО сам байндинг Налл
-    private val binding get() = _binding!! // а здесь мы получаем байндинг
     private val model: SettingsViewModel by viewModels()
-    private var ab: ActionBar? =
-        null // добавили переменную для ActionBar, будем показывать счетчик упражнений
-
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSettingsBinding.inflate(
-            inflater,
-            container,
-            false
-        )
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            // Обязательно: стратегия уничтожения композиции
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed(lifecycleOwner = this@SettingsFragment))
+
+            setContent {
+                FitnessAppTheme {
+                    val isOpeningTrainings by model.isOpeningTrainings.observeAsState(initial = false)
+                    val openTrainingsProgress by model.openTrainingsProgress.observeAsState(initial = 0f)
+                    
+                    var clearDialogState by remember { mutableStateOf(false) }
+                    var openTrainingsDialogState by remember { mutableStateOf(false) }
+
+                    SettingsScreen(
+                        viewModel = model,
+                        onClearedDataClick = {
+                            clearDialogState = true
+                        },
+                        onOpenAllTrainingsClick = {
+                            openTrainingsDialogState = true
+                        }
+                    )
+                    
+                    // Диалог очистки данных
+                    if (clearDialogState){
+                        ClearDataDialogue(dialogState = remember { mutableStateOf(clearDialogState) },
+                            onSubmit ={
+                                model.clearData()
+                                clearDialogState = false
+                            },
+                            onDismiss = {
+                                clearDialogState = false
+                            })
+                    }
+                    
+                    // Диалог открытия всех тренировок
+                    if (openTrainingsDialogState){
+                        OpenAllTrainingsDialog(
+                            dialogState = remember { mutableStateOf(openTrainingsDialogState) },
+                            isLoading = isOpeningTrainings,
+                            progress = openTrainingsProgress,
+                            onSubmit = {
+                                model.openAllTrainings()
+                            },
+                            onDismiss = {
+                                openTrainingsDialogState = false
+                            })
+                        
+                        // Автоматически закрываем диалог после завершения операции
+                        LaunchedEffect(isOpeningTrainings) {
+                            if (!isOpeningTrainings && openTrainingsProgress == 1f) {
+                                openTrainingsDialogState = false
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = getString(R.string.settings)
-        model.controlCheckerPosition()
-
-
-        binding.apply {
-            clearDataButton.setOnClickListener {
-                DialogManager.showDialog(
-                    requireContext(),
-                    R.string.reset_days_message, object : DialogManager.Listener {
-                        override fun onClick()  {
-                            model.clearData()
-                        }
-                    })
-            }
-            customTrainingSettingsButton.setOnClickListener {
-                findNavController().navigate(R.id.customDaysListFragment)
-
-            }
-        }
-
-        controlTheme()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    /*
-    В onDestroyView наш байндинг приравниваем обратно к null
-    Данная фича помогает избежать некоторых ошибок когда вью уже разрушено
-    но доступ к байдингу всё ещё есть
-     */
-
-
-    private fun controlTheme(){
-        model.themeLiveData.observe(viewLifecycleOwner) { theme ->
-            binding.darkTheme.isChecked = theme
-
-
-
-        }
-        binding.darkTheme.setOnCheckedChangeListener {_, isChecked ->
-            model.switchTheme(isChecked)
-
-        }
-        ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = getString(R.string.settings)
+        
+        // Устанавливаем заголовок
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Настройки"
     }
 }

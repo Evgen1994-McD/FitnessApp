@@ -14,11 +14,17 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.exercises.ui.adapters.DaysAdapter
 import com.example.fitnessapp.databinding.FragmentDaysBinding
 import com.example.fitnessapp.db.DayModel
+import com.example.fitnessapp.db.dao.ExerciseDao
 import com.example.fitnessapp.utils.DialogManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @Suppress("DEPRECATION")
-class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили интерфейс из который создали в DaysAdapter
+@AndroidEntryPoint
+class DaysFragment : Fragment(), DaysAdapter.Listener {
+    @Inject
+    lateinit var exerciseDao: ExerciseDao // Подключили интерфейс из который создали в DaysAdapter
     private lateinit var adapter : DaysAdapter  // мы вынесли адаптер сюда, чтобы ОБНОВИТЬ шаред префс по факту как только пользователь нажал очистить
     private lateinit var binding: FragmentDaysBinding
     private val model: DaysViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
@@ -45,7 +51,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener { // Подключили 
 
 
     private fun initRcView() = with(binding){
-        adapter = DaysAdapter(this@DaysFragment)
+        adapter = DaysAdapter(this@DaysFragment, exerciseDao)
         rcviewdays.layoutManager = LinearLayoutManager(activity as AppCompatActivity)
         rcviewdays.adapter = adapter
         rcviewdays.itemAnimator = null

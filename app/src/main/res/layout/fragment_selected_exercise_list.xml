@@ -11,9 +11,9 @@
     <Button
         android:id="@+id/addExercises"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:backgroundTint="@color/blue"
-        android:text="Add New Exercises"
+        android:text="Добавить упражнения"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -31,16 +31,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline12" />
 
+    <ProgressBar
+        android:id="@+id/progressLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/rcView"
+        app:layout_constraintEnd_toEndOf="@+id/rcView"
+        app:layout_constraintStart_toStartOf="@+id/rcView"
+        app:layout_constraintTop_toTopOf="@+id/rcView" />
+
     <TextView
         android:id="@+id/textEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/selected_empty"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/rcView"
         app:layout_constraintEnd_toEndOf="@+id/rcView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/rcView"
+        app:layout_constraintTop_toTopOf="@+id/rcView" />
+
+    <ImageView
+        android:id="@+id/imageEmpty"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ph_no_exercise"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/textEmptySubtext"
+        app:layout_constraintEnd_toEndOf="@+id/rcView"
+        app:layout_constraintStart_toStartOf="@+id/rcView"
+        app:layout_constraintTop_toBottomOf="@+id/textEmpty" />
+
+    <TextView
+        android:id="@+id/textEmptySubtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/selected_empty_subtext"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/rcView"
+        app:layout_constraintStart_toStartOf="@+id/rcView"
+        app:layout_constraintTop_toBottomOf="@+id/imageEmpty" />
 
     <TextView
         android:id="@+id/tvExCount"
@@ -65,4 +102,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.93" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginBottom="5dp"
+        android:backgroundTint="@color/blue"
+        android:text="@string/start_now"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/addExercises"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,11 +16,12 @@ import kotlinx.coroutines.launch
 class SplashActivity : ComponentActivity() {
     private val  model: SplashViewModel by viewModels()
     private lateinit var timer: CountDownTimer
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash)
-
+        
         lifecycleScope.launch {
             model.controlFirstCheck()
 
@@ -33,10 +34,10 @@ class SplashActivity : ComponentActivity() {
             }.start()
 
         }
-
-
-
-
+    }
+    
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onDestroy() { // это остановит таймер и закроет приложение если пользователь зашел и сразу вышел
@@ -44,4 +45,3 @@ class SplashActivity : ComponentActivity() {
         timer.cancel()
     }
 }
-

@@ -9,9 +9,9 @@
     <Button
         android:id="@+id/bStart"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:layout_marginHorizontal="5dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="52dp"
         android:backgroundTint="@color/blue"
         android:text="@string/start"
         app:cornerRadius="15dp"
@@ -21,6 +21,16 @@
         app:layout_constraintTop_toTopOf="@+id/guideline2"
         tools:text="@string/start"
         tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabEdit"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintBottom_toTopOf="@+id/bStart"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

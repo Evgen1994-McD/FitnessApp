@@ -17,15 +17,14 @@ class ExerciseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAndOpenNextDay(dayModel: DayModel) {
-        var nextId = ((dayModel?.id)?.plus(1)) ?: 0
-        if (nextId!=0) {
-            try {
-                var nextDay = mainDb.daysDao.getDay(nextId)
-                nextDay = nextDay!!.copy(isOpen = true)
-                updateDay(nextDay!!)
-            }catch (e:Exception){
-
-            }
+        // Ищем следующий день по id + 1 с проверкой на существование
+        val nextId = dayModel.id?.plus(1) ?: return
+        val nextDay = mainDb.daysDao.getDay(nextId)
+        
+        // Проверяем, что следующий день существует
+        if (nextDay != null) {
+            val updatedNextDay = nextDay.copy(isOpen = true)
+            updateDay(updatedNextDay)
         }
     }
 
@@ -46,7 +45,12 @@ class ExerciseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getDayById(dayId: Int): DayModel? {
-        return mainDb.daysDao.getDay(dayId)
+        val day = mainDb.daysDao.getDay(dayId)
+        return if (day != null) day else null
+    }
+
+    override suspend fun getExerciseById(exerciseId: Int): ExerciseModel {
+        return mainDb.exerciseDao.findExerciseById(exerciseId)
     }
 
     override suspend fun getAllDaysByDifficulty(diffculty:String): Flow<List<DayModel>> {

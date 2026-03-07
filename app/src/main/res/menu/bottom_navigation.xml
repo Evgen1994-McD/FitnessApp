@@ -2,27 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-<item
-    android:title="Training"
-android:id="@+id/trainingFragment"
-    android:icon="@drawable/ic_bottom_sport"
-    />
+    <item
+        android:title="Тренировка"
+        android:id="@+id/trainingFragment"
+        android:icon="@drawable/ic_bottom_sport"
+        />
 
     <item
-        android:title="Statistic"
+        android:title="Статистика"
         android:id="@+id/statisticFragment"
         android:icon="@drawable/ic_bottom_statistic"
         />
 
+    <item
+        android:title="Своя тренировка"
+        android:id="@+id/customDaysListFragment"
+        android:icon="@drawable/ic_bottom_custom"
+        />
 
     <item
-        android:title="Settings"
+        android:title="Настройки"
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_bottom_settings"
         />
-
-
-
 
 
 </menu>

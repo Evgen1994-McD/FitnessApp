@@ -1,7 +1,5 @@
 package com.example.fitnessapp.statistic.ui
 
-import android.animation.Animator
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.fitnessapp.databinding.FinishBinding
 import androidx.appcompat.app.ActionBar
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
@@ -27,6 +24,7 @@ class DaysFinishFragment(
         null // добавили переменную для ActionBar, будем показывать счетчик упражнений
     private val model: DaysFinishViewModel by viewModels()
     private  var difficulty = ""
+    private var zone: String? = null
     private var likeCounter = 0
 
     override fun onCreateView(
@@ -41,9 +39,12 @@ class DaysFinishFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = getString(R.string.Done)
+        ab?.title = getString(R.string.statistic)
+        ab?.setDisplayHomeAsUpEnabled(false) // Скрываем иконку "назад"
         observerCurrentDayStatisitcs()
 difficulty = arguments?.getString("difficulty").toString()
+        zone = arguments?.getString("zone")
+        android.util.Log.d("DaysFinishFragment", "Received difficulty: $difficulty, zone: $zone")
         model.getStatisticByDate(TimeUtils.getCurrentDate())
         model.getStatisticEvents()
 
@@ -62,7 +63,7 @@ difficulty = arguments?.getString("difficulty").toString()
         }
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Ничего не делаем или можем закрыть activity
+                // При нажатии системной кнопки "назад" возвращаем на главный экран тренировок
                 findNavController()
                     .popBackStack(
                         R.id.trainingFragment,
@@ -88,14 +89,14 @@ difficulty = arguments?.getString("difficulty").toString()
         binding.btIsBad.setOnClickListener{
             DialogManager.showAfterTrainingDialog(requireContext(),
                 object : DialogManager.OnDifficultySelectedListener {
-                    override fun onDifficultySelected(difficultyLevel: Int) {
+                    override fun onDifficultySelected(difficultyLevel: Int, zone: String?) {
                         if(difficultyLevel == 1){
-                            model.addTrainingHarder(difficulty)
+                            model.addTrainingHarder(difficulty, zone)
                         } else if (difficultyLevel==2){
-                            model.reduceTrainingComplexity(difficulty)
+                            model.reduceTrainingComplexity(difficulty, zone)
                         }
                     }
-                })
+                }, zone)
         }
 
 

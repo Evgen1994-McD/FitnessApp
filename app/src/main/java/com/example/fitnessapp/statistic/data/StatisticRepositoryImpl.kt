@@ -18,6 +18,7 @@ class StatisticRepositoryImpl @Inject constructor(
     override suspend fun getStatisticByDate(date:String):StatisticModel{
         return mainDb.statisticDao.getStatisticByDate(date) ?: StatisticModel(
             null,
+            null,
             date,
             0.0,
             "0",
@@ -26,6 +27,9 @@ class StatisticRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getStatisticByDayId(dayId: Int): StatisticModel? {
+        return mainDb.statisticDao.getStatisticByDayId(dayId)
+    }
 
     override suspend fun getYearWeightList():List<WeightModel> {
         return mainDb.weightDao.getAllWeightList()
@@ -33,6 +37,10 @@ class StatisticRepositoryImpl @Inject constructor(
 
     override suspend fun getWeightByYearAndMonth(year : Int, month:Int):List<WeightModel>{
         return mainDb.weightDao.getMonthWeightList(year,month)
+    }
+
+    override suspend fun getWeightToday(year: Int, month: Int, day: Int): WeightModel? {
+        return mainDb.weightDao.getWeightToday(year, month, day)
     }
 
     override suspend fun insertWeight(weightModel: WeightModel){
@@ -44,8 +52,20 @@ class StatisticRepositoryImpl @Inject constructor(
         return mainDb.daysDao.getDontDonesDayByDifficulty(difficulty)
     }
 
+    override suspend fun getDontDoesDaysByDifficultyAndZone(difficulty: String, zone: String?): List<DayModel>{
+        return if (zone != null) {
+            mainDb.daysDao.getDontDonesDayByDifficultyAndZone(difficulty, zone)
+        } else {
+            mainDb.daysDao.getDontDonesDayByDifficultyAndNoZone(difficulty)
+        }
+    }
+
     override suspend fun getAllExercise():List<ExerciseModel>{
      return mainDb.exerciseDao.getAllExercises()
+    }
+
+    override suspend fun getAllDays():List<DayModel>{
+        return mainDb.daysDao.getAllDays()
     }
 
     override suspend fun insertDay(dayModel: DayModel){

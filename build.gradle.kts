@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 
-    id("com.google.devtools.ksp") version "2.0.21-1.0.25" apply false // угар, но КСП не работал пока не обновился
-    id("com.google.dagger.hilt.android") version "2.56.1" apply false // собственно, это даггер
+    id ("com.google.devtools.ksp") version "2.2.21-2.0.5" apply false // угар, но КСП не работал пока не обновился
+    id("com.google.dagger.hilt.android") version "2.57" apply false // собственно, это даггер
 
 }

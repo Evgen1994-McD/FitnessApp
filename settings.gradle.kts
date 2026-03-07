@@ -24,10 +24,10 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io")}
+        maven { url = uri("https://maven.pkg.github.com/cactus-compute/cactus-kotlin") }
 
     }
 }
 
 rootProject.name = "FitnessApp"
 include(":app")
- 
