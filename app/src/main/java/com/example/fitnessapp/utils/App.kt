@@ -13,10 +13,10 @@ class App:Application() {
     companion object {
         // Реальный ID для релиза
 //        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
-        private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex"
+        private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex11"
         
         // ID для межстраничной рекламы
-        private const val INTERSTITIAL_AD_UNIT_ID = "demo-interstitial-yandex"
+        private const val INTERSTITIAL_AD_UNIT_ID = "demo-interstitial-yandex11"
 
         @Volatile
         private var appOpenAdManager: AppOpenAdManager? = null

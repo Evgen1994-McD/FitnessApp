@@ -11,7 +11,11 @@
 /build/
 /app/build/
 /app/release/
-/app/debug//caches
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/caches
 /.idea
 
 # APK files
@@ -22,7 +26,11 @@
 /build/
 /app/build/
 /app/release/
-/app/debug//libraries
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/libraries
 /.idea
 
 # APK files
@@ -33,7 +41,11 @@
 /build/
 /app/build/
 /app/release/
-/app/debug//modules.xml
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/modules.xml
 /.idea
 
 # APK files
@@ -44,7 +56,11 @@
 /build/
 /app/build/
 /app/release/
-/app/debug//workspace.xml
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/workspace.xml
 /.idea
 
 # APK files
@@ -55,7 +71,11 @@
 /build/
 /app/build/
 /app/release/
-/app/debug//navEditor.xml
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/navEditor.xml
 /.idea
 
 # APK files
@@ -66,7 +86,11 @@
 /build/
 /app/build/
 /app/release/
-/app/debug//assetWizardSettings.xml
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -84,3 +108,7 @@ local.properties
 /app/build/
 /app/release/
 /app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml

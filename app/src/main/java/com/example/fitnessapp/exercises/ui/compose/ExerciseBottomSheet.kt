@@ -212,7 +212,7 @@ fun ExerciseBottomSheet(
                             text = "Советы по выполнению:",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = exercise.advise.split("||")
