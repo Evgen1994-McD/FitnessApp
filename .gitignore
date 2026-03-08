@@ -1,12 +1,72 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug//caches
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug//libraries
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug//modules.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug//workspace.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug//navEditor.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug//assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -14,3 +74,13 @@
 .cxx
 local.properties
 .idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
