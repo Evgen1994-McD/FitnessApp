@@ -136,12 +136,12 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
             dayModel.exercises,
             exerciseList
         )
-        doneExerciseCounterToSave = currentDay?.doneExerciseCounter ?: 0
+        doneExerciseCounterToSave = dayModel.doneExerciseCounter // Исправляю получение doneExerciseCounter - беру значение из переданного dayModel, а не из currentDay из базы
         totalExerciseNumber = dayModel.exercises.split(",").size
 
         exercisesStack = exerciseHelper.createExerciseStack(
             exercisesOfTheDay.subList(
-                currentDay?.doneExerciseCounter ?: 0,
+                dayModel.doneExerciseCounter,
                 exercisesOfTheDay.size
                 /*
                 Нас интересуют только невыполненные упражнениня.

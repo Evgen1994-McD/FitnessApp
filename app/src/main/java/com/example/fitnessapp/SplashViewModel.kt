@@ -1,6 +1,9 @@
 package com.example.fitnessapp
 
 import android.content.Context
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.db.ExerciseModel
@@ -9,6 +12,7 @@ import com.example.fitnessapp.exercises.utils.ExerciseHelper
 import com.example.fitnessapp.utils.FirstLaunchChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -29,44 +33,83 @@ class SplashViewModel @Inject constructor(
         const val CUSTOM = "custom"
     }
 
+    private val _progress = MutableLiveData<Int>()
+    val progress: LiveData<Int> = _progress
+
+    private val _progressText = MutableLiveData<String>()
+    val progressText: LiveData<String> = _progressText
+
     suspend fun controlFirstCheck(){
-        if (FirstLaunchChecker.isFirstLaunch(context)) {
+        val isFirst = FirstLaunchChecker.isFirstLaunch(context)
+        Log.d("SplashViewModel", " isFirstLaunch: $isFirst")
+        
+        if (isFirst) {
+            _progress.value = 10
+            _progressText.value = "Настройка упражнений..."
+            Log.d("SplashViewModel", " Начинаем addTrainingHarder")
             addTrainingHarder()
             FirstLaunchChecker.markAsLaunched(context)
+            _progress.value = 100
+            _progressText.value = "Загрузка завершена!"
+            Log.d("SplashViewModel", " addTrainingHarder завершен")
+        } else {
+            Log.d("SplashViewModel", " Запускаем simulateProgress")
+            simulateProgress()
         }
     }
 
-
+    private suspend fun simulateProgress() {
+        for (i in 0..100 step 20) {
+            _progress.value = i
+            _progressText.value = "Загрузка... $i%"
+            delay(100)
+        }
+    }
 
     suspend fun addTrainingHarder() {
-
-        mainDb.daysDao.getAllDays().forEach { day ->
-            val exerciseList = mainDb.exerciseDao.getAllExercises()
-
-            val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
-
-            // Формируем новые идентификаторы упражнений
-            val newExIds = exList.map { ex ->
-                val newEx = addExerciseTime(ex, day.difficulty)
-                newEx.id.toString()
-            }.joinToString(separator = ",")
-
-            // Обновляем день с новыми идентификаторами упражнений
-            mainDb.daysDao.insertDay(day.copy(exercises = newExIds))
-
+        Log.d("SplashViewModel", " Начинаем addTrainingHarder")
+        
+        val days = mainDb.daysDao.getAllDays()
+        Log.d("SplashViewModel", " Найдено дней: ${days.size}")
+        
+        // Получаем все упражнения один раз вместо каждого раза
+        val exerciseList = mainDb.exerciseDao.getAllExercises()
+        Log.d("SplashViewModel", " Всего упражнений в базе: ${exerciseList.size}")
+        
+        // Группируем дни по сложности для обработки пачками
+        val daysByDifficulty = days.groupBy { it.difficulty }
+        
+        daysByDifficulty.forEach { (difficulty, difficultyDays) ->
+            Log.d("SplashViewModel", " Обрабатываем $difficulty: ${difficultyDays.size} дней")
+            
+            difficultyDays.forEachIndexed { index, day ->
+                val globalIndex = days.indexOf(day)
+                val exList = exerciseHelper.getExercisesOfTheDay(day.exercises, exerciseList)
+                
+                // Создаем новые упражнения параллельно
+                val newExercises = exList.map { ex ->
+                    addExerciseTime(ex, difficulty)
+                }
+                
+                val newExIds = newExercises.joinToString(",") { it.id.toString() }
+                mainDb.daysDao.insertDay(day.copy(exercises = newExIds))
+                
+                // Обновляем прогресс
+                val progress = 10 + (globalIndex * 80 / days.size)
+                _progress.value = progress
+                _progressText.value = "Обновлено ${globalIndex + 1} из ${days.size} дней..."
+            }
         }
+        
+        Log.d("SplashViewModel", " addTrainingHarder завершен")
     }
-
-
-
-
 
     private suspend fun addExerciseTime(exerciseModel: ExerciseModel, difficulty: String): ExerciseModel {
         try {
             var multiplier = 1.0
             when(difficulty){
-                EASY -> multiplier = 1.125
-                MIDDLE -> multiplier = 1.4
+                EASY -> multiplier = 1.25
+                MIDDLE -> multiplier = 1.6
                 HARD -> multiplier = 2.1
             }
             var replacerWithoutX = ""
