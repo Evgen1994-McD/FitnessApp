@@ -13,6 +13,7 @@ import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import com.example.fitnessapp.settings.domain.SettingsInteractor
 import com.example.fitnessapp.utils.MySoundPool
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ class ExerciseViewModel @Inject constructor(
     private val execiseInteractor: ExerciseInteractor,
     private val exerciseHelper: ExerciseHelper,
     private val tts: TextToSpeech,
-    private val soundPool: MySoundPool
+    private val soundPool: MySoundPool,
+    private val settingsInteractor: SettingsInteractor
 ) : ViewModel() {
     var updateExercise = MutableLiveData<ExerciseModel>()
     var updateTime = MutableLiveData<Long>()
@@ -183,6 +185,20 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         timer?.cancel()
     }
 
+    fun pauseAdvice() {
+        // Отменяем все отложенные советы
+        currentAdviceRunnable?.let { handler.removeCallbacks(it) }
+    }
+
+    fun resumeAdvice() {
+        // Возобновляем советы если они были активны
+        currentAdviceRunnable?.let { runnable ->
+            // Планируем следующий совет через 2-3 секунды после возобновления
+            val nextDelay = Random.nextInt(2000, 3001)
+            handler.postDelayed(runnable, nextDelay.toLong())
+        }
+    }
+
     fun updateTimerValue(newTime: Long) {
         currentTimerValue = newTime
         updateTime.value = newTime
@@ -290,10 +306,17 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
     private fun speechRandomAdvice(exerciseModel: ExerciseModel) {
         if (exerciseModel.advise.isBlank()) return
         
-        val adviceList = exerciseModel.advise.split("||").map { it.trim() }.filter { it.isNotEmpty() }
-        
-        if (adviceList.isNotEmpty()) {
-            startAdviceRepeater(adviceList)
+        // Проверяем включены ли голосовые советы
+        viewModelScope.launch {
+            val voiceTipsEnabled = settingsInteractor.getVoiceTipsEnabled().collect { enabled ->
+                if (!enabled) return@collect // Если советы выключены, выходим
+                
+                val adviceList = exerciseModel.advise.split("||").map { it.trim() }.filter { it.isNotEmpty() }
+                
+                if (adviceList.isNotEmpty()) {
+                    startAdviceRepeater(adviceList)
+                }
+            }
         }
     }
 
@@ -320,8 +343,7 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
                 usedAdvices.add(randomAdvice)
                 
                 // Планируем следующий совет через 5-10 секунд
-                val nextDelay = Random.nextInt(10000, 13000)
-                currentAdviceRunnable = this // Сохраняем ссылку на себя для следующего вызова
+                val nextDelay = Random.nextInt(12000, 20000)
                 handler.postDelayed(this, nextDelay.toLong())
             }
         }
@@ -332,7 +354,13 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
     }
 
     private fun speechTextWithQueue(text: String) {
-        tts.speak(text, TextToSpeech.QUEUE_ADD, null, "advice_id")
+        viewModelScope.launch {
+            settingsInteractor.getVoiceTipsEnabled().collect { enabled ->
+                if (enabled) {
+                    tts.speak(text, TextToSpeech.QUEUE_ADD, null, "advice_id")
+                }
+            }
+        }
     }
 
     private fun speechLastDigits(time: Long){
@@ -349,17 +377,21 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 
     private fun speechText(text:String){
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "ut_id" )
+        //queue mode у текст спит
+        //QueueAdd - произносит по очереди
+        //QueueFlash - заменяет прошлый текст
+        //Мы делаем Флеш - потому что если пользователь перескочит на другое упражнение, нам не надо чтобы
+        //произносило все подрялд из прошлого занятия
 
-        /*
-        queue mode у текст спит
-        QueueAdd - произносит по очереди
-        QueueFlash - заменяет прошлый текст
-        Мы делаем Флеш - потому что если пользователь перескочит на другое упражнение, нам не надо чтобы
-        произносило все подрялд из прошлого занятия
+       //Параметры мы передали null - у нас нет параметнов
+       //utteranceldId - нам не понадобится поэтому написали что в голову взброело
+         //QueueAdd - произносит по очереди
+         //QueueFlash - заменяет прошлый текст
+         //Мы делаем Флеш - потому что если пользователь перескочит на другое упражнение, нам не надо чтобы
+         //произносило все подрялд из прошлого занятия
 
-       Параметры мы передали null - у нас нет параметнов
-       utteranceldId - нам не понадобится поэтому написали что в голову взброело
-         */
+       //Параметры мы передали null - у нас нет параметнов
+       //utteranceldId - нам не понадобится поэтому написали что в голову взброело
     }
 
     private fun updateToolbar() {

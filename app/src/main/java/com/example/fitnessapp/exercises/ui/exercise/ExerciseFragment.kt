@@ -111,6 +111,8 @@ class ExerciseFragment : Fragment() {
                     if (currentTime > 0) {
                         // Останавливаем таймер
                         model.pauseTimer()
+                        // Ставим советы на паузу
+                        model.pauseAdvice()
                         // Скрываем время и показываем кнопку play
                         binding.tvTime.visibility = View.INVISIBLE
                         binding.icStart.visibility = View.VISIBLE
@@ -131,6 +133,8 @@ class ExerciseFragment : Fragment() {
             model.currentTimerValue?.let { currentTime ->
                 val timeInSeconds = currentTime / 1000
                 model.updateTimerValue(timeInSeconds)
+                // Возобновляем советы
+                model.resumeAdvice()
             }
         }
         
@@ -152,6 +156,9 @@ class ExerciseFragment : Fragment() {
                 // Проверяем, нужно ли поставить на паузу таймер
                 val isTimerExercise = exercise.time.startsWith("x") == false && !exercise.time.isNullOrEmpty()
                 var wasTimerRunning = false
+                
+                // Всегда ставим советы на паузу при открытии bottom sheet
+                model.pauseAdvice()
                 
                 if (isTimerExercise) {
                     model.currentTimerValue?.let { currentTime ->
@@ -176,6 +183,8 @@ class ExerciseFragment : Fragment() {
                             model.updateTimerValue(timeInSeconds)
                         }
                     }
+                    // Всегда возобновляем советы при закрытии bottom sheet
+                    model.resumeAdvice()
                 }
             }
         }
@@ -326,6 +335,7 @@ class ExerciseFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        model.pauseAdvice() // Ставим советы на паузу при уходе с экрана
         model.onPause()
     }
     

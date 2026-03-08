@@ -45,6 +45,7 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                    onClearedDataClick: () -> Unit,
                    onOpenAllTrainingsClick: () -> Unit) {
     val themeMode by viewModel.themeMode.collectAsState()
+    val voiceTipsEnabled by viewModel.voiceTipsEnabled.collectAsState()
 
 
     Column(
@@ -81,6 +82,31 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                     checkedIconColor = Color.Blue,
                     checkedThumbColor = Color.Blue,
 
+                )
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+
+        ) {
+            Text(
+                text = "Включить голосовые советы",
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Switch(
+                checked = voiceTipsEnabled,
+                onCheckedChange = { enabled ->
+                    viewModel.toggleVoiceTips(enabled)
+                },
+                colors = SwitchDefaults.colors(
+                    checkedIconColor = Color.Blue,
+                    checkedThumbColor = Color.Blue,
                 )
             )
         }
