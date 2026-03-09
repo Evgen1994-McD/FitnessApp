@@ -10,4 +10,7 @@ interface SettingsInteractor {
     suspend fun setThemeMode(mode: ThemeMode)
     
     suspend fun openAllTrainings(onProgress: (Float) -> Unit = {})
+    
+    fun getVoiceTipsEnabled(): Flow<Boolean>
+    suspend fun setVoiceTipsEnabled(enabled: Boolean)
 }

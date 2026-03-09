@@ -1,6 +1,8 @@
 package com.example.fitnessapp.exercises.ui.exercise
 
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -11,18 +13,21 @@ import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.db.StatisticModel
 import com.example.fitnessapp.exercises.domain.ExerciseInteractor
 import com.example.fitnessapp.exercises.utils.ExerciseHelper
+import com.example.fitnessapp.settings.domain.SettingsInteractor
 import com.example.fitnessapp.utils.MySoundPool
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
     private val execiseInteractor: ExerciseInteractor,
     private val exerciseHelper: ExerciseHelper,
     private val tts: TextToSpeech,
-    private val soundPool: MySoundPool
+    private val soundPool: MySoundPool,
+    private val settingsInteractor: SettingsInteractor
 ) : ViewModel() {
     var updateExercise = MutableLiveData<ExerciseModel>()
     var updateTime = MutableLiveData<Long>()
@@ -41,6 +46,9 @@ class ExerciseViewModel @Inject constructor(
     private var doneExerciseCounter = 0 // это счётчик для упражнений ( функция nextExercise() )
     private var doneExerciseCounterToSave = 0
     private var totalExerciseNumber = 0
+    private val handler = Handler(Looper.getMainLooper())
+    private var currentAdviceRunnable: Runnable? = null
+    private var usedAdvices = mutableSetOf<String>().toMutableSet() // Отслеживаем использованные советы
 
     private fun updateDay(dayModel: DayModel) = viewModelScope.launch {
        execiseInteractor.updateDay(dayModel)
@@ -130,12 +138,12 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
             dayModel.exercises,
             exerciseList
         )
-        doneExerciseCounterToSave = currentDay?.doneExerciseCounter ?: 0
+        doneExerciseCounterToSave = dayModel.doneExerciseCounter // Исправляю получение doneExerciseCounter - беру значение из переданного dayModel, а не из currentDay из базы
         totalExerciseNumber = dayModel.exercises.split(",").size
 
         exercisesStack = exerciseHelper.createExerciseStack(
             exercisesOfTheDay.subList(
-                currentDay?.doneExerciseCounter ?: 0,
+                dayModel.doneExerciseCounter,
                 exercisesOfTheDay.size
                 /*
                 Нас интересуют только невыполненные упражнениня.
@@ -177,6 +185,20 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         timer?.cancel()
     }
 
+    fun pauseAdvice() {
+        // Отменяем все отложенные советы
+        currentAdviceRunnable?.let { handler.removeCallbacks(it) }
+    }
+
+    fun resumeAdvice() {
+        // Возобновляем советы если они были активны
+        currentAdviceRunnable?.let { runnable ->
+            // Планируем следующий совет через 2-3 секунды после возобновления
+            val nextDelay = Random.nextInt(2000, 3001)
+            handler.postDelayed(runnable, nextDelay.toLong())
+        }
+    }
+
     fun updateTimerValue(newTime: Long) {
         currentTimerValue = newTime
         updateTime.value = newTime
@@ -207,6 +229,10 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 
     fun nextExercise() {
         timer?.cancel() // отключили таймер чтобы не запускался предыдущий на всякий случай
+        // Отменяем предыдущий отложенный совет если он есть
+        currentAdviceRunnable?.let { handler.removeCallbacks(it) }
+        currentAdviceRunnable = null
+        usedAdvices.clear()
         updateToolbar()
         
         // Проверяем, что есть еще упражнения для показа
@@ -231,21 +257,111 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
             "${exerciseModel.subtitle}. ${exerciseModel.name}"
         )
         }else {
-            speechText(
-                "${exerciseModel.subtitle}. ${exerciseModel.name} " +
-                getTimeToSpeech(exerciseModel)
-            )
+            // Добавляем небольшую задержку для первого упражнения, чтобы TTS успел инициализироваться
+            val speechText = if (exerciseModel.subtitle.startsWith("Приготовьтесь")) {
+                // Для "Приготовьтесь" не произносим время
+                "${exerciseModel.subtitle}. ${exerciseModel.name}"
+            } else {
+                // Для обычных упражнений произносим время
+                "${exerciseModel.subtitle}. ${exerciseModel.name} " + getTimeToSpeech(exerciseModel)
+            }
+            
+            if (doneExerciseCounter == 1) {
+                // Для первого упражнения добавляем задержку
+                handler.postDelayed({
+                    speechText(speechText)
+                    // Добавляем случайный совет только для упражнений (не для отдыха и не для "Приготовьтесь")
+                    if (!exerciseModel.subtitle.startsWith("Приготовьтесь")) {
+                        speechRandomAdvice(exerciseModel)
+                    }
+                }, 500)
+            } else {
+                speechText(speechText)
+                // Добавляем случайный совет только для упражнений (не для отдыха и не для "Приготовьтесь")
+                if (!exerciseModel.subtitle.startsWith("Приготовьтесь")) {
+                    speechRandomAdvice(exerciseModel)
+                }
+            }
         }
     }
 
     private fun getTimeToSpeech(exerciseModel: ExerciseModel): String {
         return if(exerciseModel.time.startsWith("x")) {
-            "${exerciseModel.time.replace("x", " ")} раз"
+            val count = exerciseModel.time.replace("x", " ").trim().toInt()
+            "${count} ${getRepsWord(count)}"
         } else {
-            "${exerciseModel.time} секунд "
+            // Используем запятую вместо пробела, чтобы TTS не склонял число
+            "${exerciseModel.time}, секунд"
         }
     }
 
+    private fun getRepsWord(count: Int): String {
+        return when {
+            count % 10 == 1 && count % 100 != 11 -> "раз"
+            count % 10 in 2..4 && count % 100 !in 12..14 -> "раза"
+            else -> "раз"
+        }
+    }
+
+    private fun speechRandomAdvice(exerciseModel: ExerciseModel) {
+        if (exerciseModel.advise.isBlank()) return
+        
+        // Проверяем включены ли голосовые советы
+        viewModelScope.launch {
+            val voiceTipsEnabled = settingsInteractor.getVoiceTipsEnabled().collect { enabled ->
+                if (!enabled) return@collect // Если советы выключены, выходим
+                
+                val adviceList = exerciseModel.advise.split("||").map { it.trim() }.filter { it.isNotEmpty() }
+                
+                if (adviceList.isNotEmpty()) {
+                    startAdviceRepeater(adviceList)
+                }
+            }
+        }
+    }
+
+    private fun startAdviceRepeater(adviceList: List<String>) {
+        // Отменяем предыдущий повторитель если есть
+        currentAdviceRunnable?.let { handler.removeCallbacks(it) }
+        
+        // Создаем новый повторитель
+        currentAdviceRunnable = object : Runnable {
+            override fun run() {
+                // Находим неиспользованные советы
+                val availableAdvices = adviceList.filter { it !in usedAdvices }
+                
+                if (availableAdvices.isEmpty()) {
+                    // Все советы уже использованы, прекращаем повторения
+                    currentAdviceRunnable = null
+                    return
+                }
+                
+                val randomAdvice = availableAdvices[Random.nextInt(availableAdvices.size)]
+                speechTextWithQueue(randomAdvice)
+                
+                // Добавляем совет в использованные
+                usedAdvices.add(randomAdvice)
+                
+                // Планируем следующий совет через 5-10 секунд
+                val nextDelay = Random.nextInt(12000, 20000)
+                handler.postDelayed(this, nextDelay.toLong())
+            }
+        }
+        
+        // Начинаем первый совет через 5-10 секунд
+        val firstDelay = Random.nextInt(5000, 10001)
+        handler.postDelayed(currentAdviceRunnable!!, firstDelay.toLong())
+    }
+
+    private fun speechTextWithQueue(text: String) {
+        viewModelScope.launch {
+            settingsInteractor.getVoiceTipsEnabled().collect { enabled ->
+                if (enabled) {
+                    tts.speak(text, TextToSpeech.QUEUE_ADD, null, "advice_id")
+                }
+            }
+        }
+    }
 
     private fun speechLastDigits(time: Long){
         if (time<= 0) return
@@ -261,17 +377,21 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 
     private fun speechText(text:String){
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "ut_id" )
+        //queue mode у текст спит
+        //QueueAdd - произносит по очереди
+        //QueueFlash - заменяет прошлый текст
+        //Мы делаем Флеш - потому что если пользователь перескочит на другое упражнение, нам не надо чтобы
+        //произносило все подрялд из прошлого занятия
 
-        /*
-        queue mode у текст спит
-        QueueAdd - произносит по очереди
-        QueueFlash - заменяет прошлый текст
-        Мы делаем Флеш - потому что если пользователь перескочит на другое упражнение, нам не надо чтобы
-        произносило все подрялд из прошлого занятия
+       //Параметры мы передали null - у нас нет параметнов
+       //utteranceldId - нам не понадобится поэтому написали что в голову взброело
+         //QueueAdd - произносит по очереди
+         //QueueFlash - заменяет прошлый текст
+         //Мы делаем Флеш - потому что если пользователь перескочит на другое упражнение, нам не надо чтобы
+         //произносило все подрялд из прошлого занятия
 
-       Параметры мы передали null - у нас нет параметнов
-       utteranceldId - нам не понадобится поэтому написали что в голову взброело
-         */
+       //Параметры мы передали null - у нас нет параметнов
+       //utteranceldId - нам не понадобится поэтому написали что в голову взброело
     }
 
     private fun updateToolbar() {
@@ -286,7 +406,8 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 
     fun onPause() {
         timer?.cancel()
-        tts.stop() // если пользователь вышел с фрагмента, то перестанет воспроизводить текст
+        tts.stop()
+        handler.removeCallbacksAndMessages(null) // Очищаем все отложенные задачи
 
         isDayDone()
         updateDay(

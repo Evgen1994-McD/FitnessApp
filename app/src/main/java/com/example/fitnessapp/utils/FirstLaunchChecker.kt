@@ -7,12 +7,13 @@ import com.example.fitnessapp.SplashViewModel.Companion.PREFS_NAME
 object FirstLaunchChecker {
     fun isFirstLaunch(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return !sharedPref.getBoolean(FIRST_LAUNCH_KEY, false)
+        val isFirst = sharedPref.getBoolean(FIRST_LAUNCH_KEY, true)
+        return isFirst
     }
 
     fun markAsLaunched(context: Context) {
         val editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
-        editor.putBoolean(FIRST_LAUNCH_KEY, true)
+        editor.putBoolean(FIRST_LAUNCH_KEY, false)
         editor.apply()
     }
 }

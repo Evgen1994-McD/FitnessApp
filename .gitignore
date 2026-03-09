@@ -1,12 +1,96 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/caches
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/libraries
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/modules.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/workspace.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/navEditor.xml
+/.idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -14,3 +98,17 @@
 .cxx
 local.properties
 .idea
+
+# APK files
+*.apk
+*.aab
+
+# Build generated files
+/build/
+/app/build/
+/app/release/
+/app/debug/
+
+# Deployment target selection
+/deploymentTargetSelector.properties
+/deploymentTargetSelector.xml

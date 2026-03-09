@@ -26,4 +26,12 @@ class SettingsInteractorImpl @Inject constructor(
         settingsRepository.openAllTrainings(onProgress)
     }
 
+    override fun getVoiceTipsEnabled(): Flow<Boolean> {
+        return settingsRepository.getVoiceTipsEnabled()
+    }
+
+    override suspend fun setVoiceTipsEnabled(enabled: Boolean) {
+        settingsRepository.setVoiceTipsEnabled(enabled)
+    }
+
 }

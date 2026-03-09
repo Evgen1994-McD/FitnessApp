@@ -27,6 +27,12 @@ class SettingsViewModel @Inject constructor(
         initialValue = ThemeMode.SYSTEM
     )
 
+    val voiceTipsEnabled: StateFlow<Boolean> = settingsInteractor.getVoiceTipsEnabled().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = true
+    )
+
     // LiveData для отслеживания прогресса открытия тренировок
     private val _openTrainingsProgress = MutableLiveData<Float>(0f)
     val openTrainingsProgress: LiveData<Float> = _openTrainingsProgress
@@ -56,6 +62,10 @@ class SettingsViewModel @Inject constructor(
         delay(100)
         _isOpeningTrainings.value = false
         _openTrainingsProgress.value = 1f
+    }
+
+    fun toggleVoiceTips(enabled: Boolean) = viewModelScope.launch {
+        settingsInteractor.setVoiceTipsEnabled(enabled)
     }
 
 
