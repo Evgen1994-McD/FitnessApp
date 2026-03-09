@@ -3,6 +3,7 @@ package com.example.fitnessapp.utils
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.fitnessapp.ads.AppOpenAdManager
+import com.example.fitnessapp.ads.InterstitialAdManager
 import com.yandex.mobile.ads.common.MobileAds
 import dagger.hilt.android.HiltAndroidApp
 
@@ -12,7 +13,12 @@ class App:Application() {
     companion object {
         // Реальный ID для релиза
         private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
-//        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846022121212121280-2"
+//        private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex"
+        
+        // ID для межстраничной рекламы
+//        private const val INTERSTITIAL_AD_UNIT_ID = "demo-interstitial-yandex"
+
+        private const val INTERSTITIAL_AD_UNIT_ID = "R-M-18846080-1"
 
         @Volatile
         private var appOpenAdManager: AppOpenAdManager? = null
@@ -21,6 +27,17 @@ class App:Application() {
             return appOpenAdManager ?: synchronized(this) {
                 appOpenAdManager ?: AppOpenAdManager(application, APP_OPEN_AD_UNIT_ID).also {
                     appOpenAdManager = it
+                }
+            }
+        }
+        
+        @Volatile
+        private var interstitialAdManager: InterstitialAdManager? = null
+        
+        fun getInterstitialAdManager(application: Application): InterstitialAdManager {
+            return interstitialAdManager ?: synchronized(this) {
+                interstitialAdManager ?: InterstitialAdManager(application, INTERSTITIAL_AD_UNIT_ID).also {
+                    interstitialAdManager = it
                 }
             }
         }
@@ -53,10 +70,24 @@ class App:Application() {
         MobileAds.initialize(this) {
             // SDK успешно инициализирован, теперь можно использовать рекламу
             // Инициализируем менеджер рекламы при открытии приложения
-            val manager = getAppOpenAdManager(this)
-            manager.incrementAppLaunches()
+            val appOpenManager = getAppOpenAdManager(this)
+            appOpenManager.incrementAppLaunches()
             // Предзагружаем рекламу
-            manager.loadAppOpenAd()
+            appOpenManager.loadAppOpenAd()
+            
+            // Инициализируем менеджер межстраничной рекламы
+            getInterstitialAdManager(this)
+        }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        // Освобождаем ресурсы менеджеров рекламы
+        try {
+            getAppOpenAdManager(this).destroy()
+            getInterstitialAdManager(this).destroy()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

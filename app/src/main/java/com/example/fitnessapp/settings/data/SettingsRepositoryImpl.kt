@@ -24,9 +24,13 @@ class SettingsRepositoryImpl @Inject constructor(
 
     private val prefs: SharedPreferences = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
     private val themeKey = "theme_mode"
+    private val voiceTipsKey = "voice_tips_enabled"
 
     private val _themeMode = MutableStateFlow(getStoredThemeMode())
     override fun getThemeMode(): Flow<ThemeMode> = _themeMode.asStateFlow()
+
+    private val _voiceTipsEnabled = MutableStateFlow(getStoredVoiceTipsEnabled())
+    override fun getVoiceTipsEnabled(): Flow<Boolean> = _voiceTipsEnabled.asStateFlow()
 
 
     private fun getStoredThemeMode(): ThemeMode {
@@ -36,6 +40,15 @@ class SettingsRepositoryImpl @Inject constructor(
         } catch (e: IllegalArgumentException) {
             ThemeMode.SYSTEM
         }
+    }
+
+    private fun getStoredVoiceTipsEnabled(): Boolean {
+        return prefs.getBoolean(voiceTipsKey, true) // По умолчанию включено
+    }
+
+    override suspend fun setVoiceTipsEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(voiceTipsKey, enabled).apply()
+        _voiceTipsEnabled.value = enabled
     }
 
     override suspend fun setThemeMode(mode: ThemeMode) {

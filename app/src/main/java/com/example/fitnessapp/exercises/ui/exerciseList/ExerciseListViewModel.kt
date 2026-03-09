@@ -103,4 +103,20 @@ class ExerciseListViewModel @Inject constructor( // инжект для того
         val exercise = exerciseInteractor.getExerciseById(exerciseId)
         selectedExercise.value = exercise
     }
+
+    suspend fun getCurrentDayFromDb(dayId: Int): DayModel? {
+        return exerciseInteractor.getCurrentDay(
+            DayModel(
+                id = dayId,
+                exercises = "",
+                difficulty = "",
+                isDone = false,
+                dayNumber = 0,
+                doneExerciseCounter = 0,
+                isOpen = false,
+                zone = "",
+                completedDate = null
+            )
+        )
+    }
 }

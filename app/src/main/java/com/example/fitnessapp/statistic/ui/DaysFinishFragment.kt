@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
 import com.example.fitnessapp.utils.DialogManager
 import com.example.fitnessapp.utils.TimeUtils
+import com.example.fitnessapp.utils.App
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,6 +27,7 @@ class DaysFinishFragment(
     private  var difficulty = ""
     private var zone: String? = null
     private var likeCounter = 0
+    private var adShown = false // Флаг для предотвращения повторных показов рекламы
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,23 +54,17 @@ difficulty = arguments?.getString("difficulty").toString()
         workoutMonthStatisticObserver()
 //        model.getWorkoutMonthStatistic()
 
+        // Показываем межстраничную рекламу с задержкой
+        showInterstitialAd()
+
 
         binding.bBack.setOnClickListener {
-            findNavController()
-                .popBackStack(
-                    R.id.trainingFragment,
-                    inclusive = false
-                )
-
+            navigateBack()
         }
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // При нажатии системной кнопки "назад" возвращаем на главный экран тренировок
-                findNavController()
-                    .popBackStack(
-                        R.id.trainingFragment,
-                        inclusive = false
-                    )
+                navigateBack()
             }
         })
 
@@ -137,7 +133,57 @@ difficulty = arguments?.getString("difficulty").toString()
         }
     }
 
-
-
+    /**
+     * Показывает межстраничную рекламу
+     */
+    private fun showInterstitialAd() {
+        if (adShown) return // Не показывать рекламу повторно
+        
+        activity?.let { activity ->
+            val interstitialManager = App.getInterstitialAdManager(activity.application)
+            
+            if (interstitialManager.isAdReady()) {
+                interstitialManager.showAdWithDelay(activity, 1500) {
+                    // Реклама закрыта, можно продолжать работу
+                }
+                adShown = true
+            } else {
+                // Если реклама не готова, предзагружаем для следующего раза
+                interstitialManager.preloadAd()
+            }
+        }
     }
 
+    /**
+     * Обрабатывает навигацию назад
+     */
+    private fun navigateBack() {
+        activity?.let { activity ->
+            val interstitialManager = App.getInterstitialAdManager(activity.application)
+            
+            if (interstitialManager.isAdReady() && !adShown) {
+                // Показываем рекламу перед выходом
+                interstitialManager.showAd(activity) {
+                    // Реклама закрыта, выполняем навигацию
+                    performNavigation()
+                }
+                adShown = true
+            } else {
+                // Реклама не готова или уже показана, выполняем навигацию сразу
+                performNavigation()
+            }
+        }
+    }
+
+    /**
+     * Выполняет фактическую навигацию
+     */
+    private fun performNavigation() {
+        findNavController()
+            .popBackStack(
+                R.id.trainingFragment,
+                inclusive = false
+            )
+    }
+
+}

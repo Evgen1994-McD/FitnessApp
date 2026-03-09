@@ -30,6 +30,11 @@ import com.example.fitnessapp.databinding.ExerciseListFragmentBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 class ExerciseListFragment : Fragment() {
     private var dayModel: DayModel? = null
@@ -109,8 +114,10 @@ class ExerciseListFragment : Fragment() {
         }
         
         bStart.setOnClickListener {
+            // Получаем актуальный dayModel перед стартом тренировки
+            val currentDayModel = getDayFromArguments() ?: dayModel
             val bundle = Bundle().apply {
-                putSerializable("day", dayModel )
+                putSerializable("day", currentDayModel as java.io.Serializable)
             }
             findNavController().navigate(R.id.action_exListFragment_to_exerciseFragment, bundle)
         }
@@ -131,8 +138,18 @@ class ExerciseListFragment : Fragment() {
                             // Получаем свежий dayModel из базы и обновляем список
                             viewLifecycleOwner.lifecycleScope.launch {
                                 delay(2500) // ждем 2.5 секунды как в диалоге
-                                dayModel = getDayFromArguments() // получаем обновленный dayModel с новыми ID
-                                model.getDayExerciseList(dayModel)
+                                // Получаем свежий dayModel через suspend функцию
+                                val currentDayId = dayModel?.id ?: return@launch
+                                val freshDayModel = model.getCurrentDayFromDb(currentDayId)
+                                freshDayModel?.let { updatedDay ->
+                                    dayModel = updatedDay
+                                    model.getDayExerciseList(updatedDay)
+                                    
+                                    // Обновляем bundle arguments, чтобы getDayFromArguments() возвращал свежие данные
+                                    arguments = Bundle().apply {
+                                        putSerializable("day", updatedDay as java.io.Serializable)
+                                    }
+                                }
                             }
                         }
                     },
