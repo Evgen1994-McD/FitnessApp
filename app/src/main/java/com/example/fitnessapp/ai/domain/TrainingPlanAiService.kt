@@ -49,7 +49,7 @@ class TrainingPlanAiService(
         Log.d("TrainingPlanAiService", "🔍 Получаем упражнения для зоны: $targetZone, исключая: $excludeIds")
         
         return try {
-            val exercises = exerciseDao.getExercisesByZone(targetZone)
+            val exercises = exerciseDao.getExercisesByZone(4, 174, targetZone)
                 .filter { exercise -> 
                     // Используем утилиту для проверки соответствия зон
                     ZoneUtils.matchesZones(exercise.muscleZone, targetZone)
@@ -82,7 +82,7 @@ class TrainingPlanAiService(
         val exercisesByZone = try {
             targetZones.associateWith { zone ->
                 Log.d("TrainingPlanAiService", "🔍 Получаем упражнения из fitness.db для зоны: $zone")
-                val exercises = exerciseDao.getExercisesByZone(zone)
+                val exercises = exerciseDao.getExercisesByZone(4, 174, zone)
                 Log.d("TrainingPlanAiService", "📊 Найдено в fitness.db: ${exercises.size} упражнений")
                 exercises.forEach { exercise ->
                     Log.d("TrainingPlanAiService", "  - ID:${exercise.id} ${exercise.name} (${exercise.muscleZone})")

@@ -37,4 +37,12 @@ class CustomInteractorImpl @Inject constructor(
     override suspend fun getAllExercise(): List<ExerciseModel> {
         return customRepository.getAllExercise()
     }
+
+    override suspend fun getExercisesByZone(from: Int, to: Int, zone: String): List<ExerciseModel> {
+        return customRepository.getExercisesByZone(from, to, zone)
+    }
+
+    override suspend fun getAllExercisesSorted(from: Int, to: Int): List<ExerciseModel> {
+        return customRepository.getAllExercisesSorted(from, to)
+    }
 }

@@ -17,7 +17,7 @@ class ChooseExercisesViewModel @Inject constructor(
 ) : ViewModel() {
     companion object{
         const val from = 4
-        const val to = 74
+        const val to = 174
         /*
         Максимальное / минимальное упражнение в базе данных
          */
@@ -27,6 +27,14 @@ class ChooseExercisesViewModel @Inject constructor(
 private var dayModel: DayModel? = null
     fun getAllExercises() = viewModelScope.launch {
         exerciseListData.value = customInteractor.getAllExercisesFromTo(from, to)
+    }
+
+    fun getExercisesByZone(zone: String) = viewModelScope.launch {
+        exerciseListData.value = customInteractor.getExercisesByZone(from, to, zone)
+    }
+
+    fun getAllExercisesSorted() = viewModelScope.launch {
+        exerciseListData.value = customInteractor.getAllExercisesSorted(from, to)
     }
 
     fun getDayById(id: Int)= viewModelScope.launch {

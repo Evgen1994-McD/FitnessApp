@@ -50,7 +50,9 @@ class ChooseExercisesAdapter(val listener: Listener) :
             tvCount.text = getTime(exercise.time)
             
             // Показываем зоны на русском
-            tvZones.text = ZoneUtils.getZonesDisplayNames(exercise.muscleZone)
+            val zonesDisplay = ZoneUtils.getZonesDisplayNames(exercise.muscleZone)
+            android.util.Log.d("ChooseExercisesAdapter", "Упражнение: ${exercise.name}, зоны: ${exercise.muscleZone} -> $zonesDisplay")
+            tvZones.text = zonesDisplay
             
             imExercise.setImageDrawable(
                 GifDrawable(

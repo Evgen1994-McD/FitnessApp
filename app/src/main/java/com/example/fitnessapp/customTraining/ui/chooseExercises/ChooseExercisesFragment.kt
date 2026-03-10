@@ -1,20 +1,25 @@
 package com.example.fitnessapp.customTraining.ui.chooseExercises
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
+import com.example.fitnessapp.customTraining.ui.chooseExercises.ZoneFilter
 import com.example.fitnessapp.databinding.FragmentChooseExercisesBinding
 import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
+import com.example.fitnessapp.exercises.utils.TrainingUtils
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,13 +27,43 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     private var newExercises = ""
     private lateinit var adapter: ChooseExercisesAdapter
     private var binding: FragmentChooseExercisesBinding? = null
-    private val _binding get() = binding!!
+    private val _binding get() = binding as FragmentChooseExercisesBinding
 
     private val model: ChooseExercisesViewModel by viewModels()
     
-    // Состояние фильтров
-    private val selectedZones = mutableSetOf<String>()
     private var isBottomSheetShowing = false // Флаг для дебаунса
+    private var allExercises = listOf<ExerciseModel>()
+    private val selectedFilters = mutableSetOf<String>()  // Множество выбранных фильтров (английские названия для фильтрации)
+    
+    // Все зоны для фильтрации
+    private val allZones = listOf(
+        ZoneFilter("hands", "Руки", 0, false),
+        ZoneFilter("body", "Общие", 0, false),
+        ZoneFilter("chest", "Грудь", 0, false),
+        ZoneFilter("shoulders", "Плечи", 0, false),
+        ZoneFilter("back", "Спина", 0, false),
+        ZoneFilter("legs", "Ноги", 0, false),
+        ZoneFilter("abs", "Пресс", 0, false),
+        ZoneFilter("warm", "Разминка", 0, false),
+        ZoneFilter("stretch", "Растяжка", 0, false)
+    )
+    
+    // Функция для перевода английских названий зон на русский
+    private fun translateZoneName(englishName: String): String {
+        return when (englishName.lowercase()) {
+            "hands" -> "Руки"
+            "body" -> "Общие"
+            "chest" -> "Грудь"
+            "shoulders" -> "Плечи"  // Исправлено на множественное число
+            "shoulder" -> "Плечи"   // Добавлено на всякий случай
+            "back" -> "Спина"
+            "legs" -> "Ноги"
+            "abs" -> "Пресс"
+            "warm" -> "Разминка"
+            "stretch" -> "Растяжка"
+            else -> englishName // Если нет перевода, оставляем как есть
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,8 +81,8 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Настройка кнопок фильтра
-        setupFilterButtons()
+        // Настройка chips для фильтрации
+        setupFilterChips()
         
         _binding.doneButton.setOnClickListener {
             model.updateDay(newExercises)
@@ -59,53 +94,70 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         model.getAllExercises()
     }
 
-    private fun setupFilterButtons() = with(_binding) {
-        // Кнопка "Спина"
-        filterBack.setOnClickListener {
-            toggleFilter("back", filterBack)
-        }
-        
-        // Кнопка "Руки"
-        filterHands.setOnClickListener {
-            toggleFilter("hands", filterHands)
-        }
-        
-        // Кнопка "Ноги"
-        filterLegs.setOnClickListener {
-            toggleFilter("legs", filterLegs)
-        }
-        
-        // Кнопка "Тело"
-        filterBody.setOnClickListener {
-            toggleFilter("body", filterBody)
-        }
-    }
-    
-    private fun toggleFilter(zone: String, button: View) {
-        if (selectedZones.contains(zone)) {
-            selectedZones.remove(zone)
-            button.setBackgroundColor(resources.getColor(R.color.black_light))
-        } else {
-            selectedZones.add(zone)
-            button.setBackgroundColor(resources.getColor(R.color.blue))
-        }
-        
-        // Применяем фильтр
-        applyFilter()
-    }
-    
-    private fun applyFilter() {
-        model.exerciseListData.value?.let { exercises ->
-            val filtered = if (selectedZones.isEmpty()) {
-                exercises
-            } else {
-                exercises.filter { exercise ->
-                    exercise.muscleZone?.split(",")?.any { zone ->
-                        selectedZones.contains(zone.trim())
-                    } == true
+    private fun setupFilterChips() = with(_binding) {
+        // Создаем chips для всех зон
+        allZones.forEach { zone ->
+            val chip = Chip(requireContext(), null, R.style.CustomChipStyle).apply {
+                text = zone.displayName  // Показываем русское название
+                isCheckable = true
+                chipIcon = null  // Убираем иконку
+                isCloseIconVisible = false  // Убираем иконку закрытия
+
+                val isSelected = selectedFilters.contains(zone.zoneName)
+                isChecked = isSelected
+                
+                // Устанавливаем начальные цвета
+                if (isSelected) {
+                    // Выбранный чип: синий фон, белый текст
+                    setChipBackgroundColorResource(R.color.blue)
+                    setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                } else {
+                    // Невыбранный чип: стандартный фон, стандартный текст
+                    setChipBackgroundColorResource(R.color.chip_background)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.chip_text))
+                }
+                
+                setOnClickListener {
+                    selectZone(zone)
                 }
             }
-            adapter.submitList(filtered)
+            
+            _binding.chipGroup.addView(chip)
+        }
+    }
+    
+    private fun selectZone(selectedZone: ZoneFilter) {
+        Log.d("ChooseExercisesFragment", "selectZone: ${selectedZone.displayName} (${selectedZone.zoneName}), selectedFilters: $selectedFilters")
+        
+        // Добавляем или убираем фильтр из множества (используем английское название для фильтрации)
+        val zoneName = selectedZone.zoneName
+        if (selectedFilters.contains(zoneName)) {
+            selectedFilters.remove(zoneName)
+        } else {
+            selectedFilters.add(zoneName)
+        }
+        
+        applyCurrentFilter()
+    }
+    
+    private fun updateChipStates() {
+        for (i in 0 until _binding.chipGroup.childCount) {
+            val chip = _binding.chipGroup.getChildAt(i) as Chip
+            val zone = allZones[i]
+            val isSelected = selectedFilters.contains(zone.zoneName)
+            
+            chip.isChecked = isSelected
+            
+            // Устанавливаем цвета в зависимости от состояния
+            if (isSelected) {
+                // Выбранный чип: синий фон, белый текст
+                chip.setChipBackgroundColorResource(R.color.blue)
+                chip.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            } else {
+                // Невыбранный чип: стандартный фон, стандартный текст
+                chip.setChipBackgroundColorResource(R.color.chip_background)
+                chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.chip_text))
+            }
         }
     }
 
@@ -116,9 +168,32 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
 
     private fun exerciseListObserver() {
-        model.exerciseListData.observe(viewLifecycleOwner) { list ->
-            applyFilter() // Применяем фильтр при получении новых данных
+        model.exerciseListData.observe(viewLifecycleOwner) { exercises ->
+            allExercises = exercises
+            applyCurrentFilter()  // Применяем текущий фильтр
         }
+    }
+    
+    private fun applyCurrentFilter() {
+        Log.d("ChooseExercisesFragment", "applyCurrentFilter: selectedFilters = $selectedFilters, allExercises.size = ${allExercises.size}")
+        
+        val filteredExercises = if (selectedFilters.isEmpty()) {
+            Log.d("ChooseExercisesFragment", "Показываем все упражнения: ${allExercises.size}")
+            allExercises  // Показываем все
+        } else {
+            val filtered = allExercises.filter { exercise ->
+                // Получаем зоны упражнения из базы (английские названия)
+                val exerciseZones = exercise.muscleZone?.split(",")?.map { it.trim() } ?: emptyList()
+                // Проверяем, соответствует ли упражнение хотя бы одному из выбранных фильтров
+                exerciseZones.any { zone ->
+                    selectedFilters.contains(zone)
+                }
+            }
+            Log.d("ChooseExercisesFragment", "Отфильтровано упражнений: ${filtered.size} для фильтров: $selectedFilters")
+            filtered
+        }
+        adapter.submitList(filteredExercises)
+        updateChipStates()
     }
 
     private fun getArgs() {

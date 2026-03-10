@@ -21,11 +21,14 @@ interface ExerciseDao {
     suspend fun findExerciseById(id: Int): ExerciseModel
 
     // Новые методы для AI функциональности
-    @Query("SELECT * FROM exercise_table WHERE muscleZone LIKE :zone")
-    suspend fun getExercisesByZone(zone: String): List<ExerciseModel>
+    @Query("SELECT * FROM exercise_table WHERE muscleZone LIKE :zone AND id BETWEEN :from AND :to")
+    suspend fun getExercisesByZone(from: Int, to: Int, zone: String): List<ExerciseModel>
 
     @Query("SELECT * FROM exercise_table WHERE id IN (:ids)")
     suspend fun getExercisesByIds(ids: List<Int>): List<ExerciseModel>
+
+    @Query("SELECT * FROM exercise_table WHERE id BETWEEN :from AND :to ORDER BY name")
+    suspend fun getAllExercisesSorted(from: Int, to: Int): List<ExerciseModel>
 
     @Query("SELECT * FROM exercise_table WHERE muscleZone LIKE :zone ORDER BY RANDOM() LIMIT :limit")
     suspend fun getRandomExercisesByZone(zone: String, limit: Int): List<ExerciseModel>
