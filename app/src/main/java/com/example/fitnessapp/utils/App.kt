@@ -16,7 +16,8 @@ class App:Application() {
         private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex"
         
         // ID для баннерной рекламы
-        private const val BANNER_AD_UNIT_ID = "demo-banner-yandex"
+//        private const val BANNER_AD_UNIT_ID = "demo-banner-yandex"
+        private const val BANNER_AD_UNIT_ID = "R-M-18846080-1"
 
         @Volatile
         private var appOpenAdManager: AppOpenAdManager? = null
@@ -38,6 +39,10 @@ class App:Application() {
                     bannerAdManager = it
                 }
             }
+        }
+        
+        fun getBannerAdUnitId(): String {
+            return BANNER_AD_UNIT_ID
         }
     }
     

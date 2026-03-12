@@ -99,7 +99,7 @@ class BannerAdFragment : DialogFragment() {
             // Создаем BannerAdView как в документации
             val bannerAd = BannerAdView(requireContext()).apply {
                 setAdSize(adSize)
-                setAdUnitId("demo-banner-yandex")
+                setAdUnitId(com.example.fitnessapp.utils.App.getBannerAdUnitId()) // Берем ID из App.kt
                 
                 setBannerAdEventListener(object : BannerAdEventListener {
                     override fun onAdLoaded() {
@@ -131,9 +131,29 @@ class BannerAdFragment : DialogFragment() {
                     }
                 })
                 
-                // Загружаем рекламу как в документации
+                // Загружаем рекламу с контекстом для фитнес-приложения на русском языке
                 loadAd(
                     AdRequest.Builder()
+                        .setAge("25") // Возраст пользователя
+                        .setContextQuery("Программа тренировок для фитнеса и здоровья") // Поисковый запрос пользователя
+                        .setContextTags(listOf(
+                            "фитнес",           // Фитнес тематика
+                            "тренировки",       // Тренировки
+                            "здоровье",          // Здоровье
+                            "спорт",             // Спорт
+                            "спортзал",          // Спортзал
+                            "упражнения",        // Упражнения
+                            "программа тренировок", // Программа тренировок
+                            "силовые тренировки",  // Силовые тренировки
+                            "кардио",            // Кардио
+                            "набор массы",       // Набор массы
+                            "похудение",         // Похудение
+                            "здоровый образ жизни", // Здоровый образ жизни
+                        "Купить спортивное питание",
+                            "Купить квартиру в Москве",
+                            "Купить абонемент в спортзал",
+                            "Купить протеин и спортивное питание"
+                            ))
                         .build()
                 )
             }
