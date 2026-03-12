@@ -20,6 +20,7 @@ import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
 import com.example.fitnessapp.exercises.utils.TrainingUtils
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.view.setMargins
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +37,7 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     private var isBottomSheetShowing = false // Флаг для дебаунса
     private var allExercises = listOf<ExerciseModel>()
     private val selectedFilters = mutableSetOf<String>()  // Множество выбранных фильтров (английские названия для фильтрации)
+    private var searchQuery = ""  // Текстовый поисковый запрос
     
     // Все зоны для фильтрации
     private val allZones = listOf(
@@ -85,6 +87,7 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         
         // Настройка кнопок для фильтрации
         setupFilterButtons()
+        setupSearchField()
         
         _binding.doneButton.setOnClickListener {
             model.updateDay(newExercises)
@@ -94,6 +97,19 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         initRcView()
         exerciseListObserver()
         model.getAllExercises()
+    }
+
+    private fun setupSearchField() = with(_binding) {
+        searchEditText.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchQuery = s?.toString() ?: ""
+                applyCurrentFilter()
+            }
+            
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
     }
 
     private fun setupFilterButtons() = with(_binding) {
@@ -209,13 +225,13 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
     
     private fun applyCurrentFilter() {
-        Log.d("ChooseExercisesFragment", "applyCurrentFilter: selectedFilters = $selectedFilters, allExercises.size = ${allExercises.size}")
+        Log.d("ChooseExercisesFragment", "applyCurrentFilter: selectedFilters = $selectedFilters, searchQuery = '$searchQuery', allExercises.size = ${allExercises.size}")
         
-        val filteredExercises = if (selectedFilters.isEmpty()) {
-            Log.d("ChooseExercisesFragment", "Показываем все упражнения: ${allExercises.size}")
-            allExercises  // Показываем все
-        } else {
-            val filtered = allExercises.filter { exercise ->
+        var filteredExercises = allExercises
+        
+        // Применяем фильтрацию по зонам
+        if (selectedFilters.isNotEmpty()) {
+            filteredExercises = filteredExercises.filter { exercise ->
                 // Получаем зоны упражнения из базы (английские названия)
                 val exerciseZones = exercise.muscleZone?.split(",")?.map { it.trim() } ?: emptyList()
                 // Проверяем, соответствует ли упражнение хотя бы одному из выбранных фильтров
@@ -223,9 +239,19 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
                     selectedFilters.contains(zone)
                 }
             }
-            Log.d("ChooseExercisesFragment", "Отфильтровано упражнений: ${filtered.size} для фильтров: $selectedFilters")
-            filtered
+            Log.d("ChooseExercisesFragment", "После фильтрации по зонам: ${filteredExercises.size} упражнений")
         }
+        
+        // Применяем поиск по названию
+        if (searchQuery.isNotBlank()) {
+            val searchLower = searchQuery.lowercase()
+            filteredExercises = filteredExercises.filter { exercise ->
+                exercise.name.lowercase().contains(searchLower)
+            }
+            Log.d("ChooseExercisesFragment", "После поиска по названию: ${filteredExercises.size} упражнений")
+        }
+        
+        Log.d("ChooseExercisesFragment", "Итоговый результат: ${filteredExercises.size} упражнений")
         adapter.submitList(filteredExercises)
         updateButtonStates()
     }
