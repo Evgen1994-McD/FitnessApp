@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
@@ -111,7 +109,12 @@ fun MainScreen(
                     TrainingUtils.HANDS,
                     TrainingUtils.BODY,
                     TrainingUtils.BACK,
-                    TrainingUtils.LEGS
+                    TrainingUtils.LEGS,
+                    TrainingUtils.CHEST,
+                    TrainingUtils.ABS,
+                    TrainingUtils.WARM,
+                    TrainingUtils.STRETCH,
+                    TrainingUtils.SHOULDERS
                 )
                 val difficulties =
                     listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD)
@@ -322,37 +325,140 @@ fun MainScreen(
 
             // Заголовок тренировок по зонам
             Text(
-                text = "Тренировки по зонам",
+                text = "Акцент на зоны",
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            // Карточки тренировок по зонам
-            preparedZoneCards.forEach { card ->
-                val difficultyTitle = when (card.difficulty) {
-                    TrainingUtils.EASY -> stringResource(R.string.easy)
-                    TrainingUtils.MIDDLE -> stringResource(R.string.middle)
-                    TrainingUtils.HARD -> stringResource(R.string.hard)
-                    else -> card.difficulty
-                }
+            // Группируем по уровням сложности
+            val easyCards = preparedZoneCards.filter { it.difficulty == TrainingUtils.EASY }
+            val middleCards = preparedZoneCards.filter { it.difficulty == TrainingUtils.MIDDLE }
+            val hardCards = preparedZoneCards.filter { it.difficulty == TrainingUtils.HARD }
 
-                val zoneTitle = when (card.zone) {
-                    TrainingUtils.HANDS -> stringResource(R.string.hands)
-                    TrainingUtils.BODY -> stringResource(R.string.body)
-                    TrainingUtils.BACK -> stringResource(R.string.back)
-                    TrainingUtils.LEGS -> stringResource(R.string.legs)
-                    else -> card.zone
-                }
-
-                ZonedTrainingCard(
-                    programName = { zoneTitle },
-                    difficulty = { difficultyTitle },
-                    progressText = { "Прогресс: ${card.progressPercent}%" },
-                    progress = card.progress,
-                    onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
-                    image = card.imageId
+            // Начинающий
+            if (easyCards.isNotEmpty()) {
+                Text(
+                    text = "Начинающий",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
                 )
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    easyCards.forEach { card ->
+                        val zoneTitle = when (card.zone) {
+                            TrainingUtils.HANDS -> stringResource(R.string.hands)
+                            TrainingUtils.BODY -> stringResource(R.string.body)
+                            TrainingUtils.BACK -> stringResource(R.string.back)
+                            TrainingUtils.LEGS -> stringResource(R.string.legs)
+                            TrainingUtils.CHEST -> "Грудь"
+                            TrainingUtils.ABS -> stringResource(R.string.abs)
+                            TrainingUtils.WARM -> stringResource(R.string.warm)
+                            TrainingUtils.STRETCH -> stringResource(R.string.stretch)
+                            TrainingUtils.SHOULDERS -> "Плечи"
+                            else -> card.zone
+                        }
+
+                        ZonedTrainingCard(
+                            programName = { zoneTitle },
+                            difficulty = { stringResource(R.string.easy) },
+                            progressText = { "Прогресс: ${card.progressPercent}%" },
+                            progress = card.progress,
+                            onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
+                            image = card.imageId
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Опытный
+            if (middleCards.isNotEmpty()) {
+                Text(
+                    text = "Опытный",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    middleCards.forEach { card ->
+                        val zoneTitle = when (card.zone) {
+                            TrainingUtils.HANDS -> stringResource(R.string.hands)
+                            TrainingUtils.BODY -> stringResource(R.string.body)
+                            TrainingUtils.BACK -> stringResource(R.string.back)
+                            TrainingUtils.LEGS -> stringResource(R.string.legs)
+                            TrainingUtils.CHEST -> "Грудь"
+                            TrainingUtils.ABS -> stringResource(R.string.abs)
+                            TrainingUtils.WARM -> stringResource(R.string.warm)
+                            TrainingUtils.STRETCH -> stringResource(R.string.stretch)
+                            TrainingUtils.SHOULDERS -> "Плечи"
+                            else -> card.zone
+                        }
+
+                        ZonedTrainingCard(
+                            programName = { zoneTitle },
+                            difficulty = { stringResource(R.string.middle) },
+                            progressText = { "Прогресс: ${card.progressPercent}%" },
+                            progress = card.progress,
+                            onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
+                            image = card.imageId
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Мастер
+            if (hardCards.isNotEmpty()) {
+                Text(
+                    text = "Мастер",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    hardCards.forEach { card ->
+                        val zoneTitle = when (card.zone) {
+                            TrainingUtils.HANDS -> stringResource(R.string.hands)
+                            TrainingUtils.BODY -> stringResource(R.string.body)
+                            TrainingUtils.BACK -> stringResource(R.string.back)
+                            TrainingUtils.LEGS -> stringResource(R.string.legs)
+                            TrainingUtils.CHEST -> "Грудь"
+                            TrainingUtils.ABS -> stringResource(R.string.abs)
+                            TrainingUtils.WARM -> stringResource(R.string.warm)
+                            TrainingUtils.STRETCH -> stringResource(R.string.stretch)
+                            TrainingUtils.SHOULDERS -> "Плечи"
+                            else -> card.zone
+                        }
+
+                        ZonedTrainingCard(
+                            programName = { zoneTitle },
+                            difficulty = { stringResource(R.string.hard) },
+                            progressText = { "Прогресс: ${card.progressPercent}%" },
+                            progress = card.progress,
+                            onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
+                            image = card.imageId
+                        )
+                    }
+                }
             }
         }
     }
