@@ -14,22 +14,36 @@
         android:text="Фильтр по зонам:"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/chipGroup"
+        app:layout_constraintBottom_toTopOf="@+id/filterButtonsContainer"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
+    <LinearLayout
+        android:id="@+id/filterButtonsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
-        app:chipSpacingHorizontal="4dp"
-        app:chipSpacingVertical="4dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/doneButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/filterButtonsRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:id="@+id/filterButtonsRow2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/doneButton"

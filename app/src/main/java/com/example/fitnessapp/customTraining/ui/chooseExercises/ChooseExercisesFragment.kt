@@ -19,7 +19,9 @@ import com.example.fitnessapp.db.ExerciseModel
 import com.example.fitnessapp.exercises.ui.compose.ExerciseBottomSheet
 import com.example.fitnessapp.exercises.utils.TrainingUtils
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
-import com.google.android.material.chip.Chip
+import android.widget.Button
+import android.widget.LinearLayout
+import androidx.core.view.setMargins
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -81,8 +83,8 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Настройка chips для фильтрации
-        setupFilterChips()
+        // Настройка кнопок для фильтрации
+        setupFilterButtons()
         
         _binding.doneButton.setOnClickListener {
             model.updateDay(newExercises)
@@ -94,35 +96,57 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         model.getAllExercises()
     }
 
-    private fun setupFilterChips() = with(_binding) {
-        // Создаем chips для всех зон
-        allZones.forEach { zone ->
-            val chip = Chip(requireContext(), null, R.style.CustomChipStyle).apply {
-                text = zone.displayName  // Показываем русское название
-                isCheckable = true
-                chipIcon = null  // Убираем иконку
-                isCloseIconVisible = false  // Убираем иконку закрытия
-
-                val isSelected = selectedFilters.contains(zone.zoneName)
-                isChecked = isSelected
-                
-                // Устанавливаем начальные цвета
-                if (isSelected) {
-                    // Выбранный чип: синий фон, белый текст
-                    setChipBackgroundColorResource(R.color.blue)
-                    setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-                } else {
-                    // Невыбранный чип: стандартный фон, стандартный текст
-                    setChipBackgroundColorResource(R.color.chip_background)
-                    setTextColor(ContextCompat.getColor(requireContext(), R.color.chip_text))
-                }
-                
-                setOnClickListener {
-                    selectZone(zone)
-                }
+    private fun setupFilterButtons() = with(_binding) {
+        // Разделяем зоны на два ряда
+        val firstRowZones = allZones.take(5) // Первые 5 зон
+        val secondRowZones = allZones.drop(5) // Остальные зоны
+        
+        // Создаем кнопки для первого ряда
+        firstRowZones.forEach { zone ->
+            val button = createFilterButton(zone)
+            filterButtonsRow1.addView(button)
+        }
+        
+        // Создаем кнопки для второго ряда
+        secondRowZones.forEach { zone ->
+            val button = createFilterButton(zone)
+            filterButtonsRow2.addView(button)
+        }
+    }
+    
+    private fun createFilterButton(zone: ZoneFilter): Button {
+        return Button(requireContext()).apply {
+            text = zone.displayName  // Показываем русское название
+            textSize=11F
+            // Устанавливаем начальные цвета
+            val isSelected = selectedFilters.contains(zone.zoneName)
+            if (isSelected) {
+                // Выбранная кнопка: синий фон, белый текст
+                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue))
+                setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            } else {
+                // Невыбранная кнопка: стандартный фон, стандартный текст
+                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chip_background))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.chip_text))
             }
             
-            _binding.chipGroup.addView(chip)
+            // Устанавливаем отступы
+            setPadding(24, 12, 24, 12)
+            // Устанавливаем минимальную высоту
+            minHeight = 48
+            
+            // Устанавливаем вес для равномерного распределения
+            layoutParams = LinearLayout.LayoutParams(
+                0, // width = 0dp для использования веса
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f // вес = 1 для равномерного распределения
+            ).apply {
+                setMargins(4, 4, 4, 4)
+            }
+            
+            setOnClickListener {
+                selectZone(zone)
+            }
         }
     }
     
@@ -140,24 +164,34 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         applyCurrentFilter()
     }
     
-    private fun updateChipStates() {
-        for (i in 0 until _binding.chipGroup.childCount) {
-            val chip = _binding.chipGroup.getChildAt(i) as Chip
+    private fun updateButtonStates() {
+        // Обновляем кнопки в первом ряду
+        for (i in 0 until _binding.filterButtonsRow1.childCount) {
+            val button = _binding.filterButtonsRow1.getChildAt(i) as Button
             val zone = allZones[i]
-            val isSelected = selectedFilters.contains(zone.zoneName)
-            
-            chip.isChecked = isSelected
-            
-            // Устанавливаем цвета в зависимости от состояния
-            if (isSelected) {
-                // Выбранный чип: синий фон, белый текст
-                chip.setChipBackgroundColorResource(R.color.blue)
-                chip.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            } else {
-                // Невыбранный чип: стандартный фон, стандартный текст
-                chip.setChipBackgroundColorResource(R.color.chip_background)
-                chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.chip_text))
-            }
+            updateButtonAppearance(button, zone)
+        }
+        
+        // Обновляем кнопки во втором ряду
+        for (i in 0 until _binding.filterButtonsRow2.childCount) {
+            val button = _binding.filterButtonsRow2.getChildAt(i) as Button
+            val zone = allZones[i + 5] // Смещение на 5 для второго ряда
+            updateButtonAppearance(button, zone)
+        }
+    }
+    
+    private fun updateButtonAppearance(button: Button, zone: ZoneFilter) {
+        val isSelected = selectedFilters.contains(zone.zoneName)
+        
+        // Устанавливаем цвета в зависимости от состояния
+        if (isSelected) {
+            // Выбранная кнопка: синий фон, белый текст
+            button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue))
+            button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+        } else {
+            // Невыбранная кнопка: стандартный фон, стандартный текст
+            button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.chip_background))
+            button.setTextColor(ContextCompat.getColor(requireContext(), R.color.chip_text))
         }
     }
 
@@ -193,7 +227,7 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
             filtered
         }
         adapter.submitList(filteredExercises)
-        updateChipStates()
+        updateButtonStates()
     }
 
     private fun getArgs() {
