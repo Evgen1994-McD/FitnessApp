@@ -111,10 +111,7 @@ fun MainScreen(
                     TrainingUtils.BACK,
                     TrainingUtils.LEGS,
                     TrainingUtils.CHEST,
-                    TrainingUtils.ABS,
-                    TrainingUtils.WARM,
-                    TrainingUtils.STRETCH,
-                    TrainingUtils.SHOULDERS
+                    TrainingUtils.ABS
                 )
                 val difficulties =
                     listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD)
@@ -122,9 +119,9 @@ fun MainScreen(
                 val allCards = zones.flatMap { zone ->
                     difficulties.map { difficulty -> "${difficulty}_$zone" }
                 }.filter { key ->
-                    (progressMap[key]?.maxProgress ?: 0) > 0
-                }.map { key ->
-                    val card = progressMap[key]!!
+                    (progressMap[key]?.maxProgress ?: 0) >= 0 // Показываем все карточки, включая новые зоны
+                }.mapNotNull { key ->
+                    val card = progressMap[key] ?: return@mapNotNull null
                     val parts = key.split("_")
                     val difficulty = parts[0]
                     val zone = parts[1]
@@ -327,7 +324,7 @@ fun MainScreen(
             Text(
                 text = "Акцент на зоны",
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                fontSize = 20.sp,
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
 
@@ -341,14 +338,13 @@ fun MainScreen(
                 Text(
                     text = "Начинающий",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    fontSize = 18.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Medium
                 )
                 
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     easyCards.forEach { card ->
@@ -359,9 +355,6 @@ fun MainScreen(
                             TrainingUtils.LEGS -> stringResource(R.string.legs)
                             TrainingUtils.CHEST -> "Грудь"
                             TrainingUtils.ABS -> stringResource(R.string.abs)
-                            TrainingUtils.WARM -> stringResource(R.string.warm)
-                            TrainingUtils.STRETCH -> stringResource(R.string.stretch)
-                            TrainingUtils.SHOULDERS -> "Плечи"
                             else -> card.zone
                         }
 
@@ -383,14 +376,14 @@ fun MainScreen(
                 Text(
                     text = "Опытный",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    fontSize = 18.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Medium
                 )
                 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        ,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     middleCards.forEach { card ->
@@ -401,9 +394,6 @@ fun MainScreen(
                             TrainingUtils.LEGS -> stringResource(R.string.legs)
                             TrainingUtils.CHEST -> "Грудь"
                             TrainingUtils.ABS -> stringResource(R.string.abs)
-                            TrainingUtils.WARM -> stringResource(R.string.warm)
-                            TrainingUtils.STRETCH -> stringResource(R.string.stretch)
-                            TrainingUtils.SHOULDERS -> "Плечи"
                             else -> card.zone
                         }
 
@@ -425,14 +415,13 @@ fun MainScreen(
                 Text(
                     text = "Мастер",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    fontSize = 18.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Medium
                 )
                 
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     hardCards.forEach { card ->
@@ -443,9 +432,6 @@ fun MainScreen(
                             TrainingUtils.LEGS -> stringResource(R.string.legs)
                             TrainingUtils.CHEST -> "Грудь"
                             TrainingUtils.ABS -> stringResource(R.string.abs)
-                            TrainingUtils.WARM -> stringResource(R.string.warm)
-                            TrainingUtils.STRETCH -> stringResource(R.string.stretch)
-                            TrainingUtils.SHOULDERS -> "Плечи"
                             else -> card.zone
                         }
 

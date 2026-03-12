@@ -119,19 +119,19 @@ object TrainingUtils { //здесь будут константы которые
                 else -> R.drawable.abs_hard
             }
             WARM -> when (difficulty) {
-                EASY -> R.drawable.warm_easy
-                MIDDLE -> R.drawable.warm_middle
-                else -> R.drawable.warm_hard
+                EASY -> R.drawable.easy
+                MIDDLE -> R.drawable.middle
+                else -> R.drawable.hard
             }
             STRETCH -> when (difficulty) {
-                EASY -> R.drawable.stretch_easy
-                MIDDLE -> R.drawable.stretch_middle
-                else -> R.drawable.stretch_hard
+                EASY -> R.drawable.easy
+                MIDDLE -> R.drawable.middle
+                else -> R.drawable.hard
             }
             SHOULDERS -> when (difficulty) {
-                EASY -> R.drawable.shoulders_easy
-                MIDDLE -> R.drawable.shoulders_middle
-                else -> R.drawable.shoulders_hard
+                EASY -> R.drawable.easy
+                MIDDLE -> R.drawable.middle
+                else -> R.drawable.hard
             }
             else -> when (difficulty) {
                 EASY -> R.drawable.easy
