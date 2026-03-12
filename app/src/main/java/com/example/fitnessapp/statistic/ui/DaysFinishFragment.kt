@@ -134,22 +134,22 @@ difficulty = arguments?.getString("difficulty").toString()
     }
 
     /**
-     * Показывает межстраничную рекламу
+     * Показывает баннерную рекламу
      */
     private fun showInterstitialAd() {
         if (adShown) return // Не показывать рекламу повторно
         
         activity?.let { activity ->
-            val interstitialManager = App.getInterstitialAdManager(activity.application)
+            val bannerManager = App.getBannerAdManager(activity.application)
             
-            if (interstitialManager.isAdReady()) {
-                interstitialManager.showAdWithDelay(activity, 1500) {
+            if (bannerManager.isAdReady()) {
+                bannerManager.showAdWithDelay(activity, parentFragmentManager, 1500) {
                     // Реклама закрыта, можно продолжать работу
                 }
                 adShown = true
             } else {
                 // Если реклама не готова, предзагружаем для следующего раза
-                interstitialManager.preloadAd()
+                bannerManager.preloadAd()
             }
         }
     }
@@ -159,19 +159,9 @@ difficulty = arguments?.getString("difficulty").toString()
      */
     private fun navigateBack() {
         activity?.let { activity ->
-            val interstitialManager = App.getInterstitialAdManager(activity.application)
-            
-            if (interstitialManager.isAdReady() && !adShown) {
-                // Показываем рекламу перед выходом
-                interstitialManager.showAd(activity) {
-                    // Реклама закрыта, выполняем навигацию
-                    performNavigation()
-                }
-                adShown = true
-            } else {
-                // Реклама не готова или уже показана, выполняем навигацию сразу
-                performNavigation()
-            }
+            // Баннерная реклама больше не показывается при выходе
+            // Просто выполняем навигацию
+            performNavigation()
         }
     }
 
