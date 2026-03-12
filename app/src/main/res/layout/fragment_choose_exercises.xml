@@ -83,9 +83,12 @@
         android:inputType="text"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-android:textColor="@color/black"
+        android:textColor="@color/black"
         android:textColorHint="@color/exercise_count"
         android:textSize="14sp"
+        android:drawableEnd="@drawable/ic_clear_text"
+        android:drawablePadding="8dp"
+
         app:layout_constraintBottom_toTopOf="@+id/tvChoosenExCounter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

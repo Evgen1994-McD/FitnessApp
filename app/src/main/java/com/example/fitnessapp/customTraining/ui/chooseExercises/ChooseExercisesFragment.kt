@@ -106,10 +106,43 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s?.toString() ?: ""
                 applyCurrentFilter()
+                // Показываем или скрываем крестик в зависимости от наличия текста
+                updateClearButtonVisibility()
             }
             
             override fun afterTextChanged(s: android.text.Editable?) {}
         })
+        
+        // Обрабатываем нажатие на крестик
+        searchEditText.setOnTouchListener { view, event ->
+            if (event.action == android.view.MotionEvent.ACTION_UP) {
+                val drawableEnd = 2 // Индекс drawableEnd
+                if (searchEditText.compoundDrawables[drawableEnd] != null) {
+                    val drawableWidth = searchEditText.compoundDrawables[drawableEnd]?.bounds?.width() ?: 0
+                    if (event.rawX >= (searchEditText.right - drawableWidth - searchEditText.paddingEnd)) {
+                        // Нажали на крестик - очищаем текст
+                        searchEditText.text?.clear()
+                        return@setOnTouchListener true
+                    }
+                }
+            }
+            false
+        }
+        
+        // Инициально скрываем крестик
+        updateClearButtonVisibility()
+    }
+    
+    private fun updateClearButtonVisibility() {
+        val hasText = _binding.searchEditText.text?.isNotEmpty() == true
+        val drawable = if (hasText) {
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_clear_text)
+        } else {
+            null
+        }
+        _binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null, null, drawable, null
+        )
     }
 
     private fun setupFilterButtons() = with(_binding) {
