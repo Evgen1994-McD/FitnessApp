@@ -185,7 +185,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_check_bx_im_24" />
+        app:srcCompat="@drawable/ic_check_bx_im_24"
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/infoIcon"
@@ -208,6 +209,7 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="8dp"
         android:button="@drawable/checkbox_selector"
+        android:buttonTint="#00C853"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
