@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
-    private var newExercises = ""
+    private var newExercises = "" // Список ID выбранных упражнений (оставим для совместимости)
     private lateinit var adapter: ChooseExercisesAdapter
     private var binding: FragmentChooseExercisesBinding? = null
     private val _binding get() = binding as FragmentChooseExercisesBinding
@@ -90,8 +90,8 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         setupSearchField()
         
         _binding.doneButton.setOnClickListener {
-            model.updateDay(newExercises)
-            findNavController().popBackStack()
+            // Получаем актуальные значения из EditText для всех выбранных упражнений
+            saveExercisesWithCurrentValues()
         }
         getArgs()
         initRcView()
@@ -306,38 +306,91 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
 
     override fun onClick(exercise: ExerciseModel) {
-        if (exercise.id != -1) {
-            // Проверяем, изменились ли значения времени/количества
-            val originalExercise = allExercises.find { it.id == exercise.id }
-            val isTimeChanged = originalExercise?.time != exercise.time
-            
-            if (isTimeChanged && originalExercise != null) {
-                // Создаем новое упражнение с измененными значениями
-                val newExercise = originalExercise.copy(
-                    id = null, // Обнуляем ID чтобы создать новую запись
-                    time = exercise.time
-                )
-                
-                // Сохраняем новое упражнение в базу данных
-                model.insertCustomExercise(newExercise) { newId ->
-                    if (newId != -1L) {
-                        // Добавляем ID нового упражнения
-                        newExercises += ",$newId"
-                        updateCounter()
-                    }
-                }
-            } else {
-                // Используем оригинальное упражнение
-                newExercises += ",${exercise.id}"
+        exercise.id?.let { id ->
+            if (id != -1) {
+                adapter.selectExercise(id)
+                updateCounter()
+            }
+        }
+    }
+
+    override fun onRemoveClick(exercise: ExerciseModel) {
+        exercise.id?.let { id ->
+            if (id != -1) {
+                adapter.deselectExercise(id)
                 updateCounter()
             }
         }
     }
 
     private fun updateCounter() {
-        val count = newExercises.split(",").size - 1
+        val count = adapter.getSelectedExercises().size
         val choosenCounterText = "${getString(R.string.selected_exercise_count)} $count"
         _binding.tvChoosenExCounter.text = choosenCounterText
+    }
+
+    private fun saveExercisesWithCurrentValues() {
+        val selectedExerciseIds = adapter.getSelectedExercises()
+        android.util.Log.d("ChooseExercisesFragment", "Сохранение упражнений. Выбранные ID: $selectedExerciseIds")
+        
+        if (selectedExerciseIds.isEmpty()) {
+            android.util.Log.d("ChooseExercisesFragment", "Нет выбранных упражнений для сохранения")
+            model.updateDay("")
+            findNavController().popBackStack()
+            return
+        }
+        
+        val finalExerciseIds = mutableListOf<String>()
+        var processedCount = 0
+        
+        // Проходим по всем выбранным упражнениям
+        selectedExerciseIds.forEach { exerciseId ->
+            val exercise = adapter.currentList.find { it.id == exerciseId }
+            android.util.Log.d("ChooseExercisesFragment", "Обработка упражнения ID: $exerciseId, найдено: ${exercise?.name}")
+            
+            if (exercise != null) {
+                // Получаем упражнение с измененными значениями из адаптера
+                val updatedExercise = adapter.getExerciseWithChanges(exerciseId, exercise)
+                android.util.Log.d("ChooseExercisesFragment", "Упражнение ${exercise.name}, оригинальное время: ${exercise.time}, измененное время: ${updatedExercise.time}")
+                
+                // Всегда создаем новое упражнение, чтобы можно было добавлять одно и то же упражнение несколько раз
+                val newExercise = exercise.copy(
+                    id = null, // Обнуляем ID чтобы создать новую запись
+                    time = updatedExercise.time
+                )
+                android.util.Log.d("ChooseExercisesFragment", "Создание нового упражнения: ${newExercise.name}, время: ${newExercise.time}")
+                
+                // Сохраняем новое упражнение в базу данных
+                model.insertCustomExercise(newExercise) { newId ->
+                    android.util.Log.d("ChooseExercisesFragment", "Новое упражнение сохранено с ID: $newId")
+                    synchronized(finalExerciseIds) {
+                        if (newId != -1L) {
+                            finalExerciseIds.add(newId.toString())
+                            android.util.Log.d("ChooseExercisesFragment", "Добавлен ID в список. Текущий список: $finalExerciseIds")
+                        }
+                    }
+                    processedCount++
+                    checkAndComplete(processedCount, selectedExerciseIds.size, finalExerciseIds)
+                }
+            } else {
+                android.util.Log.d("ChooseExercisesFragment", "Упражнение с ID $exerciseId не найдено в списке")
+                processedCount++
+                checkAndComplete(processedCount, selectedExerciseIds.size, finalExerciseIds)
+            }
+        }
+    }
+    
+    private fun checkAndComplete(processedCount: Int, totalCount: Int, finalExerciseIds: MutableList<String>) {
+        // Проверяем все ли упражнения обработаны
+        if (processedCount == totalCount) {
+            synchronized(finalExerciseIds) {
+                val exercisesString = finalExerciseIds.joinToString(",")
+                android.util.Log.d("ChooseExercisesFragment", "Все упражнения обработаны. Итоговые ID: $finalExerciseIds")
+                android.util.Log.d("ChooseExercisesFragment", "Строка для сохранения: $exercisesString")
+                model.updateDay(exercisesString)
+                findNavController().popBackStack()
+            }
+        }
     }
 
     override fun onLongClick(exercise: ExerciseModel) {
@@ -351,19 +404,6 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     override fun onFavoriteClick(exercise: ExerciseModel) {
         // TODO: Реализовать логику добавления в избранное
         Log.d("ChooseExercisesFragment", "onFavoriteClick: ${exercise.name}")
-    }
-
-    override fun onRemoveClick(exercise: ExerciseModel) {
-        if (exercise.id != -1) {
-            // Удаляем упражнение из списка выбранных
-            val exercisesIds = newExercises.split(",").filter { it.isNotEmpty() }
-            val filteredIds = exercisesIds.filter { it != exercise.id.toString() }
-            newExercises = filteredIds.joinToString(",", prefix = ",") // Добавляем запятую в начале
-            
-            val count = filteredIds.size
-            val choosenCounterText = "${getString(R.string.selected_exercise_count)} $count"
-            _binding.tvChoosenExCounter.text = choosenCounterText
-        }
     }
 
     private fun showExerciseBottomSheet(exercise: ExerciseModel) {

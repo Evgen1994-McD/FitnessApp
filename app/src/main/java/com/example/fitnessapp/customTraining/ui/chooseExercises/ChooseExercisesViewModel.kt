@@ -53,16 +53,31 @@ private var dayModel: DayModel? = null
 
     fun updateDay(exercises: String) = viewModelScope.launch {
         val oldExercises = dayModel?.exercises ?: ""
-        val tempExercises = if(oldExercises.isEmpty()){
-            exercises.replaceFirst(",", "")
-        } else {
+        android.util.Log.d("ChooseExercisesViewModel", "Обновление дня. Старые упражнения: '$oldExercises', новые: '$exercises'")
+        
+        val finalExercises = if (oldExercises.isEmpty()) {
+            // Если старых упражнений нет, просто используем новые
             exercises
+        } else if (exercises.isEmpty()) {
+            // Если новых упражнений нет, оставляем старые
+            oldExercises
+        } else {
+            // Добавляем новые упражнения к старым через запятую
+            val oldExercisesList = oldExercises.split(",").filter { it.isNotBlank() }
+            val newExercisesList = exercises.split(",").filter { it.isNotBlank() }
+            
+            // Объединяем списки и удаляем дубликаты
+            val combinedExercises = (oldExercisesList + newExercisesList).distinct()
+            combinedExercises.joinToString(",")
         }
+        
+        android.util.Log.d("ChooseExercisesViewModel", "Итоговые упражнения для сохранения: '$finalExercises'")
+        
         dayModel?.copy(
-            exercises = oldExercises + tempExercises
+            exercises = finalExercises
         )?.let {
             customInteractor.insertDay(it)
-
+            android.util.Log.d("ChooseExercisesViewModel", "День обновлен с упражнениями: '$finalExercises'")
         }
     }
 
