@@ -34,6 +34,10 @@ class CustomInteractorImpl @Inject constructor(
     return customRepository.insertExercise(newExercise)
     }
 
+    override suspend fun updateExercise(exercise: ExerciseModel) {
+        customRepository.updateExercise(exercise)
+    }
+
     override suspend fun getAllExercise(): List<ExerciseModel> {
         return customRepository.getAllExercise()
     }

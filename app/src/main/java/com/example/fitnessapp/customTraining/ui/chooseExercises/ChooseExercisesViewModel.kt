@@ -51,6 +51,15 @@ private var dayModel: DayModel? = null
         }
     }
 
+    fun updateExerciseFavorite(exercise: ExerciseModel) = viewModelScope.launch {
+        try {
+            customInteractor.updateExercise(exercise)
+            android.util.Log.d("ChooseExercisesViewModel", "Упражнение ${exercise.name} обновлено. isFavorite: ${exercise.isFavorite}")
+        } catch (e: Exception) {
+            android.util.Log.e("ChooseExercisesViewModel", "Ошибка при обновлении упражнения", e)
+        }
+    }
+
     fun updateDay(exercises: String) = viewModelScope.launch {
         val oldExercises = dayModel?.exercises ?: ""
         android.util.Log.d("ChooseExercisesViewModel", "Обновление дня. Старые упражнения: '$oldExercises', новые: '$exercises'")

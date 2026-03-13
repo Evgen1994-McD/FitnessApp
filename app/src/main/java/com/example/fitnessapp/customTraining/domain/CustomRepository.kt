@@ -25,6 +25,8 @@ interface CustomRepository {
 
     suspend fun insertExercise(newExercise:ExerciseModel):Long
 
+    suspend fun updateExercise(exercise: ExerciseModel)
+
     suspend fun getAllExercise(): List<ExerciseModel>
 
     /*

@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -199,10 +200,13 @@ class ChooseExercisesAdapter(val listener: Listener) :
         }
 
         private fun setupFavoriteIcon(exercise: ExerciseModel) {
-            binding.ivFavorite.setImageResource(
-                if (exercise.isFavorite) R.drawable.ic_favorite_filled_24 
-                else R.drawable.ic_favorite_border_24
-            )
+            if (exercise.isFavorite) {
+                binding.ivFavorite.setImageResource(R.drawable.ic_favorite_filled_24)
+                binding.ivFavorite.setColorFilter(ContextCompat.getColor(binding.ivFavorite.context, android.R.color.holo_red_dark))
+            } else {
+                binding.ivFavorite.setImageResource(R.drawable.ic_favorite_border_24)
+                binding.ivFavorite.setColorFilter(ContextCompat.getColor(binding.ivFavorite.context, R.color.chip_text))
+            }
         }
 
         private fun setupCheckBox(exercise: ExerciseModel) {
@@ -291,17 +295,12 @@ class ChooseExercisesAdapter(val listener: Listener) :
 
     class MyComporator : DiffUtil.ItemCallback<ExerciseModel>() {
         override fun areItemsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
-            return oldItem == newItem
-
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: ExerciseModel, newItem: ExerciseModel): Boolean {
-
             return oldItem == newItem
         }
-
-
-
     }
 
     interface Listener{

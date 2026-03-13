@@ -41,13 +41,12 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     
     // Все зоны для фильтрации
     private val allZones = listOf(
-        ZoneFilter("hands", "Руки", 0, false),
-        ZoneFilter("body", "Общие", 0, false),
-        ZoneFilter("chest", "Грудь", 0, false),
         ZoneFilter("shoulders", "Плечи", 0, false),
+        ZoneFilter("hands", "Руки", 0, false),
+        ZoneFilter("chest", "Грудь", 0, false),
         ZoneFilter("back", "Спина", 0, false),
-        ZoneFilter("legs", "Ноги", 0, false),
         ZoneFilter("abs", "Пресс", 0, false),
+        ZoneFilter("legs", "Ноги", 0, false),
         ZoneFilter("warm", "Разминка", 0, false),
         ZoneFilter("stretch", "Растяжка", 0, false)
     )
@@ -145,30 +144,43 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         )
     }
 
-    private fun setupFilterButtons() = with(_binding) {
-        // Разделяем зоны на два ряда
-        val firstRowZones = allZones.take(5) // Первые 5 зон
-        val secondRowZones = allZones.drop(5) // Остальные зоны
+    private fun setupFilterButtons() {
+        val filterButtonsRow1 = _binding.filterButtonsRow1
+        val filterButtonsRow2 = _binding.filterButtonsRow2
         
-        // Создаем кнопки для первого ряда
-        firstRowZones.forEach { zone ->
-            val button = createFilterButton(zone)
-            filterButtonsRow1.addView(button)
+        // Создаем кнопки для всех предопределенных зон
+        filterButtonsRow1.removeAllViews()
+        filterButtonsRow2.removeAllViews()
+        
+        // Распределяем кнопки по двум рядам (5 вверху, 3 внизу)
+        val midPoint = 5
+        
+        allZones.forEachIndexed { index, zone ->
+            val button = createFilterButton(zone.zoneName)
+            if (index < midPoint) {
+                filterButtonsRow1.addView(button)
+            } else {
+                filterButtonsRow2.addView(button)
+            }
         }
         
-        // Создаем кнопки для второго ряда
-        secondRowZones.forEach { zone ->
-            val button = createFilterButton(zone)
-            filterButtonsRow2.addView(button)
-        }
+        // Добавляем кнопку "Избранное" в нижний ряд справа как обычную кнопку
+        val favoriteButton = createFilterButton("Избранное")
+        filterButtonsRow2.addView(favoriteButton)
+        
+        updateButtonStates()
     }
     
-    private fun createFilterButton(zone: ZoneFilter): Button {
+    private fun createFilterButton(zone: String): Button {
         return Button(requireContext()).apply {
-            text = zone.displayName  // Показываем русское название
+            text = if (zone == "Избранное") {
+                "Избранное"
+            } else {
+                translateZoneName(zone)
+            }
             textSize=11F
             // Устанавливаем начальные цвета
-            val isSelected = selectedFilters.contains(zone.zoneName)
+            val isSelected = selectedFilters.contains(zone)
             if (isSelected) {
                 // Выбранная кнопка: синий фон, белый текст
                 setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue))
@@ -186,9 +198,17 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
             
             // Устанавливаем вес для равномерного распределения
             layoutParams = LinearLayout.LayoutParams(
-                0, // width = 0dp для использования веса
+                if (zone == "Избранное") {
+                    LinearLayout.LayoutParams.WRAP_CONTENT // Для кнопки "Избранное" используем WRAP_CONTENT
+                } else {
+                    0 // width = 0dp для использования веса
+                },
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                1.0f // вес = 1 для равномерного распределения
+                if (zone == "Избранное") {
+                    0f // Для кнопки "Избранное" не используем вес
+                } else {
+                    1.0f // вес = 1 для равномерного распределения
+                }
             ).apply {
                 setMargins(4, 4, 4, 4)
             }
@@ -199,15 +219,23 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         }
     }
     
-    private fun selectZone(selectedZone: ZoneFilter) {
-        Log.d("ChooseExercisesFragment", "selectZone: ${selectedZone.displayName} (${selectedZone.zoneName}), selectedFilters: $selectedFilters")
+    private fun selectZone(zoneName: String) {
+        Log.d("ChooseExercisesFragment", "selectZone: $zoneName, selectedFilters: $selectedFilters")
         
-        // Добавляем или убираем фильтр из множества (используем английское название для фильтрации)
-        val zoneName = selectedZone.zoneName
-        if (selectedFilters.contains(zoneName)) {
-            selectedFilters.remove(zoneName)
+        if (zoneName == "Избранное") {
+            // Особая обработка для фильтра "Избранное"
+            if (selectedFilters.contains("Избранное")) {
+                selectedFilters.remove("Избранное")
+            } else {
+                selectedFilters.add("Избранное")
+            }
         } else {
-            selectedFilters.add(zoneName)
+            // Обработка обычных фильтров зон
+            if (selectedFilters.contains(zoneName)) {
+                selectedFilters.remove(zoneName)
+            } else {
+                selectedFilters.add(zoneName)
+            }
         }
         
         applyCurrentFilter()
@@ -217,20 +245,33 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         // Обновляем кнопки в первом ряду
         for (i in 0 until _binding.filterButtonsRow1.childCount) {
             val button = _binding.filterButtonsRow1.getChildAt(i) as Button
-            val zone = allZones[i]
-            updateButtonAppearance(button, zone)
+            if (i < allZones.size) {
+                val zone = allZones[i]
+                updateButtonAppearance(button, zone.zoneName)
+            }
         }
         
         // Обновляем кнопки во втором ряду
         for (i in 0 until _binding.filterButtonsRow2.childCount) {
             val button = _binding.filterButtonsRow2.getChildAt(i) as Button
-            val zone = allZones[i + 5] // Смещение на 5 для второго ряда
-            updateButtonAppearance(button, zone)
+            
+            // Проверяем, является ли это кнопка "Избранное" (последняя кнопка)
+            if (i == _binding.filterButtonsRow2.childCount - 1) {
+                // Это кнопка "Избранное"
+                updateButtonAppearance(button, "Избранное")
+            } else {
+                // Это обычная кнопка зоны
+                val zoneIndex = i + _binding.filterButtonsRow1.childCount
+                if (zoneIndex < allZones.size) {
+                    val zone = allZones[zoneIndex]
+                    updateButtonAppearance(button, zone.zoneName)
+                }
+            }
         }
     }
     
-    private fun updateButtonAppearance(button: Button, zone: ZoneFilter) {
-        val isSelected = selectedFilters.contains(zone.zoneName)
+    private fun updateButtonAppearance(button: Button, filterName: String) {
+        val isSelected = selectedFilters.contains(filterName)
         
         // Устанавливаем цвета в зависимости от состояния
         if (isSelected) {
@@ -262,17 +303,34 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
         
         var filteredExercises = allExercises
         
-        // Применяем фильтрацию по зонам
+        // Применяем фильтрацию по зонам и избранному
         if (selectedFilters.isNotEmpty()) {
             filteredExercises = filteredExercises.filter { exercise ->
-                // Получаем зоны упражнения из базы (английские названия)
                 val exerciseZones = exercise.muscleZone?.split(",")?.map { it.trim() } ?: emptyList()
-                // Проверяем, соответствует ли упражнение хотя бы одному из выбранных фильтров
-                exerciseZones.any { zone ->
-                    selectedFilters.contains(zone)
+                
+                // Проверяем фильтр "Избранное"
+                val isFavoriteSelected = selectedFilters.contains("Избранное")
+                val isFavoriteMatch = if (isFavoriteSelected) {
+                    exercise.isFavorite == true
+                } else {
+                    true // Если фильтр "Избранное" не выбран, игнорируем это условие
                 }
+                
+                // Проверяем фильтры по зонам (только те, что не "Избранное")
+                val zoneFilters = selectedFilters.filter { it != "Избранное" }
+                val isZonesMatch = if (zoneFilters.isNotEmpty()) {
+                    // Упражнение должно содержать ХОТЯ БЫ ОДНУ из выбранных зон (ИЛИ)
+                    zoneFilters.any { zone ->
+                        exerciseZones.contains(zone)
+                    }
+                } else {
+                    true // Если фильтры по зонам не выбраны, игнорируем это условие
+                }
+                
+                // Упражнение должно соответствовать всем выбранным фильтрам
+                isFavoriteMatch && isZonesMatch
             }
-            Log.d("ChooseExercisesFragment", "После фильтрации по зонам: ${filteredExercises.size} упражнений")
+            Log.d("ChooseExercisesFragment", "После фильтрации по зонам/избранному: ${filteredExercises.size} упражнений")
         }
         
         // Применяем поиск по названию
@@ -402,8 +460,46 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
     }
 
     override fun onFavoriteClick(exercise: ExerciseModel) {
-        // TODO: Реализовать логику добавления в избранное
-        Log.d("ChooseExercisesFragment", "onFavoriteClick: ${exercise.name}")
+        Log.d("ChooseExercisesFragment", "onFavoriteClick: ${exercise.name}, текущий isFavorite: ${exercise.isFavorite}")
+        
+        // Переключаем статус избранного
+        val updatedExercise = exercise.copy(isFavorite = !exercise.isFavorite)
+        
+        Log.d("ChooseExercisesFragment", "Новый статус: ${updatedExercise.isFavorite}")
+        
+        // Обновляем в базе данных
+        model.updateExerciseFavorite(updatedExercise)
+        
+        // Обновляем в списке упражнений
+        val currentList = allExercises.toMutableList()
+        val index = currentList.indexOfFirst { it.id == exercise.id }
+        if (index != -1) {
+            currentList[index] = updatedExercise
+            allExercises = currentList
+            
+            Log.d("ChooseExercisesFragment", "Обновлено в allExercises: индекс $index")
+            
+            // Применяем фильтры заново чтобы обновить отображение
+            applyCurrentFilter()
+            
+            // Дополнительно обновляем конкретный элемент в адаптере для немедленного обновления иконки
+            val currentFilteredIndex = adapter.currentList.indexOfFirst { it.id == exercise.id }
+            if (currentFilteredIndex != -1) {
+                adapter.notifyItemChanged(currentFilteredIndex)
+            }
+            
+            // Показываем сообщение
+            val message = if (updatedExercise.isFavorite) {
+                "Добавлено в избранное: ${exercise.name}"
+            } else {
+                "Удалено из избранного: ${exercise.name}"
+            }
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        } else {
+            Log.e("ChooseExercisesFragment", "Упражнение не найдено в allExercises: ${exercise.id}")
+        }
+        
+        Log.d("ChooseExercisesFragment", "onFavoriteClick завершен")
     }
 
     private fun showExerciseBottomSheet(exercise: ExerciseModel) {

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.fitnessapp.db.ExerciseModel
 
 @Dao
@@ -16,6 +17,9 @@ interface ExerciseDao {
 //Так же анностация - выбрать всё из таблицы эксерсайз тейбл. Берем все упражнения.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExercise(exerciseModel: ExerciseModel): Long // Запись сразу вернет id нового упражнения
+
+    @Update
+    suspend fun updateExercise(exerciseModel: ExerciseModel)
 
     @Query("SELECT * FROM exercise_table WHERE id LIKE :id")
     suspend fun findExerciseById(id: Int): ExerciseModel
