@@ -42,6 +42,15 @@ private var dayModel: DayModel? = null
     }
 
 
+    fun insertCustomExercise(exercise: ExerciseModel, callback: (Long) -> Unit) = viewModelScope.launch {
+        try {
+            val newId = customInteractor.insertExercise(exercise)
+            callback(newId)
+        } catch (e: Exception) {
+            callback(-1L)
+        }
+    }
+
     fun updateDay(exercises: String) = viewModelScope.launch {
         val oldExercises = dayModel?.exercises ?: ""
         val tempExercises = if(oldExercises.isEmpty()){

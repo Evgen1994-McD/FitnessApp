@@ -307,12 +307,37 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
 
     override fun onClick(exercise: ExerciseModel) {
         if (exercise.id != -1) {
-            newExercises += ",${exercise.id}"
+            // Проверяем, изменились ли значения времени/количества
+            val originalExercise = allExercises.find { it.id == exercise.id }
+            val isTimeChanged = originalExercise?.time != exercise.time
+            
+            if (isTimeChanged && originalExercise != null) {
+                // Создаем новое упражнение с измененными значениями
+                val newExercise = originalExercise.copy(
+                    id = null, // Обнуляем ID чтобы создать новую запись
+                    time = exercise.time
+                )
+                
+                // Сохраняем новое упражнение в базу данных
+                model.insertCustomExercise(newExercise) { newId ->
+                    if (newId != -1L) {
+                        // Добавляем ID нового упражнения
+                        newExercises += ",$newId"
+                        updateCounter()
+                    }
+                }
+            } else {
+                // Используем оригинальное упражнение
+                newExercises += ",${exercise.id}"
+                updateCounter()
+            }
         }
+    }
+
+    private fun updateCounter() {
         val count = newExercises.split(",").size - 1
         val choosenCounterText = "${getString(R.string.selected_exercise_count)} $count"
         _binding.tvChoosenExCounter.text = choosenCounterText
-
     }
 
     override fun onLongClick(exercise: ExerciseModel) {
@@ -321,6 +346,24 @@ class ChooseExercisesFragment : Fragment(), ChooseExercisesAdapter.Listener {
 
     override fun onInfoClick(exercise: ExerciseModel) {
         showExerciseBottomSheet(exercise)
+    }
+
+    override fun onFavoriteClick(exercise: ExerciseModel) {
+        // TODO: Реализовать логику добавления в избранное
+        Log.d("ChooseExercisesFragment", "onFavoriteClick: ${exercise.name}")
+    }
+
+    override fun onRemoveClick(exercise: ExerciseModel) {
+        if (exercise.id != -1) {
+            // Удаляем упражнение из списка выбранных
+            val exercisesIds = newExercises.split(",").filter { it.isNotEmpty() }
+            val filteredIds = exercisesIds.filter { it != exercise.id.toString() }
+            newExercises = filteredIds.joinToString(",", prefix = ",") // Добавляем запятую в начале
+            
+            val count = filteredIds.size
+            val choosenCounterText = "${getString(R.string.selected_exercise_count)} $count"
+            _binding.tvChoosenExCounter.text = choosenCounterText
+        }
     }
 
     private fun showExerciseBottomSheet(exercise: ExerciseModel) {

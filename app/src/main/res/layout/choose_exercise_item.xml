@@ -8,17 +8,16 @@
     android:layout_marginTop="10dp">
 
     <ImageView
-        android:id="@+id/bt_like"
+        android:id="@+id/ivFavorite"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginStart="20dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/ic_help_outline_24"
-        app:layout_constraintBottom_toBottomOf="@+id/tvCount"
-        app:layout_constraintStart_toEndOf="@+id/infoIcon"
-        app:layout_constraintTop_toTopOf="@+id/tvCount" />
+        android:src="@drawable/ic_favorite_border_24"
+        app:layout_constraintBottom_toBottomOf="@+id/etCount"
+        app:layout_constraintEnd_toEndOf="@+id/tvZones"
+        app:layout_constraintTop_toTopOf="@+id/etCount" />
 
     <ImageView
         android:id="@+id/imExercise"
@@ -40,23 +39,125 @@
         android:text="TextView"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/lottieView"
+        app:layout_constraintEnd_toStartOf="@+id/checkboxSelect"
         app:layout_constraintStart_toEndOf="@+id/imExercise"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvCount"
+    <!-- Для упражнений с временем (MM:SS) -->
+    <LinearLayout
+        android:id="@+id/timeLayout"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginTop="5dp"
-        android:text="x30"
-        android:textAlignment="center"
-        android:textColor="@color/exercise_count"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvNameEx"
-        app:layout_constraintTop_toBottomOf="@+id/tvZones" />
+        app:layout_constraintTop_toBottomOf="@+id/tvZones"
+        tools:visibility="gone">
+
+        <EditText
+            android:id="@+id/etMinutes"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:hint="00"
+            android:inputType="number"
+            android:maxLength="2"
+            android:text="00"
+            android:textColor="@color/exercise_count"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvColon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="center"
+            android:text=":"
+            android:textColor="@color/exercise_count"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etSeconds"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:hint="00"
+            android:inputType="number"
+            android:maxLength="2"
+            android:text="00"
+            android:textColor="@color/exercise_count"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+        <!-- Для упражнений с повторениями (x30) -->
+    <LinearLayout
+        android:id="@+id/repsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvNameEx"
+        app:layout_constraintTop_toBottomOf="@+id/tvZones"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvX"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="x"
+            android:textColor="@color/exercise_count"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etReps"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:hint="30"
+            android:inputType="number"
+            android:maxLength="3"
+            android:minWidth="40dp"
+            android:text="30"
+            android:textColor="@color/exercise_count"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+        <!-- Старый EditText оставим как fallback -->
+        <EditText
+            android:id="@+id/etCount"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:text="x30"
+            android:textAlignment="center"
+            android:textColor="@color/exercise_count"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:inputType="number"
+            android:maxLength="5"
+            android:background="@android:color/transparent"
+            android:selectAllOnFocus="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvNameEx"
+            app:layout_constraintTop_toBottomOf="@+id/tvZones" />
 
     <TextView
         android:id="@+id/tvZones"
@@ -68,7 +169,7 @@
         android:textColor="@color/exercise_count"
         android:textSize="14sp"
         android:textStyle="italic"
-        app:layout_constraintEnd_toStartOf="@+id/lottieView"
+        app:layout_constraintEnd_toStartOf="@+id/checkboxSelect"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/tvNameEx"
         app:layout_constraintTop_toBottomOf="@+id/tvNameEx" />
@@ -90,28 +191,25 @@
         android:id="@+id/infoIcon"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_help_outline_24"
-        app:layout_constraintBottom_toBottomOf="@+id/tvCount"
-        app:layout_constraintStart_toEndOf="@+id/tvCount"
-        app:layout_constraintTop_toTopOf="@+id/tvCount" />
+        app:layout_constraintBottom_toBottomOf="@+id/etCount"
+        app:layout_constraintEnd_toStartOf="@+id/ivFavorite"
+        app:layout_constraintTop_toTopOf="@+id/etCount" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <CheckBox
+        android:id="@+id/checkboxSelect"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="8dp"
-        android:visibility="invisible"
+        android:button="@drawable/checkbox_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="false"
-        app:lottie_loop="false"
-        app:lottie_rawRes="@raw/success" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

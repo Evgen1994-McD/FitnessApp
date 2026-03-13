@@ -11,6 +11,7 @@ data class ExerciseModel(
     var subtitle: String, // тут будем хранить доп запись на каждое упражнение
     var time: String,
     var isDone: Boolean, // выполнено упражнение или нет ( для чек боксов)
+    var isFavorite: Boolean = false, // добавлено в избранное
     var image: String,
     var kcal: Double,  // килокалории
     var muscleZone: String,        // зона воздействия (hands/body/back/legs)

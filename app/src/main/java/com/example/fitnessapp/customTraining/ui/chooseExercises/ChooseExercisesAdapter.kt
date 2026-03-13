@@ -1,6 +1,5 @@
 package com.example.fitnessapp.customTraining.ui.chooseExercises
 
-import android.animation.Animator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,32 +21,14 @@ class ChooseExercisesAdapter(val listener: Listener) :
         RecyclerView.ViewHolder(view) {  // это старый знакомый ViewHolder
         private val binding = ChooseExerciseItemBinding.bind(view)
 
-        init {
-            binding.lottieView.addAnimatorListener(object : Animator.AnimatorListener{
-                override fun onAnimationStart(animation: Animator) {
 
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    binding.lottieView.visibility = View.INVISIBLE
-                    binding.infoIcon.visibility = View.VISIBLE // Показываем иконку ? снова
-                }
-
-                override fun onAnimationCancel(animation: Animator) {
-                    binding.lottieView.visibility = View.INVISIBLE
-                    binding.infoIcon.visibility = View.VISIBLE // Показываем иконку ? снова
-                }
-
-                override fun onAnimationRepeat(animation: Animator) {
-
-                }
-            })
-        }
 
         fun setData(exercise: ExerciseModel) = with(binding) {
 
             tvNameEx.text = exercise.name //Название упражнения
-            tvCount.text = getTime(exercise.time)
+            
+            // Настраиваем EditText в зависимости от типа упражнения
+            setupEditText(exercise)
             
             // Показываем зоны на русском
             val zonesDisplay = ZoneUtils.getZonesDisplayNames(exercise.muscleZone)
@@ -61,29 +42,96 @@ class ChooseExercisesAdapter(val listener: Listener) :
                 )
             ) // Покажем ГИФ с помощью специальной библиотеки
             
-            // Изначально показываем иконку ?, скрываем анимацию
-            infoIcon.visibility = View.VISIBLE
-            lottieView.visibility = View.INVISIBLE
+            // Настраиваем иконку избранного
+            setupFavoriteIcon(exercise)
+            
+            // Настраиваем CheckBox
+            setupCheckBox(exercise)
             
             // Клик на иконку ? - показываем информацию
             infoIcon.setOnClickListener {
                 listener.onInfoClick(exercise)
             }
             
-            // Клик на элемент целиком (не на ?) - добавляем в тренировку и показываем анимацию
-            itemView.setOnClickListener {
-                listener.onClick(exercise)
-                // Показываем анимацию поверх иконки ?
-                infoIcon.visibility = View.INVISIBLE
-                lottieView.visibility = View.VISIBLE
-                lottieView.playAnimation()
-            }
-            
-            itemView.setOnLongClickListener {
-                listener.onLongClick(exercise)
-                true // Возвращаем true, чтобы показать, что событие обработано
+            // Клик на иконку избранного
+            ivFavorite.setOnClickListener {
+                listener.onFavoriteClick(exercise)
             }
 
+        }
+
+        private fun setupEditText(exercise: ExerciseModel) {
+            if (exercise.time.startsWith("x")) {
+                // Упражнение с повторениями - показываем repsLayout
+                binding.repsLayout.visibility = View.VISIBLE
+                binding.timeLayout.visibility = View.GONE
+                binding.etCount.visibility = View.GONE
+                
+                // Устанавливаем значение в EditText
+                val count = exercise.time.substring(1) // Убираем "x"
+                binding.etReps.setText(count)
+                
+            } else {
+                // Упражнение с временем - показываем timeLayout
+                binding.timeLayout.visibility = View.VISIBLE
+                binding.repsLayout.visibility = View.GONE
+                binding.etCount.visibility = View.GONE
+                
+                // Устанавливаем значения минут и секунд
+                val timeSeconds = exercise.time.toLongOrNull() ?: 0L
+                val minutes = (timeSeconds / 60).toInt()
+                val seconds = (timeSeconds % 60).toInt()
+                
+                binding.etMinutes.setText(String.format("%02d", minutes))
+                binding.etSeconds.setText(String.format("%02d", seconds))
+            }
+        }
+
+        private fun setupFavoriteIcon(exercise: ExerciseModel) {
+            binding.ivFavorite.setImageResource(
+                if (exercise.isFavorite) R.drawable.ic_favorite_filled_24 
+                else R.drawable.ic_favorite_border_24
+            )
+        }
+
+        private fun setupCheckBox(exercise: ExerciseModel) {
+            binding.checkboxSelect.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    // Получаем измененное значение из EditText
+                    val updatedTime = getUpdatedTimeFromEditText(exercise)
+                    val updatedExercise = exercise.copy(time = updatedTime)
+                    listener.onClick(updatedExercise)
+                } else {
+                    listener.onRemoveClick(exercise)
+                }
+            }
+        }
+
+        private fun getUpdatedTimeFromEditText(exercise: ExerciseModel): String {
+            return if (exercise.time.startsWith("x")) {
+                // Для упражнений с повторениями
+                val repsText = binding.etReps.text.toString()
+                val reps = repsText.filter { it.isDigit() }
+                if (reps.isNotEmpty()) {
+                    "x$reps"
+                } else {
+                    exercise.time // Возвращаем оригинальное значение если поле пустое
+                }
+            } else {
+                // Для упражнений с временем
+                try {
+                    val minutesText = binding.etMinutes.text.toString()
+                    val secondsText = binding.etSeconds.text.toString()
+                    
+                    val minutes = minutesText.filter { it.isDigit() }.toIntOrNull() ?: 0
+                    val seconds = secondsText.filter { it.isDigit() }.toIntOrNull() ?: 0
+                    
+                    val totalSeconds = minutes * 60 + seconds
+                    if (totalSeconds > 0) totalSeconds.toString() else exercise.time
+                } catch (e: Exception) {
+                    exercise.time // Возвращаем оригинальное значение при ошибке
+                }
+            }
         }
 
         private fun getTime(time: String): String {
@@ -126,5 +174,7 @@ class ChooseExercisesAdapter(val listener: Listener) :
         fun onClick(exercise: ExerciseModel)
         fun onLongClick(exercise: ExerciseModel)
         fun onInfoClick(exercise: ExerciseModel)
+        fun onFavoriteClick(exercise: ExerciseModel)
+        fun onRemoveClick(exercise: ExerciseModel)
     }
 }
