@@ -12,12 +12,12 @@ class App:Application() {
     
     companion object {
         // Реальный ID для релиза
-        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
-//        private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex"
+//        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
+        private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex"
         
         // ID для баннерной рекламы
-//        private const val BANNER_AD_UNIT_ID = "demo-banner-yandex"
-        private const val BANNER_AD_UNIT_ID = "R-M-18846080-1"
+        private const val BANNER_AD_UNIT_ID = "demo-banner-yandex"
+//        private const val BANNER_AD_UNIT_ID = "R-M-18846080-1"
 
         @Volatile
         private var appOpenAdManager: AppOpenAdManager? = null

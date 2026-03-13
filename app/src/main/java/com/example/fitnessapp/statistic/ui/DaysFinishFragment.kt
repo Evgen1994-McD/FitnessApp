@@ -1,6 +1,7 @@
 package com.example.fitnessapp.statistic.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -139,18 +140,22 @@ difficulty = arguments?.getString("difficulty").toString()
     private fun showInterstitialAd() {
         if (adShown) return // Не показывать рекламу повторно
         
+        // Временно отключаем баннерную рекламу
+        Log.d("DaysFinishFragment", "Баннерная реклама временно отключена")
+        adShown = true
+        
+        // Показываем app open рекламу после тренировки с небольшой задержкой
         activity?.let { activity ->
-            val bannerManager = App.getBannerAdManager(activity.application)
+            val appOpenManager = com.example.fitnessapp.utils.App.getAppOpenAdManager(activity.application)
+            Log.d("DaysFinishFragment", "Показываем App Open рекламу после тренировки")
             
-            if (bannerManager.isAdReady()) {
-                bannerManager.showAdWithDelay(activity, parentFragmentManager, 1500) {
+            // Небольшая задержка для гарантии загрузки рекламы
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                appOpenManager.showAppOpenAdWithCallback(activity) {
                     // Реклама закрыта, можно продолжать работу
+                    Log.d("DaysFinishFragment", "App Open реклама закрыта")
                 }
-                adShown = true
-            } else {
-                // Если реклама не готова, предзагружаем для следующего раза
-                bannerManager.preloadAd()
-            }
+            }, 500) // 500мс задержка
         }
     }
 
