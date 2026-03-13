@@ -8,6 +8,19 @@
     android:layout_marginTop="10dp">
 
     <ImageView
+        android:id="@+id/bt_like"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="20dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_help_outline_24"
+        app:layout_constraintBottom_toBottomOf="@+id/tvCount"
+        app:layout_constraintStart_toEndOf="@+id/infoIcon"
+        app:layout_constraintTop_toTopOf="@+id/tvCount" />
+
+    <ImageView
         android:id="@+id/imExercise"
         android:layout_width="60dp"
         android:layout_height="100dp"
@@ -34,19 +47,21 @@
     <TextView
         android:id="@+id/tvCount"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="5dp"
         android:text="x30"
+        android:textAlignment="center"
         android:textColor="@color/exercise_count"
-        android:textSize="16sp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvNameEx"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameEx" />
+        app:layout_constraintTop_toBottomOf="@+id/tvZones" />
 
     <TextView
         android:id="@+id/tvZones"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:text="руки, спина"
@@ -55,7 +70,7 @@
         android:textStyle="italic"
         app:layout_constraintEnd_toStartOf="@+id/lottieView"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@+id/tvCount"
+        app:layout_constraintStart_toStartOf="@+id/tvNameEx"
         app:layout_constraintTop_toBottomOf="@+id/tvNameEx" />
 
     <ImageView
@@ -75,16 +90,14 @@
         android:id="@+id/infoIcon"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_help_outline_24"
+        android:layout_marginStart="20dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/ic_help_outline_24"
+        app:layout_constraintBottom_toBottomOf="@+id/tvCount"
+        app:layout_constraintStart_toEndOf="@+id/tvCount"
+        app:layout_constraintTop_toTopOf="@+id/tvCount" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieView"
