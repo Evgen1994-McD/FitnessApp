@@ -11,12 +11,13 @@
         android:id="@+id/ivFavorite"
         android:layout_width="38dp"
         android:layout_height="38dp"
+        android:layout_marginEnd="25dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_favorite_border_24"
         app:layout_constraintBottom_toBottomOf="@+id/etCount"
-        app:layout_constraintEnd_toEndOf="@+id/tvZones"
+        app:layout_constraintEnd_toStartOf="@+id/infoIcon"
         app:layout_constraintTop_toTopOf="@+id/etCount" />
 
     <ImageView
@@ -192,13 +193,13 @@
         android:id="@+id/infoIcon"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="20dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_help_outline_24"
         app:layout_constraintBottom_toBottomOf="@+id/etCount"
-        app:layout_constraintEnd_toStartOf="@+id/ivFavorite"
+        app:layout_constraintEnd_toEndOf="@+id/tvZones"
         app:layout_constraintTop_toTopOf="@+id/etCount" />
 
     <CheckBox

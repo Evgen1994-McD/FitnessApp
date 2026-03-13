@@ -1,7 +1,7 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 8,
+    "version": 9,
     "identityHash": "6a6179e199b7d4a0f2f0847de5e26895",
     "entities": [
       {
@@ -97,6 +97,12 @@
           {
             "fieldPath": "isDone",
             "columnName": "isDone",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
             "affinity": "INTEGER",
             "notNull": true
           },
