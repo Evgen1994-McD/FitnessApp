@@ -1,5 +1,6 @@
 package com.example.fitnessapp.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -11,12 +12,13 @@ data class ExerciseModel(
     var subtitle: String, // тут будем хранить доп запись на каждое упражнение
     var time: String,
     var isDone: Boolean, // выполнено упражнение или нет ( для чек боксов)
-    var isFavorite: Boolean = false, // добавлено в избранное
+    @ColumnInfo(defaultValue = "false")  // Добавьте эту строку
+    var isFavorite: Boolean, // добавлено в избранное
     var image: String,
     var kcal: Double,  // килокалории
     var muscleZone: String,        // зона воздействия (hands/body/back/legs)
     var description: String,       // краткое описание упражнения
     var instruction: String,       // пошаговая инструкция выполнения
-    var mistakes: String = "",      // распространенные ошибки выполнения (разделитель ||)
-    var advise: String = ""         // советы по правильному выполнению (разделитель ||)
+    var mistakes: String,      // распространенные ошибки выполнения (разделитель ||)
+    var advise: String         // советы по правильному выполнению (разделитель ||)
 )

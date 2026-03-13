@@ -52,9 +52,10 @@ val templist = ArrayList<ExerciseModel>()
                 context.getString(R.string.day_finish_subtitle),
                 "", // это финиш тут заполнили просто так, тут не важно
                 false, // это финиш тут заполнили просто так, тут не важно
-                false, // isFavorite
-                context.getString(R.string.day_finish_fire), // из папки ассетс
-                0.0,
+                false,
+                context.getString(R.string.day_finish_fire), // isFavorite
+                0.0, // из папки ассетс
+                "",
                 "",
                 "",
                 "",
