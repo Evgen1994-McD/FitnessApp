@@ -21,8 +21,8 @@ android {
         applicationId = "com.example.fitnessapp"
         minSdk = 29
         targetSdk = 33
-        versionCode = 16
-        versionName = "1.9.21"
+        versionCode = 17
+        versionName = "1.9.22"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         

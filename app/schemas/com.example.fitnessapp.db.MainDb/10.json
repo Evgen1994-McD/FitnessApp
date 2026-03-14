@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 9,
-    "identityHash": "6a6179e199b7d4a0f2f0847de5e26811",
+    "version": 10,
+    "identityHash": "e9dd1dfd31995cdf79838956c1cb012b",
     "entities": [
       {
         "tableName": "day_model_table",
@@ -69,7 +69,7 @@
       },
       {
         "tableName": "exercise_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `subtitle` TEXT NOT NULL, `time` TEXT NOT NULL, `isDone` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `image` TEXT NOT NULL, `kcal` REAL NOT NULL, `muscleZone` TEXT NOT NULL, `description` TEXT NOT NULL, `instruction` TEXT NOT NULL, `mistakes` TEXT NOT NULL, `advise` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `subtitle` TEXT NOT NULL, `time` TEXT NOT NULL, `isDone` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0, `image` TEXT NOT NULL, `kcal` REAL NOT NULL, `muscleZone` TEXT NOT NULL, `description` TEXT NOT NULL, `instruction` TEXT NOT NULL, `mistakes` TEXT NOT NULL, `advise` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -105,7 +105,7 @@
             "columnName": "isFavorite",
             "affinity": "INTEGER",
             "notNull": true,
-            "defaultValue": "false"
+            "defaultValue": "0"
           },
           {
             "fieldPath": "image",
@@ -369,7 +369,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6a6179e199b7d4a0f2f0847de5e26895')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e9dd1dfd31995cdf79838956c1cb012b')"
     ]
   }
 }
