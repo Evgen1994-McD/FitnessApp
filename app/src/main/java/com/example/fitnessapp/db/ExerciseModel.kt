@@ -12,7 +12,7 @@ data class ExerciseModel(
     var subtitle: String, // тут будем хранить доп запись на каждое упражнение
     var time: String,
     var isDone: Boolean, // выполнено упражнение или нет ( для чек боксов)
-    @ColumnInfo(defaultValue = "false")  // Добавьте эту строку
+    @ColumnInfo(defaultValue = "0")  // Boolean хранится как INTEGER (0 = false, 1 = true)
     var isFavorite: Boolean, // добавлено в избранное
     var image: String,
     var kcal: Double,  // килокалории
