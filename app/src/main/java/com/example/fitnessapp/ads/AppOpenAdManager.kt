@@ -154,58 +154,78 @@ class AppOpenAdManager(
             return
         }
 
-        // Проверяем, не пытались ли показать только что
-        val currentTime = SystemClock.elapsedRealtime()
-        if (lastShowAttemptTime > 0) {
-            val timeSinceLastAttempt = currentTime - lastShowAttemptTime
-            if (timeSinceLastAttempt < 20000) { // 10 секунд
-                Log.d("AppOpenAdManager", "Пытались показать рекламу только что, пропускаем")
-                return
-            }
-        }
-
-        // Проверяем, не закрылась ли реклама только что (защита от повторного показа)
-        if (adDismissedTime > 0) {
-            val timeSinceDismissed = currentTime - adDismissedTime
-            if (timeSinceDismissed < 30000) { // 10 секунд
-                Log.d("AppOpenAdManager", "Реклама закрыта только что, пропускаем показ")
-                return
-            }
-        }
-
-        val ad = appOpenAd ?: run {
-            Log.w("AppOpenAdManager", "Реклама не загружена")
-            loadAppOpenAd()
-            return
-        }
-
-        Log.d("AppOpenAdManager", "Показываем рекламу при открытии приложения")
-        lastShowAttemptTime = currentTime // Запоминаем время попытки
-        ad.setAdEventListener(createAdEventListener())
-        isShowingAd = true
-        
-        try {
+        appOpenAd?.let { ad ->
+            ad.setAdEventListener(createAdEventListener())
+            currentActivity = activity
+            isShowingAd = true
+            Log.d("AppOpenAdManager", "Показываем App Open рекламу")
             ad.show(activity)
-            Log.d("AppOpenAdManager", "Вызван метод show() для рекламы")
-            
-            // Сбрасываем флаг по таймауту если реклама не показалась
-            val handler = android.os.Handler(android.os.Looper.getMainLooper())
-            handler.postDelayed({
-                if (isShowingAd) {
-                    Log.d("AppOpenAdManager", "Реклама не показалась за 5 секунд, сбрасываем флаг")
-                    isShowingAd = false
-                }
-            }, 5000) // 5 секунд
-            
-        } catch (e: Exception) {
-            Log.e("AppOpenAdManager", "Исключение при показе рекламы: ${e.message}", e)
-            isShowingAd = false // Сбрасываем флаг при ошибке!
-            clearAppOpenAd()
-            loadAppOpenAd()
         }
     }
 
+    /**
+     * Публичный метод для показа рекламы с колбэком
+     */
+    fun showAppOpenAdWithCallback(activity: Activity, onAdClosed: () -> Unit) {
+        Log.d("AppOpenAdManager", "showAppOpenAdWithCallback вызван")
+        Log.d("AppOpenAdManager", "isShowingAd=$isShowingAd, appOpenAd=${appOpenAd != null}")
+        
+        if (isShowingAd) {
+            Log.d("AppOpenAdManager", "Реклама уже показывается, сбрасываем флаг и показываем новую")
+            // Сбрасываем флаг и показываем новую рекламу
+            isShowingAd = false
+        }
 
+        if (appOpenAd == null) {
+            Log.w("AppOpenAdManager", "Реклама не готова, загружаем новую")
+            loadAppOpenAd()
+            // Добавляем небольшую задержку и повторяем попытку
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                showAppOpenAdWithCallback(activity, onAdClosed)
+            }, 1000)
+            return
+        }
+
+        Log.d("AppOpenAdManager", "Показываем App Open рекламу с колбэком")
+        appOpenAd?.let { ad ->
+            ad.setAdEventListener(object : AppOpenAdEventListener {
+                override fun onAdShown() {
+                    Log.d("AppOpenAdManager", "Реклама показана успешно")
+                    isShowingAd = false
+                    loadAppOpenAd()
+                }
+
+                override fun onAdFailedToShow(adError: AdError) {
+                    Log.e("AppOpenAdManager", "Ошибка показа рекламы: ${adError.description}")
+                    isShowingAd = false
+                    onAdClosed()
+                }
+
+                override fun onAdDismissed() {
+                    Log.d("AppOpenAdManager", "Реклама закрыта пользователем")
+                    isShowingAd = false
+                    onAdClosed()
+                    loadAppOpenAd()
+                }
+
+                override fun onAdClicked() {
+                    Log.d("AppOpenAdManager", "Пользователь кликнул по рекламе")
+                }
+
+                override fun onAdImpression(impressionData: ImpressionData?) {
+                    Log.d("AppOpenAdManager", "Зафиксирован показ рекламы")
+                }
+            })
+            currentActivity = activity
+            isShowingAd = true
+            Log.d("AppOpenAdManager", "Показываем App Open рекламу с колбэком")
+            ad.show(activity)
+        } ?: run {
+            Log.w("AppOpenAdManager", "Реклама не готова, загружаем новую")
+            loadAppOpenAd()
+            onAdClosed()
+        }
+    }
 
     /**
      * Проверяет, нужно ли показывать рекламу

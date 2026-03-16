@@ -7,75 +7,42 @@
     tools:context=".customTraining.ui.chooseExercises.ChooseExercisesFragment">
 
     <!-- Раздел фильтра по зонам -->
+    <TextView
+        android:id="@+id/filterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Фильтр по зонам:"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/filterButtonsContainer"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <LinearLayout
-        android:id="@+id/filterSection"
+        android:id="@+id/filterButtonsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="8dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/doneButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Фильтр по зонам:"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
         <LinearLayout
+            android:id="@+id/filterButtonsRow1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="start">
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp" />
 
-            <Button
-                android:id="@+id/filterBack"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/black_light"
-                android:text="Спина"
-                android:textSize="12sp"
-                android:textColor="?attr/colorOnSurface"
-                android:paddingHorizontal="12dp" />
+        <LinearLayout
+            android:id="@+id/filterButtonsRow2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" />
 
-            <Button
-                android:id="@+id/filterHands"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/black_light"
-                android:text="Руки"
-                android:textSize="12sp"
-                android:textColor="?attr/colorOnSurface"
-                android:paddingHorizontal="12dp" />
-
-            <Button
-                android:id="@+id/filterLegs"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/black_light"
-                android:text="Ноги"
-                android:textSize="12sp"
-                android:textColor="?attr/colorOnSurface"
-                android:paddingHorizontal="12dp" />
-
-            <Button
-                android:id="@+id/filterBody"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:backgroundTint="@color/black_light"
-                android:text="Тело"
-                android:textSize="12sp"
-                android:textColor="?attr/colorOnSurface"
-                android:paddingHorizontal="12dp" />
-
-        </LinearLayout>
     </LinearLayout>
 
     <Button
@@ -86,6 +53,7 @@
         android:layout_marginEnd="8dp"
         android:backgroundTint="@color/blue"
         android:text="Сохранить"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -97,10 +65,34 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="8dp"
         android:layout_marginVertical="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/filterSection"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/filterTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvChoosenExCounter" />
+
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/search_edit_text_background"
+        android:hint="Поиск упражнений..."
+        android:inputType="text"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/exercise_count"
+        android:textSize="14sp"
+        android:drawableEnd="@drawable/ic_clear_text"
+        android:drawablePadding="8dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/tvChoosenExCounter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvChoosenExCounter"
@@ -110,7 +102,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/rcView"
-        app:layout_constraintTop_toTopOf="@+id/guideline9" />
+        app:layout_constraintTop_toBottomOf="@+id/searchEditText" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline8"

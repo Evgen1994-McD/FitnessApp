@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,21 +13,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -80,6 +84,14 @@ fun MainScreen(
     totalTime: String = "00:00",
     onStartTrainingClick: (String, String?) -> Unit = { _, _ -> }
 ) {
+    var isLoading by remember { mutableStateOf(true) }
+    
+    // Имитируем загрузку на 200мс
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(170)
+        isLoading = false
+    }
+    
     Scaffold(
     ) { paddingValues ->
         Column(
@@ -88,6 +100,21 @@ fun MainScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
         ) {
+            // Показываем прогресс-бар во время загрузки
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        strokeWidth = 4.dp
+                    )
+                }
+                return@Column
+            }
             // Предварительные вычисления для оптимизации производительности
             val preparedDifficultyCards = remember(progressMap) {
                 listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD)
@@ -111,7 +138,9 @@ fun MainScreen(
                     TrainingUtils.HANDS,
                     TrainingUtils.BODY,
                     TrainingUtils.BACK,
-                    TrainingUtils.LEGS
+                    TrainingUtils.LEGS,
+                    TrainingUtils.CHEST,
+                    TrainingUtils.ABS
                 )
                 val difficulties =
                     listOf(TrainingUtils.EASY, TrainingUtils.MIDDLE, TrainingUtils.HARD)
@@ -119,9 +148,9 @@ fun MainScreen(
                 val allCards = zones.flatMap { zone ->
                     difficulties.map { difficulty -> "${difficulty}_$zone" }
                 }.filter { key ->
-                    (progressMap[key]?.maxProgress ?: 0) > 0
-                }.map { key ->
-                    val card = progressMap[key]!!
+                    (progressMap[key]?.maxProgress ?: 0) >= 0 // Показываем все карточки, включая новые зоны
+                }.mapNotNull { key ->
+                    val card = progressMap[key] ?: return@mapNotNull null
                     val parts = key.split("_")
                     val difficulty = parts[0]
                     val zone = parts[1]
@@ -322,37 +351,129 @@ fun MainScreen(
 
             // Заголовок тренировок по зонам
             Text(
-                text = "Тренировки по зонам",
+                text = "Акцент на зоны",
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                fontSize = 20.sp,
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            // Карточки тренировок по зонам
-            preparedZoneCards.forEach { card ->
-                val difficultyTitle = when (card.difficulty) {
-                    TrainingUtils.EASY -> stringResource(R.string.easy)
-                    TrainingUtils.MIDDLE -> stringResource(R.string.middle)
-                    TrainingUtils.HARD -> stringResource(R.string.hard)
-                    else -> card.difficulty
-                }
+            // Группируем по уровням сложности
+            val easyCards = preparedZoneCards.filter { it.difficulty == TrainingUtils.EASY }
+            val middleCards = preparedZoneCards.filter { it.difficulty == TrainingUtils.MIDDLE }
+            val hardCards = preparedZoneCards.filter { it.difficulty == TrainingUtils.HARD }
 
-                val zoneTitle = when (card.zone) {
-                    TrainingUtils.HANDS -> stringResource(R.string.hands)
-                    TrainingUtils.BODY -> stringResource(R.string.body)
-                    TrainingUtils.BACK -> stringResource(R.string.back)
-                    TrainingUtils.LEGS -> stringResource(R.string.legs)
-                    else -> card.zone
-                }
-
-                ZonedTrainingCard(
-                    programName = { zoneTitle },
-                    difficulty = { difficultyTitle },
-                    progressText = { "Прогресс: ${card.progressPercent}%" },
-                    progress = card.progress,
-                    onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
-                    image = card.imageId
+            // Начинающий
+            if (easyCards.isNotEmpty()) {
+                Text(
+                    text = "Начинающий",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium
                 )
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    easyCards.forEach { card ->
+                        val zoneTitle = when (card.zone) {
+                            TrainingUtils.HANDS -> stringResource(R.string.hands)
+                            TrainingUtils.BODY -> stringResource(R.string.body)
+                            TrainingUtils.BACK -> stringResource(R.string.back)
+                            TrainingUtils.LEGS -> stringResource(R.string.legs)
+                            TrainingUtils.CHEST -> "Грудь"
+                            TrainingUtils.ABS -> stringResource(R.string.abs)
+                            else -> card.zone
+                        }
+
+                        ZonedTrainingCard(
+                            programName = { zoneTitle },
+                            difficulty = { stringResource(R.string.easy) },
+                            progressText = { "Прогресс: ${card.progressPercent}%" },
+                            progress = card.progress,
+                            onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
+                            image = card.imageId
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Опытный
+            if (middleCards.isNotEmpty()) {
+                Text(
+                    text = "Опытный",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        ,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    middleCards.forEach { card ->
+                        val zoneTitle = when (card.zone) {
+                            TrainingUtils.HANDS -> stringResource(R.string.hands)
+                            TrainingUtils.BODY -> stringResource(R.string.body)
+                            TrainingUtils.BACK -> stringResource(R.string.back)
+                            TrainingUtils.LEGS -> stringResource(R.string.legs)
+                            TrainingUtils.CHEST -> "Грудь"
+                            TrainingUtils.ABS -> stringResource(R.string.abs)
+                            else -> card.zone
+                        }
+
+                        ZonedTrainingCard(
+                            programName = { zoneTitle },
+                            difficulty = { stringResource(R.string.middle) },
+                            progressText = { "Прогресс: ${card.progressPercent}%" },
+                            progress = card.progress,
+                            onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
+                            image = card.imageId
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Мастер
+            if (hardCards.isNotEmpty()) {
+                Text(
+                    text = "Мастер",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    hardCards.forEach { card ->
+                        val zoneTitle = when (card.zone) {
+                            TrainingUtils.HANDS -> stringResource(R.string.hands)
+                            TrainingUtils.BODY -> stringResource(R.string.body)
+                            TrainingUtils.BACK -> stringResource(R.string.back)
+                            TrainingUtils.LEGS -> stringResource(R.string.legs)
+                            TrainingUtils.CHEST -> "Грудь"
+                            TrainingUtils.ABS -> stringResource(R.string.abs)
+                            else -> card.zone
+                        }
+
+                        ZonedTrainingCard(
+                            programName = { zoneTitle },
+                            difficulty = { stringResource(R.string.hard) },
+                            progressText = { "Прогресс: ${card.progressPercent}%" },
+                            progress = card.progress,
+                            onStartClick = { onStartTrainingClick(card.difficulty, card.zone) },
+                            image = card.imageId
+                        )
+                    }
+                }
             }
         }
     }

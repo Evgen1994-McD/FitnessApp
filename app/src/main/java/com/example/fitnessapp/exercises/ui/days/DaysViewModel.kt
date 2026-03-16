@@ -90,7 +90,9 @@ class DaysViewModel @Inject constructor(
                 TrainingUtils.HANDS,
                 TrainingUtils.BODY,
                 TrainingUtils.BACK,
-                TrainingUtils.LEGS
+                TrainingUtils.LEGS,
+                TrainingUtils.CHEST,
+                TrainingUtils.ABS
             )
 
             // Инициализируем Map для каждой сложности и каждой зоны

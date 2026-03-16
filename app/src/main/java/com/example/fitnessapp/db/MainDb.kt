@@ -21,11 +21,13 @@ import com.example.fitnessapp.db.dao.WeightDao
         PlannedDayModel::class
                // Таким образом при первом запуске приложения создадутся 6 таблиц и мы сможем в них записывать/считывать и ТД
                ],//Важно! Теперь используем AutoMigration для плавного обновления
-    version = 7, // Текущая версия базы данных
+    version = 10, // Текущая версия базы данных
     exportSchema = true, // Экспортируем схему для AutoMigration
     autoMigrations = [
         AutoMigration(from = 5, to = 6), // Добавляет completedDate и height
-        AutoMigration(from = 6, to = 7)  // Добавляет dayId
+        AutoMigration(from = 6, to = 7),  // Добавляет dayId
+        AutoMigration(from = 8, to = 9),  // Добавляет IsFavorite
+        AutoMigration(from = 9, to = 10)  // Добавляет IsFavorite
     ]
 )
 abstract class MainDb: RoomDatabase()  {   // создаём базу данных она должна быть абстрактной

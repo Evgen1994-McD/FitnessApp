@@ -34,7 +34,19 @@ class CustomRepositoryImpl @Inject constructor(
         return mainDb.exerciseDao.insertExercise(newExercise)
     }
 
+    override suspend fun updateExercise(exercise: ExerciseModel) {
+        mainDb.exerciseDao.updateExercise(exercise)
+    }
+
     override suspend fun getAllExercise(): List<ExerciseModel>{
         return mainDb.exerciseDao.getAllExercises()
+    }
+
+    override suspend fun getExercisesByZone(from: Int, to: Int, zone: String): List<ExerciseModel> {
+        return mainDb.exerciseDao.getExercisesByZone(from, to, zone)
+    }
+
+    override suspend fun getAllExercisesSorted(from: Int, to: Int): List<ExerciseModel> {
+        return mainDb.exerciseDao.getAllExercisesSorted(from, to)
     }
 }
