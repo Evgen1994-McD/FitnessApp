@@ -20,10 +20,14 @@
     <color name="list_item_bg">#f8f9fe</color>
     <color name="exercise_count">#242428</color>
 
+    <!-- Colors for chips -->
+    <color name="chip_background">#E0E0E0</color>
+    <color name="chip_text">#757575</color>
+    <color name="primary_color">#134BF0</color>
 
-<!--Exercise разметка-->
+    <!--Exercise разметка-->
     <color name="background">#FFFFFF</color>
     <color name="text_color">@color/black</color>
-
+    <color name="icon_color">@color/black</color>
 
 </resources>

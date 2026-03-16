@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Полупрозрачный черный цвет для фона баннера -->
+    <color name="black_transparent">#80000000</color>
+</resources>

@@ -22,6 +22,18 @@ interface CustomInteractor {
 
     suspend fun insertExercise(newExercise: ExerciseModel):Long
 
+    suspend fun updateExercise(exercise: ExerciseModel)
+
     suspend fun getAllExercise():List<ExerciseModel>
+
+    /*
+    Фильтрация по зонам
+     */
+    suspend fun getExercisesByZone(from: Int, to: Int, zone: String): List<ExerciseModel>
+
+    /*
+    Сортировка упражнений
+     */
+    suspend fun getAllExercisesSorted(from: Int, to: Int): List<ExerciseModel>
 
 }

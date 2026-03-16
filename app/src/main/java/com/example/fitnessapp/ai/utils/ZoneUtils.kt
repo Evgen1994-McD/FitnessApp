@@ -30,9 +30,14 @@ object ZoneUtils {
         return zones.joinToString(", ") { zone ->
             when (zone.lowercase()) {
                 "hands" -> "Руки"
-                "body" -> "Тело"
+                "body" -> "Общие"
+                "chest" -> "Грудь"
+                "shoulders" -> "Плечи"  // Исправлено на множественное число
                 "back" -> "Спина"
                 "legs" -> "Ноги"
+                "abs" -> "Пресс"
+                "warm" -> "Разминка"
+                "stretch" -> "Растяжка"
                 else -> zone
             }
         }
@@ -45,8 +50,13 @@ object ZoneUtils {
         return when (zone.lowercase()) {
             "hands" -> Color(0xFF4CAF50)
             "body" -> Color(0xFF2196F3)
+            "chest" -> Color(0xFFFF5722)
+            "shoulders" -> Color(0xFF9C27B0)
             "back" -> Color(0xFFFF9800)
-            "legs" -> Color(0xFF9C27B0)
+            "legs" -> Color(0xFF795548)
+            "abs" -> Color(0xFFE91E63)
+            "warm" -> Color(0xFF00BCD4)
+            "stretch" -> Color(0xFF8BC34A)
             else -> Color(0xFF757575)
         }
     }

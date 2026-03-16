@@ -1,6 +1,7 @@
 package com.example.fitnessapp.statistic.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -134,23 +135,27 @@ difficulty = arguments?.getString("difficulty").toString()
     }
 
     /**
-     * Показывает межстраничную рекламу
+     * Показывает баннерную рекламу
      */
     private fun showInterstitialAd() {
         if (adShown) return // Не показывать рекламу повторно
         
+        // Временно отключаем баннерную рекламу
+        Log.d("DaysFinishFragment", "Баннерная реклама временно отключена")
+        adShown = true
+        
+        // Показываем app open рекламу после тренировки с небольшой задержкой
         activity?.let { activity ->
-            val interstitialManager = App.getInterstitialAdManager(activity.application)
+            val appOpenManager = com.example.fitnessapp.utils.App.getAppOpenAdManager(activity.application)
+            Log.d("DaysFinishFragment", "Показываем App Open рекламу после тренировки")
             
-            if (interstitialManager.isAdReady()) {
-                interstitialManager.showAdWithDelay(activity, 1500) {
+            // Небольшая задержка для гарантии загрузки рекламы
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                appOpenManager.showAppOpenAdWithCallback(activity) {
                     // Реклама закрыта, можно продолжать работу
+                    Log.d("DaysFinishFragment", "App Open реклама закрыта")
                 }
-                adShown = true
-            } else {
-                // Если реклама не готова, предзагружаем для следующего раза
-                interstitialManager.preloadAd()
-            }
+            }, 500) // 500мс задержка
         }
     }
 
@@ -159,19 +164,9 @@ difficulty = arguments?.getString("difficulty").toString()
      */
     private fun navigateBack() {
         activity?.let { activity ->
-            val interstitialManager = App.getInterstitialAdManager(activity.application)
-            
-            if (interstitialManager.isAdReady() && !adShown) {
-                // Показываем рекламу перед выходом
-                interstitialManager.showAd(activity) {
-                    // Реклама закрыта, выполняем навигацию
-                    performNavigation()
-                }
-                adShown = true
-            } else {
-                // Реклама не готова или уже показана, выполняем навигацию сразу
-                performNavigation()
-            }
+            // Баннерная реклама больше не показывается при выходе
+            // Просто выполняем навигацию
+            performNavigation()
         }
     }
 

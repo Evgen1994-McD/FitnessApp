@@ -53,21 +53,27 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
             (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(false)
 
             binding.addNewDayButton.setOnClickListener {
-                model.insertDay(
-                    DayModel(null,
-                        "",
-                        getString(R.string.custom),
-                        false,
-                        0,
-                        0,
-                        true, // isOpen = true для кастомных тренировок
-                        zone = null,
-                        completedDate = null)
-                    /*
-                    При нажатии на кнопку "Создать день создаём день.
-                    Но не заполняем его упражнениями, это будем делать позже
-                     */
-                )
+                // Проверяем, что кнопка активна
+                if (binding.addNewDayButton.isEnabled) {
+                    model.insertDay(
+                        DayModel(null,
+                            "",
+                            getString(R.string.custom),
+                            false,
+                            0,
+                            0,
+                            true, // isOpen = true для кастомных тренировок
+                            zone = null,
+                            completedDate = null)
+                        /*
+                        При нажатии на кнопку "Создать день создаём день.
+                        Но не заполняем его упражнениями, это будем делать позже
+                         */
+                    )
+                } else {
+                    // Логирование для отладки
+                    android.util.Log.d("CustomDays", "Кнопка неактивна")
+                }
             }
             
             // Добавляем обработчик нажатия на bt_start
@@ -83,6 +89,11 @@ class CustomDaysListFragment : Fragment(), CustomDaysAdapter.Listener {
             
             // Устанавливаем начальное состояние загрузки
             model.setLoadingState(true)
+            
+            // Принудительно делаем кнопку активной и добавляем отладку
+            binding.addNewDayButton.isEnabled = true
+            android.util.Log.d("CustomDays", "Кнопка isEnabled: ${binding.addNewDayButton.isEnabled}")
+            android.util.Log.d("CustomDays", "Кнопка visibility: ${binding.addNewDayButton.visibility}")
 
         }
 

@@ -1,9 +1,9 @@
 <resources>
 
 <!--    Константы для Табов таблайоут-->
-    <string name="easy">Easy</string>
-    <string name="middle">Middle</string>
-    <string name="hard">Hard</string>
+    <string name="easy">Просто</string>
+    <string name="middle">Средне</string>
+    <string name="hard">Сложно</string>
     <string name="custom">custom</string>
 
 
@@ -95,6 +95,9 @@
     <string name="body">Корпус</string>
     <string name="back">Спина</string>
     <string name="legs">Ноги</string>
+    <string name="abs">Пресс</string>
+    <string name="warm">Разминка</string>
+    <string name="stretch">Растяжка</string>
 
 
 <!--ActionBars-->

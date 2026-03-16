@@ -3,7 +3,7 @@ package com.example.fitnessapp.utils
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.fitnessapp.ads.AppOpenAdManager
-import com.example.fitnessapp.ads.InterstitialAdManager
+import com.example.fitnessapp.ads.BannerAdManager
 import com.yandex.mobile.ads.common.MobileAds
 import dagger.hilt.android.HiltAndroidApp
 
@@ -15,10 +15,9 @@ class App:Application() {
         private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
 //        private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex"
         
-        // ID для межстраничной рекламы
-//        private const val INTERSTITIAL_AD_UNIT_ID = "demo-interstitial-yandex"
-
-        private const val INTERSTITIAL_AD_UNIT_ID = "R-M-18846080-1"
+        // ID для баннерной рекламы
+        private const val BANNER_AD_UNIT_ID = "demo-banner-yandex"
+//        private const val BANNER_AD_UNIT_ID = "R-M-18846080-1"
 
         @Volatile
         private var appOpenAdManager: AppOpenAdManager? = null
@@ -32,14 +31,18 @@ class App:Application() {
         }
         
         @Volatile
-        private var interstitialAdManager: InterstitialAdManager? = null
+        private var bannerAdManager: BannerAdManager? = null
         
-        fun getInterstitialAdManager(application: Application): InterstitialAdManager {
-            return interstitialAdManager ?: synchronized(this) {
-                interstitialAdManager ?: InterstitialAdManager(application, INTERSTITIAL_AD_UNIT_ID).also {
-                    interstitialAdManager = it
+        fun getBannerAdManager(application: Application): BannerAdManager {
+            return bannerAdManager ?: synchronized(this) {
+                bannerAdManager ?: BannerAdManager(application, BANNER_AD_UNIT_ID).also {
+                    bannerAdManager = it
                 }
             }
+        }
+        
+        fun getBannerAdUnitId(): String {
+            return BANNER_AD_UNIT_ID
         }
     }
     
@@ -75,8 +78,8 @@ class App:Application() {
             // Предзагружаем рекламу
             appOpenManager.loadAppOpenAd()
             
-            // Инициализируем менеджер межстраничной рекламы
-            getInterstitialAdManager(this)
+            // Инициализируем менеджер баннерной рекламы
+            getBannerAdManager(this)
         }
     }
 
@@ -85,7 +88,7 @@ class App:Application() {
         // Освобождаем ресурсы менеджеров рекламы
         try {
             getAppOpenAdManager(this).destroy()
-            getInterstitialAdManager(this).destroy()
+            getBannerAdManager(this).destroy()
         } catch (e: Exception) {
             e.printStackTrace()
         }

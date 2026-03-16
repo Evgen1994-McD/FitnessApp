@@ -14,14 +14,29 @@ object TrainingUtils { //здесь будут константы которые
     //руки
     const val HANDS = "hands"
 
-    //Грудь
-    const val BODY = "body"
-
     //спина
     const val BACK = "back"
 
+    //тело
+    const val BODY = "body"
+
     //ноги
     const val LEGS = "legs"
+
+    //Грудь
+    const val CHEST = "chest"
+
+    //Пресс
+    const val ABS = "abs"
+
+    //Разминка
+    const val WARM = "warm"
+
+    //Растяжка
+    const val STRETCH = "stretch"
+
+    //Плечи
+    const val SHOULDERS = "shoulders"
 
 
     val difListType = listOf( // список  из констант для передачи в Дейзфрагмент уровня сложности
@@ -92,6 +107,31 @@ object TrainingUtils { //здесь будут константы которые
                 EASY -> R.drawable.legs_easy
                 MIDDLE -> R.drawable.legs_middle
                 else -> R.drawable.legs_hard
+            }
+            CHEST -> when (difficulty) {
+                EASY -> R.drawable.chest_easy
+                MIDDLE -> R.drawable.chest_middle
+                else -> R.drawable.chest_hard
+            }
+            ABS -> when (difficulty) {
+                EASY -> R.drawable.abs_easy
+                MIDDLE -> R.drawable.abs_middle
+                else -> R.drawable.abs_hard
+            }
+            WARM -> when (difficulty) {
+                EASY -> R.drawable.easy
+                MIDDLE -> R.drawable.middle
+                else -> R.drawable.hard
+            }
+            STRETCH -> when (difficulty) {
+                EASY -> R.drawable.easy
+                MIDDLE -> R.drawable.middle
+                else -> R.drawable.hard
+            }
+            SHOULDERS -> when (difficulty) {
+                EASY -> R.drawable.easy
+                MIDDLE -> R.drawable.middle
+                else -> R.drawable.hard
             }
             else -> when (difficulty) {
                 EASY -> R.drawable.easy
