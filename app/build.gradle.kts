@@ -18,7 +18,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.fitnessapp"
+//        applicationId = "com.example.fitnessapp" // Для Rustore
+        applicationId = "evfit.fit.fitnessapp"    // Для Google Play
         minSdk = 29
         targetSdk = 33
         versionCode = 18
