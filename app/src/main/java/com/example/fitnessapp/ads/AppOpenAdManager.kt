@@ -20,8 +20,9 @@ import com.yandex.mobile.ads.common.ImpressionData
  * Менеджер для управления рекламой при открытии приложения (App Open Ad)
  * 
  * Логика показа:
- * - При первом запуске реклама показывается сразу после загрузки
- * - При возврате из фона реклама показывается только если приложение было в фоне >= 15 секунд
+ * - При первом запуске реклама НЕ показывается
+ * - Со второго запуска реклама показывается сразу после загрузки
+ * - При возврате из фона реклама показывается только если приложение было в фоне >= 15 секунд (со второго запуска)
  */
 class AppOpenAdManager(
     private val application: android.app.Application,
@@ -230,10 +231,19 @@ class AppOpenAdManager(
     /**
      * Проверяет, нужно ли показывать рекламу
      * Показываем рекламу:
-     * - При первом запуске приложения
-     * - После возврата из фона (через 15+ секунд)
+     * - Со второго запуска приложения
+     * - После возврата из фона (через 15+ секунд) со второго запуска
      */
     private fun shouldShowAd(): Boolean {
+        val appLaunches = prefs.getInt("app_launches", 0)
+        Log.d("AppOpenAdManager", "Текущий запуск: $appLaunches")
+        
+        // Показываем рекламу только со второго запуска
+        if (appLaunches < 2) {
+            Log.d("AppOpenAdManager", "Первый запуск, пропускаем показ рекламы")
+            return false
+        }
+        
         // Если недавно показывали межстраничную рекламу, пропускаем
         if (interstitialShownRecently) {
             Log.d("AppOpenAdManager", "Недавно показывали межстраничную рекламу, пропускаем App Open Ad")
@@ -248,8 +258,8 @@ class AppOpenAdManager(
             return timeInBackground >= 15_000L
         }
         
-        // При первом запуске (backgroundTime = 0) показываем сразу
-        Log.d("AppOpenAdManager", "Первый запуск, показываем рекламу")
+        // При последующих запусках (backgroundTime = 0) показываем сразу
+        Log.d("AppOpenAdManager", "Запуск №$appLaunches, показываем рекламу")
         return true
     }
 
