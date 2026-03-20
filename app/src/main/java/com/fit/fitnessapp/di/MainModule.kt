@@ -1,0 +1,173 @@
+package com.fit.fitnessapp.di
+
+import android.app.Application
+import android.speech.tts.TextToSpeech
+import androidx.room.Room
+import com.fit.fitnessapp.ai.data.CactusAiRepository
+import com.fit.fitnessapp.ai.data.TrainingPlanRepository
+import com.fit.fitnessapp.ai.domain.TrainingPlanAiService
+import com.fit.fitnessapp.customTraining.data.CustomRepositoryImpl
+import com.fit.fitnessapp.db.dao.ExerciseDao
+import com.fit.fitnessapp.db.dao.TrainingPlanDao
+import com.fit.fitnessapp.customTraining.domain.CustomInteractor
+import com.fit.fitnessapp.customTraining.domain.CustomRepository
+import com.fit.fitnessapp.customTraining.domain.impl.CustomInteractorImpl
+import com.fit.fitnessapp.db.MainDb
+import com.fit.fitnessapp.exercises.data.ExerciseRepositoryImpl
+import com.fit.fitnessapp.exercises.domain.DaysInteractor
+import com.fit.fitnessapp.exercises.domain.ExerciseInteractor
+import com.fit.fitnessapp.exercises.domain.ExerciseRepository
+import com.fit.fitnessapp.exercises.domain.impl.DaysInteractorImpl
+import com.fit.fitnessapp.exercises.domain.impl.ExerciseInteractorImpl
+import com.fit.fitnessapp.settings.data.SettingsRepositoryImpl
+import com.fit.fitnessapp.settings.domain.SettingsInteractor
+import com.fit.fitnessapp.settings.domain.SettingsRepository
+import com.fit.fitnessapp.settings.domain.impl.SettingsInteractorImpl
+import com.fit.fitnessapp.statistic.data.StatisticRepositoryImpl
+import com.fit.fitnessapp.statistic.domain.StatisticInteractor
+import com.fit.fitnessapp.statistic.domain.StatisticRepository
+import com.fit.fitnessapp.statistic.domain.impl.StatisticInteractorImpl
+import com.fit.fitnessapp.utils.MySoundPool
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import java.util.Locale
+import javax.inject.Singleton
+
+@Module //Мы создали модуль для даггера где будут методы которые будут инициализировтаь классы
+@InstallIn(SingletonComponent::class) // Он установится как синглтон компонент, а значит он установится в класс апликейшен один раз и мы сможем получать её везде
+object MainModule {
+    @Provides
+    @Singleton // Синглтон мы создаём один раз, чтобы не создавать каждый раз, не захламлять память
+    fun provideMainDb(app: Application): MainDb { //MainDb это не сама база данных, а просто шаблон, и мы передаём настройки чтобы получить БД
+        return Room.databaseBuilder(
+            app,//Контекст
+            MainDb::class.java, //Класс
+            "fitness.db" //Имя
+        )
+         .createFromAsset("db/fitness.db") // Используем предустановленную БД с правильной схемой
+         .fallbackToDestructiveMigration() // Пересоздаём БД если нет пути миграции
+         .build() // Room создаст новую базу с правильной схемой
+        //Поэтому сначала возьмём из ассетс, потом вызовем Билд
+    //здесь требуется передать контекст. Но у нас это App, а он уже есть в даггер
+//если нужен другой класс, то так просто не получится
+            //Теперь с помощью ДаггерХилт мы сможем получить экземпляр БД в любом месте приложения
+        //Он будет уже инициализирован
+
+
+    }
+
+    @Provides
+    @Singleton
+    fun provideTTS(app: Application): TextToSpeech {
+        var tts: TextToSpeech? = null
+        tts = TextToSpeech(app){
+            if (TextToSpeech.SUCCESS==it){
+                tts?.setLanguage(Locale.getDefault())
+            }
+        }
+        return tts
+
+
+    }
+
+    @Provides
+    @Singleton
+    fun provideCactusAiRepository(app: Application): CactusAiRepository {
+        return CactusAiRepository(app)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrainingPlanAiService(
+        cactusRepository: CactusAiRepository,
+        exerciseDao: ExerciseDao
+    ): TrainingPlanAiService {
+        return TrainingPlanAiService(cactusRepository, exerciseDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrainingPlanRepository(
+        trainingPlanDao: TrainingPlanDao,
+        trainingPlanAiService: TrainingPlanAiService
+    ): TrainingPlanRepository {
+        return TrainingPlanRepository(trainingPlanDao, trainingPlanAiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideExerciseDao(mainDb: MainDb): ExerciseDao {
+        return mainDb.exerciseDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrainingPlanDao(mainDb: MainDb): TrainingPlanDao {
+        return mainDb.trainingPlanDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideSoundPool(app: Application): MySoundPool {
+        return MySoundPool(app)
+/*
+Теперь мы можем получать инстанцию класса MySoundPool везде где нам
+заблагорассудится и получать звук с помощью @Inject
+ */
+
+    }
+
+
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class SettingsModule {
+    @Binds
+    abstract fun bindSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    abstract fun bindSettingsInteractor(settingsInteractorImpl: SettingsInteractorImpl): SettingsInteractor
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class ExerciseModule {
+    @Binds
+    abstract fun bindExerciseRepository(exerciseRepositoryImpl: ExerciseRepositoryImpl): ExerciseRepository
+
+    @Binds
+    abstract fun bindExerciseInteractor(exerciseInteractorImpl: ExerciseInteractorImpl): ExerciseInteractor
+
+    @Binds
+    abstract fun bindDaysInteractor(daysInteractorImpl: DaysInteractorImpl): DaysInteractor
+}
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class CustomExerciseModule {
+    @Binds
+    abstract fun bindCustomRepository(customRepositoryImpl: CustomRepositoryImpl): CustomRepository
+
+    @Binds
+    abstract fun bindCustomInteractor(customInteractorImpl: CustomInteractorImpl): CustomInteractor
+}
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class StatisticModule {
+    @Binds
+    abstract fun bindStatisticRepository(statisticRepositoryImpl: StatisticRepositoryImpl): StatisticRepository
+
+    @Binds
+    abstract fun bindStatisticInteractor(statisticInteractorImpl: StatisticInteractorImpl): StatisticInteractor
+}
+
+
+
+

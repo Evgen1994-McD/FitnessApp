@@ -11,7 +11,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.fitnessapp"
+    namespace = "com.fit.fitnessapp"
     compileSdk = 36
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.17"
