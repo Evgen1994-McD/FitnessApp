@@ -22,7 +22,7 @@ android {
         applicationId = "evfit.fit.fitnessapp"    // Для Google Play
         minSdk = 29
         targetSdk = 35
-        versionCode = 18
+        versionCode = 19
         versionName = "1.9.30"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
