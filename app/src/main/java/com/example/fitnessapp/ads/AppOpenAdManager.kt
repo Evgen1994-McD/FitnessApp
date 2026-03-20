@@ -21,7 +21,7 @@ import com.yandex.mobile.ads.common.ImpressionData
  * 
  * Логика показа:
  * - При первом запуске реклама показывается сразу после загрузки
- * - При возврате из фона реклама показывается только если приложение было в фоне >= 30 секунд
+ * - При возврате из фона реклама показывается только если приложение было в фоне >= 15 секунд
  */
 class AppOpenAdManager(
     private val application: android.app.Application,
@@ -45,9 +45,9 @@ class AppOpenAdManager(
     // Время последней попытки показа (чтобы не показывать несколько раз подряд)
     private var lastShowAttemptTime: Long = 0
     
-    // Минимальное время в фоне перед показом рекламы (30 секунд)
+    // Минимальное время в фоне перед показом рекламы (15 секунд)
     // При первом запуске реклама показывается сразу
-    private val MIN_BACKGROUND_TIME_MS = 25_000L
+    private val MIN_BACKGROUND_TIME_MS = 15_000L
     
     private val prefs: SharedPreferences = 
         application.getSharedPreferences("app_open_ad_prefs", android.content.Context.MODE_PRIVATE)
@@ -231,7 +231,7 @@ class AppOpenAdManager(
      * Проверяет, нужно ли показывать рекламу
      * Показываем рекламу:
      * - При первом запуске приложения
-     * - После возврата из фона (через 50 секунд)
+     * - После возврата из фона (через 15+ секунд)
      */
     private fun shouldShowAd(): Boolean {
         // Если недавно показывали межстраничную рекламу, пропускаем
@@ -241,13 +241,15 @@ class AppOpenAdManager(
         }
         
         // Если приложение было в фоне, проверяем время
-        if (backgroundTime > 10_000L) {
+        if (backgroundTime > 0) {
             val timeInBackground = SystemClock.elapsedRealtime() - backgroundTime
-            // Показываем только если было достаточно времени в фоне (30 секунд)
-            return timeInBackground >= 30_000L
+            Log.d("AppOpenAdManager", "Время в фоне: ${timeInBackground}ms")
+            // Показываем только если было достаточно времени в фоне (15+ секунд)
+            return timeInBackground >= 15_000L
         }
         
         // При первом запуске (backgroundTime = 0) показываем сразу
+        Log.d("AppOpenAdManager", "Первый запуск, показываем рекламу")
         return true
     }
 
