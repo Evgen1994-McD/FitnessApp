@@ -21,7 +21,7 @@ android {
 //        applicationId = "com.example.fitnessapp" // Для Rustore
         applicationId = "evfit.fit.fitnessapp"    // Для Google Play
         minSdk = 29
-        targetSdk = 33
+        targetSdk = 35
         versionCode = 18
         versionName = "1.9.30"
         vectorDrawables.useSupportLibrary = true
