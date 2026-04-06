@@ -50,15 +50,6 @@ class App:Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // Инициализируем Cactus AI (без автоматического скачивания)
-        try {
-            // Инициализация Cactus AI
-            com.cactus.CactusContextInitializer.initialize(this)
-        } catch (e: Exception) {
-            // Логируем ошибку, но не падаем приложение
-            e.printStackTrace()
-        }
-        
         // Инициализируем тему при запуске приложения
         val prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)
         val themeMode = prefs.getString("theme_mode", "SYSTEM")

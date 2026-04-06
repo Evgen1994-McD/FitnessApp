@@ -22,8 +22,8 @@ android {
         applicationId = "evfit.fit.fitnessapp"    // Для Google Play
         minSdk = 29
         targetSdk = 35
-        versionCode = 20
-        versionName = "1.9.31"
+        versionCode = 21
+        versionName = "1.9.32"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -58,6 +58,13 @@ android {
 
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
+    // Поддержка 16KB страниц для Android 15+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 
 }
@@ -145,11 +152,6 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
     // Дополнительные иконки (если нужны Outlined, Rounded и т.д.)
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
-
-    // Cactus AI
-    implementation("com.cactuscompute:cactus:1.4.1-beta")
-//    implementation("com.cactuscompute:cactus:1.8.0") // или последнюю
-
 
     // OkHttp для ручного скачивания моделей
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

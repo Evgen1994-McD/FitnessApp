@@ -3,9 +3,6 @@ package com.fit.fitnessapp.di
 import android.app.Application
 import android.speech.tts.TextToSpeech
 import androidx.room.Room
-import com.fit.fitnessapp.ai.data.CactusAiRepository
-import com.fit.fitnessapp.ai.data.TrainingPlanRepository
-import com.fit.fitnessapp.ai.domain.TrainingPlanAiService
 import com.fit.fitnessapp.customTraining.data.CustomRepositoryImpl
 import com.fit.fitnessapp.db.dao.ExerciseDao
 import com.fit.fitnessapp.db.dao.TrainingPlanDao
@@ -73,29 +70,6 @@ object MainModule {
 
     }
 
-    @Provides
-    @Singleton
-    fun provideCactusAiRepository(app: Application): CactusAiRepository {
-        return CactusAiRepository(app)
-    }
-
-    @Provides
-    @Singleton
-    fun provideTrainingPlanAiService(
-        cactusRepository: CactusAiRepository,
-        exerciseDao: ExerciseDao
-    ): TrainingPlanAiService {
-        return TrainingPlanAiService(cactusRepository, exerciseDao)
-    }
-
-    @Provides
-    @Singleton
-    fun provideTrainingPlanRepository(
-        trainingPlanDao: TrainingPlanDao,
-        trainingPlanAiService: TrainingPlanAiService
-    ): TrainingPlanRepository {
-        return TrainingPlanRepository(trainingPlanDao, trainingPlanAiService)
-    }
 
     @Provides
     @Singleton

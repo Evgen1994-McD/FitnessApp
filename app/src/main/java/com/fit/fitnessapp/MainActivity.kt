@@ -13,15 +13,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.fit.fitnessapp.databinding.ActivityMainBinding
 import com.fit.fitnessapp.utils.App
-// import com.cactus.CactusContextInitializer // Временно отключено
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-// import jakarta.inject.Inject // Временно отключено
 import kotlin.getValue
 @AndroidEntryPoint  // Это точка входа для DaggerHilt, указать если нужно получать инстанции для Хилт
 class MainActivity : AppCompatActivity() {
-// @Inject // Временно отключено
-lateinit var tts:TextToSpeech // инициализируем в MainActivity потому что это долгая операция, будем держать в памяти
+    lateinit var tts:TextToSpeech // инициализируем в MainActivity потому что это долгая операция, будем держать в памяти
     private val model: MainViewModel by viewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
     private lateinit var binding: ActivityMainBinding
     private lateinit var navHostFragment: NavHostFragment
@@ -31,7 +28,6 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // CactusContextInitializer.initialize(this) // Временно отключено
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
