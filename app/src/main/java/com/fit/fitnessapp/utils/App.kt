@@ -12,7 +12,8 @@ class App:Application() {
     
     companion object {
         // Реальный ID для релиза
-        private const val APP_OPEN_AD_UNIT_ID = "R-M-18846080-1"
+        private const val APP_OPEN_AD_UNIT_ID = "R-M-19063263-1"
+
 //        private const val APP_OPEN_AD_UNIT_ID = "demo-appopenad-yandex"
         
         // ID для баннерной рекламы
