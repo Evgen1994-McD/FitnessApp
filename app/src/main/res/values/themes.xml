@@ -11,10 +11,10 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnSurface">@color/white</item>
         <item name="colorSecondary">@color/secondary</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="backgroundColor"> @color/white</item>
+        <item name="backgroundColor">@color/white</item>
         <item name="android:textColor">@color/black</item>
-
+        <item name="android:statusBarColor">@color/top_bar_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 <style name="AlertDialog.AppCompat." parent="Theme.AppCompat.Light.Dialog.Alert">
     <item name="colorPrimary">@color/black</item>

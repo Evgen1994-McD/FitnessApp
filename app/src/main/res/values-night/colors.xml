@@ -28,5 +28,7 @@
     <color name="text_color">@color/white</color>
     <color name="icon_color">@color/white</color>
 
+    <!-- Top bar background - slightly lighter than main background -->
+    <color name="top_bar_bg">#2C2C2C</color>
 
 </resources>

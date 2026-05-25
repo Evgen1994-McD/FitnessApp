@@ -20,11 +20,5 @@
         android:icon="@drawable/ic_bottom_custom"
         />
 
-    <item
-        android:title="Настройки"
-        android:id="@+id/settingsFragment"
-        android:icon="@drawable/ic_bottom_settings"
-        />
-
 
 </menu>

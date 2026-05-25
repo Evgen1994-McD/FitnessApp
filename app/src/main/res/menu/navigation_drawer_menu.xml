@@ -12,11 +12,6 @@
         android:title="Настройки" />
 
     <item
-        android:id="@+id/nav_statistics"
-        android:icon="@drawable/ic_bottom_statistic"
-        android:title="Статистика" />
-
-    <item
         android:id="@+id/nav_share"
         android:icon="@drawable/ic_fire"
         android:title="Поделиться" />
@@ -27,8 +22,8 @@
         android:title="Оценить приложение" />
 
     <item
-        android:id="@+id/nav_about"
+        android:id="@+id/nav_documents"
         android:icon="@drawable/ic_help_outline_24"
-        android:title="О приложении" />
+        android:title="Документы" />
 
 </menu>

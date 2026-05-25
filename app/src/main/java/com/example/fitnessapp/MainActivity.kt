@@ -17,6 +17,8 @@ import com.example.fitnessapp.utils.App
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import dagger.hilt.android.AndroidEntryPoint
 // import jakarta.inject.Inject // Временно отключено
 import kotlinx.coroutines.launch
@@ -37,7 +39,6 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         super.onCreate(savedInstanceState)
         // CactusContextInitializer.initialize(this) // Временно отключено
         binding = ActivityMainBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
         setContentView(binding.root)
 
         // Загружаем и отображаем streak
@@ -70,17 +71,14 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                 R.id.nav_settings -> {
                     navController.navigate(R.id.settingsFragment)
                 }
-                R.id.nav_statistics -> {
-                    navController.navigate(R.id.statisticFragment)
-                }
                 R.id.nav_share -> {
                     // TODO: Поделиться
                 }
                 R.id.nav_rate -> {
                     // TODO: Оценить приложение
                 }
-                R.id.nav_about -> {
-                    // TODO: О приложении
+                R.id.nav_documents -> {
+                    // TODO: Открыть документы
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -103,24 +101,68 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
             }
         }
 
+        // Back button for settings toolbar
+        binding.backButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
+        fun updateFragmentConstraint(topViewId: Int) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(binding.mainContent)
+            constraintSet.connect(
+                R.id.fragmentContainerView,
+                ConstraintSet.TOP,
+                topViewId,
+                ConstraintSet.BOTTOM,
+                0
+            )
+            constraintSet.applyTo(binding.mainContent)
+        }
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id){
                 R.id.selectedExerciseListFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
+                    binding.topBar.visibility = View.VISIBLE
+                    binding.settingsToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.topBar)
                 }
                 R.id.chooseExercisesFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
+                    binding.topBar.visibility = View.VISIBLE
+                    binding.settingsToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.topBar)
                 }
                 R.id.exListFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
-                } R.id.exerciseFragment ->{
+                    binding.topBar.visibility = View.VISIBLE
+                    binding.settingsToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.topBar)
+                }
+                R.id.exerciseFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
-                } R.id.daysFinishFragment ->{
+                    binding.topBar.visibility = View.VISIBLE
+                    binding.settingsToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.topBar)
+                }
+                R.id.daysFinishFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
+                    binding.topBar.visibility = View.VISIBLE
+                    binding.settingsToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.topBar)
+                }
+                R.id.settingsFragment ->{
+                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.topBar.visibility = View.GONE
+                    binding.settingsToolbar.visibility = View.VISIBLE
+                    updateFragmentConstraint(R.id.settingsToolbar)
                 }
 
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
+                    binding.topBar.visibility = View.VISIBLE
+                    binding.settingsToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.topBar)
                 }
             }
         }

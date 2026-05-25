@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:text="user@example.com"
+        android:text="Гость"
         android:textColor="@color/text_color"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/navHeaderAvatar"

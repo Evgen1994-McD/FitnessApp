@@ -30,4 +30,7 @@
     <color name="text_color">@color/black</color>
     <color name="icon_color">@color/black</color>
 
+    <!-- Top bar background - slightly different from main background -->
+    <color name="top_bar_bg">#F5F5F5</color>
+
 </resources>
