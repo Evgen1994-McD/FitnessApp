@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -14,6 +15,8 @@ import com.example.fitnessapp.databinding.ActivityMainBinding
 import com.example.fitnessapp.utils.App
 // import com.cactus.CactusContextInitializer // Временно отключено
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
+import androidx.drawerlayout.widget.DrawerLayout
 import dagger.hilt.android.AndroidEntryPoint
 // import jakarta.inject.Inject // Временно отключено
 import kotlinx.coroutines.launch
@@ -27,6 +30,8 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController : NavController
     private lateinit var bottomNavigationView:BottomNavigationView
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +53,40 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         navController =  navHostFragment.navController
 
         bottomNavigationView = binding.bottomNavigationView
-        
+        drawerLayout = binding.drawerLayout
+        navigationView = binding.navigationView
+
+        // Обработка клика на аватар для открытия NavigationDrawer
+        binding.avatarCard.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        // Обработка элементов меню NavigationDrawer
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_profile -> {
+                    // TODO: Открыть профиль
+                }
+                R.id.nav_settings -> {
+                    navController.navigate(R.id.settingsFragment)
+                }
+                R.id.nav_statistics -> {
+                    navController.navigate(R.id.statisticFragment)
+                }
+                R.id.nav_share -> {
+                    // TODO: Поделиться
+                }
+                R.id.nav_rate -> {
+                    // TODO: Оценить приложение
+                }
+                R.id.nav_about -> {
+                    // TODO: О приложении
+                }
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
+
         // Кастомная обработка нажатий в BottomNavigationView для сброса стека при переключении табов
         bottomNavigationView.setOnItemSelectedListener { item ->
             val navOptions = androidx.navigation.NavOptions.Builder()
