@@ -19,4 +19,5 @@ interface StatisticRepository {
     suspend fun getAllDays(): List<DayModel>
     suspend fun insertDay(dayModel: DayModel)
     suspend fun insertExercise(exerciseModel: ExerciseModel): Long
+    suspend fun getAllWorkoutDates(): List<String>
 }

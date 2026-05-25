@@ -50,4 +50,45 @@ class StatisticInteractorImpl @Inject constructor(
     override suspend fun insertExercise(exerciseModel: ExerciseModel): Long{
         return statisticRepository.insertExercise(exerciseModel)
     }
+
+    override suspend fun getCurrentStreak(): Int {
+        val workoutDates = statisticRepository.getAllWorkoutDates()
+        if (workoutDates.isEmpty()) return 0
+
+        val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+        val calendar = java.util.Calendar.getInstance()
+        
+        // Parse all dates and sort them descending
+        val dates = workoutDates.map { dateFormat.parse(it)!! }.sortedDescending()
+        
+        // Reset calendar to yesterday (start of streak calculation)
+        calendar.add(java.util.Calendar.DAY_OF_YEAR, -1)
+        val yesterday = calendar.time
+        
+        // Check if yesterday was the last workout day
+        val lastWorkout = dates.first()
+        val yesterdayStr = dateFormat.format(yesterday)
+        val todayStr = dateFormat.format(java.util.Date())
+        
+        // If no workout yesterday and none today, streak is 0
+        if (dateFormat.format(lastWorkout) != yesterdayStr && dateFormat.format(lastWorkout) != todayStr) {
+            return 0
+        }
+        
+        // Count consecutive days
+        var streak = 1
+        for (i in 1 until dates.size) {
+            calendar.time = dates[i - 1]
+            calendar.add(java.util.Calendar.DAY_OF_YEAR, -1)
+            val expectedPrevDay = calendar.time
+            
+            if (dateFormat.format(dates[i]) == dateFormat.format(expectedPrevDay)) {
+                streak++
+            } else {
+                break
+            }
+        }
+        
+        return streak
+    }
 }

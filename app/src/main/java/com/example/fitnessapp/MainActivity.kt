@@ -34,6 +34,13 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        // Загружаем и отображаем streak
+        model.streakCount.observe(this) { streak ->
+            binding.dayCounter.text = "$streak д."
+        }
+        model.loadStreak()
+
         // Устанавливаем текущую активность для менеджера рекламы
         App.getAppOpenAdManager(application).setCurrentActivity(this)
 
@@ -93,6 +100,8 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         super.onResume()
         // Обновляем текущую активность при возврате на экран
         App.getAppOpenAdManager(application).setCurrentActivity(this)
+        // Обновляем streak при возврате на экран
+        model.loadStreak()
     }
     
     override fun onPause() {

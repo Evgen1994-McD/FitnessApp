@@ -75,4 +75,8 @@ class StatisticRepositoryImpl @Inject constructor(
     override suspend fun insertExercise(exerciseModel: ExerciseModel):Long{
         return mainDb.exerciseDao.insertExercise(exerciseModel)
     }
+
+    override suspend fun getAllWorkoutDates(): List<String> {
+        return mainDb.statisticDao.getAllWorkoutDates()
+    }
 }
