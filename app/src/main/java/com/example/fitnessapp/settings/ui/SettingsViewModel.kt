@@ -33,6 +33,12 @@ class SettingsViewModel @Inject constructor(
         initialValue = true
     )
 
+    val recoveryTime: StateFlow<Int> = settingsInteractor.getRecoveryTime().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = 40
+    )
+
     // LiveData для отслеживания прогресса открытия тренировок
     private val _openTrainingsProgress = MutableLiveData<Float>(0f)
     val openTrainingsProgress: LiveData<Float> = _openTrainingsProgress
@@ -68,5 +74,8 @@ class SettingsViewModel @Inject constructor(
         settingsInteractor.setVoiceTipsEnabled(enabled)
     }
 
+    fun setRecoveryTime(seconds: Int) = viewModelScope.launch {
+        settingsInteractor.setRecoveryTime(seconds)
+    }
 
 }

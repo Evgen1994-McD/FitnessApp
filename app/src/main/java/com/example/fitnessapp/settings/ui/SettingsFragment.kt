@@ -16,6 +16,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +58,7 @@ class SettingsFragment : Fragment() {
                     
                     var clearDialogState by remember { mutableStateOf(false) }
                     var openTrainingsDialogState by remember { mutableStateOf(false) }
+                    var recoveryTimeDialogState by remember { mutableStateOf(false) }
 
                     SettingsScreen(
                         viewModel = model,
@@ -65,6 +67,9 @@ class SettingsFragment : Fragment() {
                         },
                         onOpenAllTrainingsClick = {
                             openTrainingsDialogState = true
+                        },
+                        onRecoveryTimeClick = {
+                            recoveryTimeDialogState = true
                         }
                     )
                     
@@ -99,6 +104,21 @@ class SettingsFragment : Fragment() {
                                 openTrainingsDialogState = false
                             }
                         }
+                    }
+
+                    // Диалог выбора времени отдыха
+                    if (recoveryTimeDialogState) {
+                        val currentRecoveryTime by model.recoveryTime.collectAsState()
+                        RecoveryTimeDialog(
+                            dialogState = recoveryTimeDialogState,
+                            currentRecoveryTime = currentRecoveryTime,
+                            onTimeSelected = { time ->
+                                model.setRecoveryTime(time)
+                            },
+                            onDismiss = {
+                                recoveryTimeDialogState = false
+                            }
+                        )
                     }
                 }
             }

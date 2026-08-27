@@ -15,4 +15,7 @@ interface SettingsRepository {
     
     fun getVoiceTipsEnabled(): Flow<Boolean>
     suspend fun setVoiceTipsEnabled(enabled: Boolean)
+
+    fun getRecoveryTime(): Flow<Int>
+    suspend fun setRecoveryTime(seconds: Int)
 }

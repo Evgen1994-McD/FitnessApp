@@ -12,7 +12,7 @@ class ExerciseHelper @Inject constructor(@ApplicationContext private val context
 
 ) {
 
-    fun createExerciseStack(list: List<ExerciseModel>) : List<ExerciseModel>{
+    fun createExerciseStack(list: List<ExerciseModel>, recoveryTimeSeconds: String = context.getString(R.string.recovery)) : List<ExerciseModel>{
 val templist = ArrayList<ExerciseModel>()
         list.forEachIndexed {index, exercise ->
             templist.add(
@@ -21,7 +21,7 @@ val templist = ArrayList<ExerciseModel>()
                         context.getString(R.string.pre)
                     }
                             else{
-                        context.getString(R.string.recovery) // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ 40 СЕКУНД
+                        recoveryTimeSeconds // ОТДЫХ МЕЖДУ УПРАЖНЕНИЯМИ
 
                     },
 

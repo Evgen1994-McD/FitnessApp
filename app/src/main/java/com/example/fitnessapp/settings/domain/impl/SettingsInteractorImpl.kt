@@ -34,4 +34,12 @@ class SettingsInteractorImpl @Inject constructor(
         settingsRepository.setVoiceTipsEnabled(enabled)
     }
 
+    override fun getRecoveryTime(): Flow<Int> {
+        return settingsRepository.getRecoveryTime()
+    }
+
+    override suspend fun setRecoveryTime(seconds: Int) {
+        settingsRepository.setRecoveryTime(seconds)
+    }
+
 }

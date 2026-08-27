@@ -43,9 +43,11 @@ import com.example.fitnessapp.exercises.domain.models.ThemeMode
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel,
                    onClearedDataClick: () -> Unit,
-                   onOpenAllTrainingsClick: () -> Unit) {
+                   onOpenAllTrainingsClick: () -> Unit,
+                   onRecoveryTimeClick: () -> Unit) {
     val themeMode by viewModel.themeMode.collectAsState()
     val voiceTipsEnabled by viewModel.voiceTipsEnabled.collectAsState()
+    val recoveryTime by viewModel.recoveryTime.collectAsState()
 
 
     Column(
@@ -108,6 +110,32 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                     checkedIconColor = Color.Blue,
                     checkedThumbColor = Color.Blue,
                 )
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(16.dp)
+                .clickable {
+                    onRecoveryTimeClick()
+                }
+        ) {
+            Text(
+                text = stringResource(R.string.recovery_time_label),
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "$recoveryTime сек",
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold
             )
         }
 

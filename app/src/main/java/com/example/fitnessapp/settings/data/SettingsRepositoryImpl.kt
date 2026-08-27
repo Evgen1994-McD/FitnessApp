@@ -32,6 +32,10 @@ class SettingsRepositoryImpl @Inject constructor(
     private val _voiceTipsEnabled = MutableStateFlow(getStoredVoiceTipsEnabled())
     override fun getVoiceTipsEnabled(): Flow<Boolean> = _voiceTipsEnabled.asStateFlow()
 
+    private val recoveryTimeKey = "recovery_time"
+    private val _recoveryTime = MutableStateFlow(getStoredRecoveryTime())
+    override fun getRecoveryTime(): Flow<Int> = _recoveryTime.asStateFlow()
+
 
     private fun getStoredThemeMode(): ThemeMode {
         val stored = prefs.getString(themeKey, ThemeMode.SYSTEM.name)
@@ -46,9 +50,18 @@ class SettingsRepositoryImpl @Inject constructor(
         return prefs.getBoolean(voiceTipsKey, true) // По умолчанию включено
     }
 
+    private fun getStoredRecoveryTime(): Int {
+        return prefs.getInt(recoveryTimeKey, 40) // По умолчанию 40 секунд
+    }
+
     override suspend fun setVoiceTipsEnabled(enabled: Boolean) {
         prefs.edit().putBoolean(voiceTipsKey, enabled).apply()
         _voiceTipsEnabled.value = enabled
+    }
+
+    override suspend fun setRecoveryTime(seconds: Int) {
+        prefs.edit().putInt(recoveryTimeKey, seconds).apply()
+        _recoveryTime.value = seconds
     }
 
     override suspend fun setThemeMode(mode: ThemeMode) {

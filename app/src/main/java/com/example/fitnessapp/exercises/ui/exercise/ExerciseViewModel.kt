@@ -17,6 +17,7 @@ import com.example.fitnessapp.settings.domain.SettingsInteractor
 import com.example.fitnessapp.utils.MySoundPool
 import com.example.fitnessapp.utils.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
@@ -141,6 +142,8 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         doneExerciseCounterToSave = dayModel.doneExerciseCounter // Исправляю получение doneExerciseCounter - беру значение из переданного dayModel, а не из currentDay из базы
         totalExerciseNumber = dayModel.exercises.split(",").size
 
+        val recoveryTime = settingsInteractor.getRecoveryTime().first()
+
         exercisesStack = exerciseHelper.createExerciseStack(
             exercisesOfTheDay.subList(
                 dayModel.doneExerciseCounter,
@@ -153,7 +156,8 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 
                 Если понадобится сбросить - можно в дальнейшем встроить вопрос ( желаете ли продолжить)
                  */
-            )
+            ),
+            recoveryTime.toString()
 
         )
         getStatistic()
