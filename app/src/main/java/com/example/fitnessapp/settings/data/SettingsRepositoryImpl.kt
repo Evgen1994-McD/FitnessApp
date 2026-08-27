@@ -73,56 +73,7 @@ class SettingsRepositoryImpl @Inject constructor(
         }
     }
 
-//
-//    override fun controlTheme(): Boolean {
-//        val themeSharedPrefs = context.getSharedPreferences(SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
-//
-//        // Проверяем наличие ключа перед чтением значения
-//        if (!themeSharedPrefs.contains(KEY_THEME_MODE)) {
-//            // Ключ отсутствует, используем режим системы
-//            val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-//            when (currentNightMode) {
-//                Configuration.UI_MODE_NIGHT_YES -> {
-//                    switchTheme(true) // Включаем тёмную тему
-//                    return true
-//                }
-//                Configuration.UI_MODE_NIGHT_NO -> {
-//                    switchTheme(false) // Оставляем светлую тему
-//                    return false
-//                }
-//            }
-//        } else {
-//            // Ключ присутствует, получаем и применяем сохранённую тему
-//            val savedTheme = themeSharedPrefs.getBoolean(KEY_THEME_MODE, false)
-//            switchTheme(savedTheme)
-//            return savedTheme
-//        }
-//        return false
-//    }
 
-//    override fun saveCurrentThemeToShared(isChecked: Boolean) {
-//        val themeSharedPrefs =
-//            context.getSharedPreferences(SHARED_PREF_THEME_NAME, Context.MODE_PRIVATE)
-//        themeSharedPrefs.run {
-//            edit().putBoolean(KEY_THEME_MODE, isChecked).apply()
-//        }
-//
-//    }
-
-
-//    override fun switchTheme(savedTheme: Boolean) {
-//
-//        if (savedTheme != null) {
-//            AppCompatDelegate.setDefaultNightMode(
-//                if (savedTheme) {
-//                    AppCompatDelegate.MODE_NIGHT_YES
-//                } else {
-//                    AppCompatDelegate.MODE_NIGHT_NO
-//                }
-//            )
-//        }
-//
-//    }
 
 
     override fun customTraining() {
