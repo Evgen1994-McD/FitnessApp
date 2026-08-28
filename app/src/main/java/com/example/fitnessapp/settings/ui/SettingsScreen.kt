@@ -121,15 +121,16 @@ fun SettingsScreen(viewModel: SettingsViewModel,
                 .padding(top = 20.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
                 .clickable {
                     onRecoveryTimeClick()
                 }
+                .height(32.dp)
         ) {
             Text(
                 text = stringResource(R.string.recovery_time_label),
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = "$recoveryTime сек",
