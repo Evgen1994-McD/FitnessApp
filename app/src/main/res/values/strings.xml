@@ -120,5 +120,9 @@
     <string name="logout">Выйти</string>
     <string name="guest_user">Гость</string>
     <string name="auth_error_generic">Не удалось выполнить вход. Попробуйте снова.</string>
+    <string name="not_logged_in_title">Вы не вошли в систему</string>
+    <string name="not_logged_in_subtitle">Войдите через Яндекс ID</string>
+    <string name="profile_login_field">Логин</string>
+    <string name="profile_email_field">Email</string>
 
 </resources>
