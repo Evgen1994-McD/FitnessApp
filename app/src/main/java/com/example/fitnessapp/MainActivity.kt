@@ -47,6 +47,20 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         }
         model.loadStreak()
 
+        // Наблюдаем за изменением текста TopBar для списка упражнений
+        model.trainingDaysTitle.observe(this) { title ->
+            if (title.isNotEmpty()) {
+                binding.trainingDaysTitle.text = title
+            }
+        }
+
+        // Наблюдаем за изменением текста TopBar для выполнения упражнения
+        model.exerciseTitle.observe(this) { title ->
+            if (title.isNotEmpty()) {
+                binding.exerciseTitle.text = title
+            }
+        }
+
         // Устанавливаем текущую активность для менеджера рекламы
         App.getAppOpenAdManager(application).setCurrentActivity(this)
 
@@ -106,6 +120,21 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
             navController.navigateUp()
         }
 
+        // Back button for training days toolbar
+        binding.trainingDaysBackButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
+        // Back button for exercise toolbar
+        binding.exerciseBackButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
+        // Back button for training list toolbar
+        binding.trainingListBackButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
         fun updateFragmentConstraint(topViewId: Int) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(binding.mainContent)
@@ -125,43 +154,73 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.bottomNavigationView.visibility = View.GONE
                     binding.topBar.visibility = View.VISIBLE
                     binding.settingsToolbar.visibility = View.GONE
+                    binding.trainingDaysToolbar.visibility = View.GONE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.topBar)
                 }
                 R.id.chooseExercisesFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
                     binding.topBar.visibility = View.VISIBLE
                     binding.settingsToolbar.visibility = View.GONE
+                    binding.trainingDaysToolbar.visibility = View.GONE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.topBar)
                 }
                 R.id.exListFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
-                    binding.topBar.visibility = View.VISIBLE
+                    binding.topBar.visibility = View.GONE
                     binding.settingsToolbar.visibility = View.GONE
-                    updateFragmentConstraint(R.id.topBar)
+                    binding.trainingDaysToolbar.visibility = View.VISIBLE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.trainingDaysToolbar)
                 }
                 R.id.exerciseFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
-                    binding.topBar.visibility = View.VISIBLE
+                    binding.topBar.visibility = View.GONE
                     binding.settingsToolbar.visibility = View.GONE
-                    updateFragmentConstraint(R.id.topBar)
+                    binding.trainingDaysToolbar.visibility = View.GONE
+                    binding.exerciseToolbar.visibility = View.VISIBLE
+                    binding.trainingListToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.exerciseToolbar)
                 }
                 R.id.daysFinishFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
-                    binding.topBar.visibility = View.VISIBLE
+                    binding.topBar.visibility = View.GONE
                     binding.settingsToolbar.visibility = View.GONE
-                    updateFragmentConstraint(R.id.topBar)
+                    binding.trainingDaysToolbar.visibility = View.VISIBLE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.GONE
+                    updateFragmentConstraint(R.id.trainingDaysToolbar)
                 }
                 R.id.settingsFragment ->{
                     binding.bottomNavigationView.visibility = View.GONE
                     binding.topBar.visibility = View.GONE
                     binding.settingsToolbar.visibility = View.VISIBLE
+                    binding.trainingDaysToolbar.visibility = View.GONE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.settingsToolbar)
+                }
+                R.id.trainingListFragment ->{
+                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.topBar.visibility = View.GONE
+                    binding.settingsToolbar.visibility = View.GONE
+                    binding.trainingDaysToolbar.visibility = View.GONE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.VISIBLE
+                    updateFragmentConstraint(R.id.trainingListToolbar)
                 }
 
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                     binding.topBar.visibility = View.VISIBLE
                     binding.settingsToolbar.visibility = View.GONE
+                    binding.trainingDaysToolbar.visibility = View.GONE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.topBar)
                 }
             }

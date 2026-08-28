@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.findNavController
 import com.example.fitnessapp.R
+import com.example.fitnessapp.MainViewModel
 import com.example.fitnessapp.databinding.ExerciseBinding
 import com.example.fitnessapp.db.DayModel
 import com.example.fitnessapp.db.ExerciseModel
@@ -33,6 +34,7 @@ import pl.droidsonroids.gif.GifDrawable
 class ExerciseFragment : Fragment() {
     private lateinit var binding: ExerciseBinding
     private val model: ExerciseViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private var totalExerciseCounter = "0"
 
     private var currentDay: DayModel? = null
@@ -240,6 +242,8 @@ class ExerciseFragment : Fragment() {
         model.updateToolbar.observe(viewLifecycleOwner) { text ->
             ab?.title = text
             totalExerciseCounter = text.split("/")[1]
+            // Обновляем текст TopBar через MainViewModel
+            mainViewModel.updateExerciseTitle("Выполнено $text")
         }
     }
 

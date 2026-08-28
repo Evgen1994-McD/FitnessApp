@@ -19,11 +19,25 @@ class MainViewModel @Inject constructor(
     private val _streakCount = MutableLiveData<Int>(0)
     val streakCount: LiveData<Int> = _streakCount
 
+    private val _trainingDaysTitle = MutableLiveData<String>("")
+    val trainingDaysTitle: LiveData<String> = _trainingDaysTitle
+
+    private val _exerciseTitle = MutableLiveData<String>("")
+    val exerciseTitle: LiveData<String> = _exerciseTitle
+
     fun loadStreak() {
         viewModelScope.launch {
             val streak = statisticInteractor.getCurrentStreak()
             _streakCount.postValue(streak)
         }
+    }
+
+    fun updateTrainingDaysTitle(title: String) {
+        _trainingDaysTitle.value = title
+    }
+
+    fun updateExerciseTitle(title: String) {
+        _exerciseTitle.value = title
     }
 
 }

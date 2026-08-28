@@ -12,11 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.fitnessapp.MainViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnessapp.R
 import com.example.fitnessapp.exercises.ui.adapters.ExerciseAdapter
@@ -41,8 +42,7 @@ class ExerciseListFragment : Fragment() {
     private lateinit var binding: ExerciseListFragmentBinding
     private lateinit var adapter: ExerciseAdapter
     private val model: ExerciseListViewModel by activityViewModels() // Добавили зависимость. Для добавления надо указать зависимость от фрагмент в Gradle !
-    private var ab: ActionBar? =
-        null // добавили переменную для ActionBar, будем показывать счетчик упражнений
+    private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var sharedPreferences: SharedPreferences
     private var isBottomSheetShowing = false // Флаг для дебаунса
 
@@ -56,9 +56,9 @@ class ExerciseListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         // Проверяем что передано - day_id или готовый DayModel
-        dayModel = getDayFromArguments() 
+        dayModel = getDayFromArguments()
         if (dayModel == null) {
             // Если dayModel не передан, пробуем получить day_id
             val dayId = arguments?.getInt("day_id") ?: -1
@@ -66,13 +66,16 @@ class ExerciseListFragment : Fragment() {
                 // Загружаем DayModel по day_id через ViewModel
                 model.getDayById(dayId).observe(viewLifecycleOwner) { day ->
                     dayModel = day
-                    // Обновляем заголовок с правильным номером дня
-                    ab?.title = ("День: ${day?.dayNumber ?: "?"}. Список упражнений.")
                     day?.let {
                         model.getDayExerciseList(it)
+                        // Обновляем текст TopBar с номером дня
+                        mainViewModel.updateTrainingDaysTitle("День ${day.dayNumber}. Список упражнений")
                     }
                 }
             }
+        } else {
+            // Если dayModel передан, сразу обновляем текст TopBar
+            mainViewModel.updateTrainingDaysTitle("День ${dayModel?.dayNumber}. Список упражнений")
         }
 
         // Инициализируем SharedPreferences
@@ -88,9 +91,6 @@ class ExerciseListFragment : Fragment() {
 Вызввается она просто импортом - то есть вызываешь её как будто она уже есть в классе,
 а затем импортируешь
  */
-
-        ab = (activity as AppCompatActivity).supportActionBar
-        ab?.title = ("День: ${dayModel?.dayNumber ?: "?"}. Список упражнений.")
 
     }
 

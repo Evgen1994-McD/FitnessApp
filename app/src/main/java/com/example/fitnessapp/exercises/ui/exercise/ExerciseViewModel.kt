@@ -237,10 +237,10 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
         currentAdviceRunnable?.let { handler.removeCallbacks(it) }
         currentAdviceRunnable = null
         usedAdvices.clear()
-        updateToolbar()
-        
+
         // Проверяем, что есть еще упражнения для показа
         if (doneExerciseCounter < exercisesStack.size) {
+            updateToolbar() // Вызываем перед увеличением счетчика для корректной проверки четности
             val exercise = exercisesStack[doneExerciseCounter++]
             speechExercise(exercise)
             updateExercise.value = exercise
@@ -400,7 +400,7 @@ exercisesOfTheDay.subList(0, doneExerciseCounterToSave-1).forEach { model ->
 
     private fun updateToolbar() {
         if (doneExerciseCounter % 2 == 0) { // если счётчик делится на 2 то считаем и обновляем, если нет то нет
-            val text = "Выполнено: ${doneExerciseCounterToSave++} / $totalExerciseNumber"
+            val text = "${doneExerciseCounterToSave++} / $totalExerciseNumber"
             updateToolbar.value = text
         }
     }
