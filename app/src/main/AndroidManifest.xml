@@ -39,6 +39,16 @@
             tools:ignore="IntentFilterExportedReceiver">
 
         </activity>
+
+        <!-- Yandex Auth SDK activities (уже подмерживаются из AAR, декларируем явно для ясности) -->
+        <activity
+            android:name="com.yandex.authsdk.internal.BrowserDataActivity"
+            android:exported="false"
+            tools:node="merge" />
+        <activity
+            android:name="com.yandex.authsdk.internal.CustomTabActivity"
+            android:exported="false"
+            tools:node="merge" />
     </application>
 
 </manifest>

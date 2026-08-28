@@ -30,6 +30,13 @@ android {
         ndk {
             abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86"))
         }
+
+        // Yandex OAuth Client ID (oauth.yandex.ru, package com.example.fitnessapp).
+        // authsdk 3.1.3 не читает это значение программно (идентификация приложения происходит
+        // на стороне Яндекс OAuth-консоли по package name + подписи APK) — placeholder держим
+        // для документации и форвард-совместимости с будущими версиями SDK.
+        manifestPlaceholders["YANDEX_CLIENT_ID"] =
+            (project.findProperty("YANDEX_CLIENT_ID") as? String) ?: "REPLACE_WITH_REAL_CLIENT_ID"
     }
 
     buildTypes {
@@ -157,6 +164,12 @@ dependencies {
 
     // Yandex Mobile Ads SDK
     implementation("com.yandex.android:mobileads:7.18.0")
+
+    // Yandex Auth SDK (Sign in with Yandex ID)
+    implementation("com.yandex.android:authsdk:3.1.3")
+
+    // EncryptedSharedPreferences для хранения сессии авторизации
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Hilt Navigation Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")

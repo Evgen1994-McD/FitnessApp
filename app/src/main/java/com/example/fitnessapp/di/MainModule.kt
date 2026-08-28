@@ -4,6 +4,10 @@ import android.app.Application
 import android.speech.tts.TextToSpeech
 import androidx.room.Room
 import com.example.fitnessapp.ai.data.CactusAiRepository
+import com.example.fitnessapp.auth.data.AuthRepositoryImpl
+import com.example.fitnessapp.auth.domain.AuthInteractor
+import com.example.fitnessapp.auth.domain.AuthRepository
+import com.example.fitnessapp.auth.domain.impl.AuthInteractorImpl
 import com.example.fitnessapp.ai.data.TrainingPlanRepository
 import com.example.fitnessapp.ai.domain.TrainingPlanAiService
 import com.example.fitnessapp.customTraining.data.CustomRepositoryImpl
@@ -169,6 +173,17 @@ abstract class StatisticModule {
 
     @Binds
     abstract fun bindStatisticInteractor(statisticInteractorImpl: StatisticInteractorImpl): StatisticInteractor
+}
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class AuthModule {
+    @Binds
+    abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    abstract fun bindAuthInteractor(authInteractorImpl: AuthInteractorImpl): AuthInteractor
 }
 
 

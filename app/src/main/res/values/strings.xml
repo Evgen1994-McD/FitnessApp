@@ -114,4 +114,11 @@
     <string name="clean_data">Очистить данные</string>
 
 
+    <!--Профиль / Авторизация-->
+    <string name="profile_title">Профиль</string>
+    <string name="login_with_yandex">Войти через Яндекс ID</string>
+    <string name="logout">Выйти</string>
+    <string name="guest_user">Гость</string>
+    <string name="auth_error_generic">Не удалось выполнить вход. Попробуйте снова.</string>
+
 </resources>

@@ -11,6 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import coil.load
 import com.example.fitnessapp.databinding.ActivityMainBinding
 import com.example.fitnessapp.utils.App
 // import com.cactus.CactusContextInitializer // Временно отключено
@@ -61,6 +62,32 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
             }
         }
 
+        // Наблюдаем за сессией авторизации — обновляем аватар в топ-баре и шапку Drawer
+        model.userSession.observe(this) { session ->
+            val headerView = binding.navigationView.getHeaderView(0)
+            val headerAvatar = headerView.findViewById<android.widget.ImageView>(R.id.navHeaderAvatar)
+            val headerName = headerView.findViewById<android.widget.TextView>(R.id.navHeaderName)
+            val headerEmail = headerView.findViewById<android.widget.TextView>(R.id.navHeaderEmail)
+
+            if (session.isAuthenticated) {
+                headerName.text = session.userName ?: getString(R.string.guest_user)
+                headerEmail.text = session.userEmail ?: ""
+                binding.avatarImage.load(session.avatarUrl) {
+                    error(R.drawable.avatar_placeholder)
+                    placeholder(R.drawable.avatar_placeholder)
+                }
+                headerAvatar.load(session.avatarUrl) {
+                    error(R.drawable.avatar_placeholder)
+                    placeholder(R.drawable.avatar_placeholder)
+                }
+            } else {
+                headerName.text = getString(R.string.guest_user)
+                headerEmail.text = ""
+                binding.avatarImage.setImageResource(R.drawable.avatar_placeholder)
+                headerAvatar.setImageResource(R.drawable.avatar_placeholder)
+            }
+        }
+
         // Устанавливаем текущую активность для менеджера рекламы
         App.getAppOpenAdManager(application).setCurrentActivity(this)
 
@@ -80,7 +107,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_profile -> {
-                    // TODO: Открыть профиль
+                    navController.navigate(R.id.profileFragment)
                 }
                 R.id.nav_settings -> {
                     navController.navigate(R.id.settingsFragment)
@@ -135,6 +162,11 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
             navController.navigateUp()
         }
 
+        // Back button for profile toolbar
+        binding.profileBackButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
         fun updateFragmentConstraint(topViewId: Int) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(binding.mainContent)
@@ -157,6 +189,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.GONE
                     binding.exerciseToolbar.visibility = View.GONE
                     binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.topBar)
                 }
                 R.id.chooseExercisesFragment ->{
@@ -166,6 +199,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.GONE
                     binding.exerciseToolbar.visibility = View.GONE
                     binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.topBar)
                 }
                 R.id.exListFragment ->{
@@ -175,6 +209,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.VISIBLE
                     binding.exerciseToolbar.visibility = View.GONE
                     binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.trainingDaysToolbar)
                 }
                 R.id.exerciseFragment ->{
@@ -184,6 +219,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.GONE
                     binding.exerciseToolbar.visibility = View.VISIBLE
                     binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.exerciseToolbar)
                 }
                 R.id.daysFinishFragment ->{
@@ -193,6 +229,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.VISIBLE
                     binding.exerciseToolbar.visibility = View.GONE
                     binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.trainingDaysToolbar)
                 }
                 R.id.settingsFragment ->{
@@ -202,6 +239,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.GONE
                     binding.exerciseToolbar.visibility = View.GONE
                     binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.settingsToolbar)
                 }
                 R.id.trainingListFragment ->{
@@ -211,7 +249,18 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.GONE
                     binding.exerciseToolbar.visibility = View.GONE
                     binding.trainingListToolbar.visibility = View.VISIBLE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.trainingListToolbar)
+                }
+                R.id.profileFragment ->{
+                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.topBar.visibility = View.GONE
+                    binding.settingsToolbar.visibility = View.GONE
+                    binding.trainingDaysToolbar.visibility = View.GONE
+                    binding.exerciseToolbar.visibility = View.GONE
+                    binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.VISIBLE
+                    updateFragmentConstraint(R.id.profileToolbar)
                 }
 
                 else -> {
@@ -221,6 +270,7 @@ lateinit var tts:TextToSpeech // инициализируем в MainActivity п
                     binding.trainingDaysToolbar.visibility = View.GONE
                     binding.exerciseToolbar.visibility = View.GONE
                     binding.trainingListToolbar.visibility = View.GONE
+                    binding.profileToolbar.visibility = View.GONE
                     updateFragmentConstraint(R.id.topBar)
                 }
             }

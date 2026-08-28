@@ -3,7 +3,10 @@ package com.example.fitnessapp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.auth.domain.AuthInteractor
+import com.example.fitnessapp.auth.domain.UserSession
 import com.example.fitnessapp.settings.domain.SettingsInteractor
 import com.example.fitnessapp.statistic.domain.StatisticInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val settingsInteractor: SettingsInteractor,
-    private val statisticInteractor: StatisticInteractor
+    private val statisticInteractor: StatisticInteractor,
+    private val authInteractor: AuthInteractor
 ) : ViewModel() {
 
     private val _streakCount = MutableLiveData<Int>(0)
@@ -24,6 +28,8 @@ class MainViewModel @Inject constructor(
 
     private val _exerciseTitle = MutableLiveData<String>("")
     val exerciseTitle: LiveData<String> = _exerciseTitle
+
+    val userSession: LiveData<UserSession> = authInteractor.userSession.asLiveData()
 
     fun loadStreak() {
         viewModelScope.launch {
