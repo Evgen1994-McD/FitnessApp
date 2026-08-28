@@ -13,6 +13,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.findNavController
@@ -34,7 +35,7 @@ import pl.droidsonroids.gif.GifDrawable
 class ExerciseFragment : Fragment() {
     private lateinit var binding: ExerciseBinding
     private val model: ExerciseViewModel by viewModels()
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
     private var totalExerciseCounter = "0"
 
     private var currentDay: DayModel? = null
